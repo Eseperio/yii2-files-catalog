@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\actions;
 
 
@@ -36,11 +29,21 @@ class PropertiesAction extends Action
         $model = $this->controller->findModel(Yii::$app->request->get('uuid', false));
         $parent = $model->parents(1)->one();
 
+        $parentTreeNodes = $model->parents()
+            ->andWhere(['>', 'lft', 1])
+            ->orderAZ()
+            ->all();
+
+
+        $childrenTreeNodes = $model->children(4)->all();
+
         /* @todo: Check ACL */
 
         return $this->controller->render('properties', [
             'model' => $model,
-            'parent' => $parent
+            'parent' => $parent,
+            'parentTreeNodes' => $parentTreeNodes,
+            'childrenTreeNodes' => $childrenTreeNodes
         ]);
 
     }

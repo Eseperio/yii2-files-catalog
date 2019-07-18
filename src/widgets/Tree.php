@@ -59,7 +59,14 @@ class Tree extends Widget
 
             $out .= Html::beginTag('li', $nodeOptions) . "\n";
             $out .= IconDisplay::widget(['model' => $node]) . " ";
-            $out .= Html::tag('span', $nodeName, ['class' => 'kv-node-label']) . "\n";
+            $out .= Html::a(Html::encode($nodeName), ['properties', 'uuid' => $node->uuid], ['class' => 'node-label']) . "\n";
+
+            if ($currDepth >= 4) {
+                $out .= "<ul><li>...</li></ul>";
+//                $out .=Html::tag('span','...',['class'=>'text-muted']);
+
+            }
+
             ++$counter;
 
         }

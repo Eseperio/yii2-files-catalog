@@ -9,10 +9,14 @@
 /* @var $model \eseperio\filescatalog\models\base\Inode */
 
 /* @var $parent \eseperio\filescatalog\models\base\Inode */
+/* @var $parentTreeNodes \eseperio\filescatalog\models\base\Inode[] */
+
+/* @var $childrenTreeNodes \eseperio\filescatalog\models\base\Inode[] */
 
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\widgets\IconDisplay;
+use eseperio\filescatalog\widgets\Tree;
 use yii\helpers\Html;
 
 FileTypeIconsAsset::register($this);
@@ -30,6 +34,7 @@ FileTypeIconsAsset::register($this);
             <div class="panel-body">
                 <?= \yii\widgets\DetailView::widget([
                     'model' => $model,
+                    'options' => ['class' => 'table'],
                     'attributes' => [
                         'created_at:datetime',
                         'created_by',
@@ -63,14 +68,15 @@ FileTypeIconsAsset::register($this);
                         ],
                         'mime',
                         'uuid',
-                        'realPath'
+//                        'realPath'
                     ]
                 ]) ?>
             </div>
-            <div class="panel-footer">
+            <div class="panel-footer clearfix">
                 <?php if (!empty($parent)): ?>
-                    <?= Html::a(Yii::t('filescatalog', 'Back to index'), ['index', 'uuid' => $parent->uuid], ['class' => 'btn btn-info']) ?>
+                    <?= Html::a(Yii::t('filescatalog', 'Open parent'), ['index', 'uuid' => $parent->uuid], ['class' => 'btn btn-default']) ?>
                 <?php endif; ?>
+                <?= Html::a(Yii::t('filescatalog', 'View contents'), ['index', 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>
             </div>
         </div>
     </div>
@@ -78,15 +84,27 @@ FileTypeIconsAsset::register($this);
         <div class="panel">
             <div class="panel-heading">
                 <div class="panel-title">
-                    <?= Yii::t('xenon','Hierarchy') ?>
+                    <?= Yii::t('xenon', 'Parents') ?>
                 </div>
             </div>
             <div class="panel-body">
-                <?= \eseperio\filescatalog\widgets\Tree::widget([
-                    'nodes' => $model->parents()
-                        ->andWhere(['>', 'lft', 1])
-                        ->all()
-                ]) ?>
+                <?php if (!empty($parentTreeNodes)): ?>
+                    <?= Tree::widget([
+                        'nodes' => $parentTreeNodes
+                    ]) ?>
+                <?php endif; ?>
+
+            </div>
+            <div class="panel-heading">
+                <div class="panel-title"><?= Yii::t('filescatalog', 'Children') ?></div>
+            </div>
+            <div class="panel-body">
+                <?php if (!empty($childrenTreeNodes)): ?>
+                    <?= Tree::widget([
+                        'nodes' => $childrenTreeNodes
+                    ]) ?>
+                <?php endif; ?>
+
             </div>
         </div>
 
