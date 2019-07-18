@@ -6,14 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
-
 /* @var $model \eseperio\filescatalog\models\base\Inode */
 
 /* @var $parent \eseperio\filescatalog\models\base\Inode */
@@ -22,22 +14,19 @@ use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\widgets\IconDisplay;
 use yii\helpers\Html;
-use yii\helpers\Inflector;
 
 FileTypeIconsAsset::register($this);
 ?>
 
 
+<?= \eseperio\filescatalog\widgets\Breadcrumb::widget([
+    'model' => $model,
+    'showPropertiesBtn' => false
+]) ?>
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-6">
         <div class="panel">
-            <div class="panel-heading">
-                <h1 class="panel-title">
-                    <span class="fiv-sqo fiv-icon-<?= ($model->type == InodeTypes::TYPE_DIR ? 'folder' : Html::encode($model->extension)) ?>">
 
-                    </span>
-                    <?= Inflector::camel2words($model->name) ?></h1>
-            </div>
             <div class="panel-body">
                 <?= \yii\widgets\DetailView::widget([
                     'model' => $model,
@@ -65,7 +54,7 @@ FileTypeIconsAsset::register($this);
                             'attribute' => 'filesize',
                             'format' => [
                                 'shortSize',
-                                0
+
                             ]
                         ],
                         [
@@ -84,5 +73,22 @@ FileTypeIconsAsset::register($this);
                 <?php endif; ?>
             </div>
         </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <?= Yii::t('xenon','Hierarchy') ?>
+                </div>
+            </div>
+            <div class="panel-body">
+                <?= \eseperio\filescatalog\widgets\Tree::widget([
+                    'nodes' => $model->parents()
+                        ->andWhere(['>', 'lft', 1])
+                        ->all()
+                ]) ?>
+            </div>
+        </div>
+
     </div>
 </div>

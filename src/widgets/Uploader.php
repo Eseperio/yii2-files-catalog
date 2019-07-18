@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\widgets;
 
 
@@ -39,6 +32,14 @@ class Uploader extends FileUpload
     public $targetUuid = null;
 
     public $pjaxId;
+    /**
+     * @var string jQuery selector for the container where upload errors must be displayed
+     */
+    public $errorsContainerSelector="#filex-error";
+    /**
+     * @var string jQuery selector for the progress bar where display progress.
+     */
+    public $progressBarSelector="filex-progress";
 
     /**
      * @throws \yii\base\InvalidConfigException
@@ -92,7 +93,7 @@ class Uploader extends FileUpload
                 if(file.errors){
                     $("#{$this->id}-errors").append($('<p>',file.name))
                     $.each(file.errors,(k,v)=>{
-                        $("#{$this->id}-errors").append($('<p>',{
+                        $("{$this->errorsContainerSelector}").append($('<p>',{
                             text: (Array.isArray(v)?v[0]:v),
                             class:'text-danger'
                         }))
@@ -105,13 +106,13 @@ JS
             'fileuploadprogressall' => new JsExpression(<<<JS
           function (e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
-        $('#{$this->id}-progress .progress-bar').css(
+        $('{$this->progressBarSelector} .progress-bar').css(
             'width',
             progress + '%'
         );
         if(progress>=100){
             
-            $('#{$this->id}-progress').hide();
+            $('{$this->progressBarSelector}').hide();
                         {$pjaxSnippet}
 
         }

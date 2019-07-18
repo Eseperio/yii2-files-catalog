@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\models\base;
 
 
@@ -125,8 +118,8 @@ class Inode extends ActiveRecord
             'updated_at' => Yii::t('filescatalog', 'Updated At'),
             'created_by' => Yii::t('filescatalog', 'Created By'),
             'md5hash' => Yii::t('filescatalog', 'md5 Checksum'),
-            'realPath'=>Yii::t('filescatalog','Real path'),
-            'filesize'=>Yii::t('filescatalog','File size'),
+            'realPath' => Yii::t('filescatalog', 'Real path'),
+            'filesize' => Yii::t('filescatalog', 'File size'),
         ];
     }
 
@@ -198,6 +191,14 @@ class Inode extends ActiveRecord
 
         return parent::delete();
     }
+
+    public function getParentsTree()
+    {
+        $parents = $this->parents()->asArray()->orderBy('left')->all();
+
+    }
+
+
 
     /**
      * @return string with the real path where inode is supposed to be saved.

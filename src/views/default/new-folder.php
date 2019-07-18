@@ -6,20 +6,13 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
-
 /* @var $parent \eseperio\filescatalog\models\Directory */
 
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 
 ?>
+
 
 
 <div class="directory-form">
