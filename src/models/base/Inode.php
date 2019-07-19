@@ -13,6 +13,7 @@ use creocoder\nestedsets\NestedSetsBehavior;
 use eseperio\filescatalog\FilesCatalogModule;
 use eseperio\filescatalog\models\InodeQuery;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use paulzi\adjacencyList\AdjacencyListBehavior;
 use Ramsey\Uuid\Uuid;
 use Yii;
 use yii\base\UserException;
@@ -43,24 +44,36 @@ use yii\helpers\FileHelper;
  *
  * Methods inherited from nested sets behavior:
  *
- * @method makeRoot($runValidation = true, $attributes = null)
- * @method prependTo($node, $runValidation = true, $attributes = null)
- * @method appendTo($node, $runValidation = true, $attributes = null)
- * @method insertBefore($node, $runValidation = true, $attributes = null)
- * @method insertAfter($node, $runValidation = true, $attributes = null)
- * @method deleteWithChildren()
- * @method InodeQuery parents($depth = null)
- * @method InodeQuery children($depth = null)
- * @method InodeQuery leaves()
- * @method InodeQuery prev()
- * @method InodeQuery next()
- * @method isRoot()
- * @method isChildOf($node)
- * @method isLeaf()
- * @method moveNodeAsRoot()
- * @method moveNode($value, $depth)
- * @method shiftLeftRightAttribute($value, $delta)
- * @method applyTreeAttributeCondition(&$condition)
+ * @method  events()
+ * @method  attach($owner)
+ * @method  InodeQuery getParents($depth = null)
+ * @method  getParentsOrdered($depth = null)
+ * @method  InodeQuery getParent()
+ * @method  InodeQuery getRoot()
+ * @method  getDescendants($depth = null, $andSelf = false)
+ * @method  getDescendantsOrdered($depth = null)
+ * @method  InodeQuery getChildren()
+ * @method  InodeQuery getLeaves($depth = null)
+ * @method  getPrev()
+ * @method  getNext()
+ * @method  getParentsIds($depth = null, $cache = true)
+ * @method  getDescendantsIds($depth = null, $flat = false, $cache = true)
+ * @method  populateTree($depth = null)
+ * @method  isRoot()
+ * @method  isChildOf($node)
+ * @method  isLeaf()
+ * @method  $this makeRoot()
+ * @method  $this prependTo($node)
+ * @method  $this appendTo($node)
+ * @method  $this insertBefore($node)
+ * @method  $this insertAfter($node)
+ * @method  preDeleteWithChildren()
+ * @method  deleteWithChildren()
+ * @method  reorderChildren($middle = true)
+ * @method  beforeSave()
+ * @method  afterSave()
+ * @method  beforeDelete($event)
+ * @method  afterDelete()
  */
 class Inode extends ActiveRecord
 {
@@ -146,8 +159,9 @@ class Inode extends ActiveRecord
         $behaviors = parent::behaviors();
 
         return array_replace_recursive($behaviors, [
-            'tree' => [
-                'class' => NestedSetsBehavior::class
+            'adjacency' => [
+                'class' => AdjacencyListBehavior::class,
+                'sortable' => false
             ],
             'slug' => [
                 'class' => SluggableBehavior::class,
@@ -185,7 +199,7 @@ class Inode extends ActiveRecord
      */
     public function delete()
     {
-        $children = $this->children()->count();
+        $children = $this->getChildren()->count();
         if ($children > 0)
             throw new UserException(Yii::t('xenon', 'This item has nested items and cannot be deleted.'));
 
@@ -194,10 +208,9 @@ class Inode extends ActiveRecord
 
     public function getParentsTree()
     {
-        $parents = $this->parents()->asArray()->orderBy('left')->all();
+        $parents = $this->getParents()->asArray()->orderBy('left')->all();
 
     }
-
 
 
     /**
@@ -253,9 +266,9 @@ class Inode extends ActiveRecord
     public function getRealPath()
     {
 
-        $path = join(DIRECTORY_SEPARATOR, $this->parents()->asArray()->select('name')->column());
+        $path = join(DIRECTORY_SEPARATOR, $this->getParents()->asArray()->select('name')->column());
 
-        Yii::debug("EROS2 - " . nl2br(print_r($this->parents()->asArray()->column(), true)));
+        Yii::debug("EROS2 - " . nl2br(print_r($this->getParents()->asArray()->column(), true)));
 
         return $path;
     }

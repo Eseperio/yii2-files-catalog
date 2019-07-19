@@ -6,18 +6,11 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\models;
 
 
-use creocoder\nestedsets\NestedSetsQueryBehavior;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use paulzi\adjacencyList\AdjacencyListQueryTrait;
 use yii\db\ActiveQuery;
 
 /**
@@ -28,17 +21,7 @@ use yii\db\ActiveQuery;
 class InodeQuery extends ActiveQuery
 {
 
-    /**
-     * @inheritdoc
-     * @return array
-     */
-    public function behaviors()
-    {
-        return [
-            NestedSetsQueryBehavior::class,
-        ];
-    }
-
+    use AdjacencyListQueryTrait;
     /**
      * Filters only root files
      * @return InodeQuery

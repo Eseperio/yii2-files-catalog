@@ -6,24 +6,14 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\actions;
 
 
-use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\Directory;
-use eseperio\filescatalog\models\Inode;
 use Faker\Factory;
 use Ramsey\Uuid\Uuid;
 use yii\base\Action;
 use yii\base\InvalidArgumentException;
-use yii\helpers\Inflector;
 
 /**
  * Class FakeAction
@@ -399,68 +389,36 @@ class FakeAction extends Action
         "zsh"
     ];
 
+
     public function run()
     {
+
 
         \Yii::$app->db->createCommand()->truncateTable('fcatalog_inodes')->execute();
         $model = new Directory();
         $model->name = "Root";
         $model->uuid = (string)Uuid::uuid4();
 
-        if (!$model->makeRoot())
+        if (!$model->makeRoot()->save())
             throw new InvalidArgumentException('Something went wrong ' . nl2br(print_r($model->errors, true)));
 
+
         $faker = Factory::create('es_ES');
-        foreach (range(0, 75) as $item) {
+        foreach (range(0, 100) as $item) {
             $modelb = new Directory();
             $modelb->uuid = (string)Uuid::uuid4();
             $modelb->name = $faker->words(3, true);
-
-                if (!$modelb->prependTo($model)) {
-                    throw new InvalidArgumentException('Something went wrong ' . nl2br(print_r($model->errors, true)));
-                } else {
-                    if ($item > 25)
-                        $model = clone($modelb);
-                }
+            $modelb->parent_id = $model->id;
+            if (!$modelb->appendTo($model)->save()) {
+                throw new InvalidArgumentException('Something went wrong ' . nl2br(print_r($model->errors, true)));
+            } else {
+                if ($item > 25)
+                    $model = clone($modelb);
+            }
 
         }
 
         return $this->controller->redirect('index');
 
-    }
-
-    public function runBkp()
-    {
-        $data = [];
-        $faker = Factory::create('es_ES');
-        $extLength = count($this->ext);
-        for ($i = 0; $i < 5000; $i++) {
-            $type = ($i <= 50) ? InodeTypes::TYPE_DIR : mt_rand(InodeTypes::TYPE_FILE, InodeTypes::TYPE_DIR);
-            $data[] = [
-                Uuid::uuid4(),
-                Inflector::slug($faker->words(3, true)),
-                $this->ext[mt_rand(0, $extLength - 1)],
-                $type,
-                ($i <= 50) ? 0 : (($i <= 200) ? mt_rand(0, 50) : mt_rand(50, 200)),//parent
-                time(),
-                time(),
-                \Yii::$app->user->id,
-
-
-            ];
-        }
-
-        \Yii::$app->db->createCommand()->batchInsert(Inode::tableName(), [
-            'uuid',
-            'name',
-            'extension',
-            'type',
-            'parent_id',
-            'created_at',
-            'updated_at',
-            'created_by'
-        ], $data)->execute();
-
-        return $this->controller->redirect('index');
     }
 }

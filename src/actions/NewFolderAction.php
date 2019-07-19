@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\actions;
 
 
@@ -22,6 +15,7 @@ use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
 use yii\web\NotFoundHttpException;
+
 
 class NewFolderAction extends Action
 {
@@ -40,7 +34,7 @@ class NewFolderAction extends Action
 
         $model = new Directory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->appendTo($parent)) {
+        if ($model->load(Yii::$app->request->post()) && $model->appendTo($parent)->save()) {
             return $this->controller->redirect(['index', 'uuid' => $model->uuid]);
         }
 

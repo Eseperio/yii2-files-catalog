@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\actions;
 
 
@@ -23,6 +16,7 @@ use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
 use yii\web\Controller;
 
 class IndexAction extends Action
@@ -38,6 +32,7 @@ class IndexAction extends Action
      */
     public function run()
     {
+
         $parentId = 0;
         if ($uuid = Yii::$app->request->get('uuid', false)) {
             $model = $this->controller->findModel($uuid);
@@ -50,7 +45,8 @@ class IndexAction extends Action
         if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot())
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
 
-        $childrenQuery = $model->children(1);
+        Url::remember();
+        $childrenQuery = $model->getChildren();
         $childrenQuery->orderBy([])->orderByType();
 
         if ($this->module->groupFilesByExt)
@@ -65,7 +61,7 @@ class IndexAction extends Action
             'dataProvider' => $dataProvider,
             'model' => $model,
             'usePjax' => $this->module->usePjax,
-            'parents' => $model->parents()->asArray()->all()
+            'parents' => $model->getParents()->asArray()->all()
         ]);
     }
 }

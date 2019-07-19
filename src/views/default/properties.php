@@ -10,6 +10,7 @@
 
 /* @var $parent \eseperio\filescatalog\models\base\Inode */
 /* @var $parentTreeNodes \eseperio\filescatalog\models\base\Inode[] */
+/* @var $maxTreeDepth int */
 
 /* @var $childrenTreeNodes \eseperio\filescatalog\models\base\Inode[] */
 
@@ -82,30 +83,40 @@ FileTypeIconsAsset::register($this);
     </div>
     <div class="col-md-6">
         <div class="panel">
-            <div class="panel-heading">
-                <div class="panel-title">
-                    <?= Yii::t('xenon', 'Parents') ?>
-                </div>
-            </div>
             <div class="panel-body">
-                <?php if (!empty($parentTreeNodes)): ?>
+                <p class="text-info"><?= Yii::t('xenon', 'Depth displayed is limited to {limit} in both directions', [
+                        'limit' => $maxTreeDepth
+                    ]) ?></p>
+
+
+            </div>
+            <?php if (!empty($parentTreeNodes)): ?>
+
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <?= Yii::t('xenon', 'Parents') ?>
+                    </div>
+                </div>
+                <div class="panel-body">
                     <?= Tree::widget([
                         'nodes' => $parentTreeNodes
                     ]) ?>
-                <?php endif; ?>
 
-            </div>
-            <div class="panel-heading">
-                <div class="panel-title"><?= Yii::t('filescatalog', 'Children') ?></div>
-            </div>
-            <div class="panel-body">
-                <?php if (!empty($childrenTreeNodes)): ?>
+                </div>
+            <?php endif; ?>
+            <?php if (!empty($childrenTreeNodes)): ?>
+
+                <div class="panel-heading">
+                    <div class="panel-title"><?= Yii::t('filescatalog', 'Children') ?></div>
+                </div>
+                <div class="panel-body">
                     <?= Tree::widget([
                         'nodes' => $childrenTreeNodes
                     ]) ?>
-                <?php endif; ?>
 
-            </div>
+                </div>
+            <?php endif; ?>
+
         </div>
 
     </div>

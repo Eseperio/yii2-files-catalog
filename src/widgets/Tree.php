@@ -18,10 +18,11 @@ class Tree extends Widget
 
     public function run()
     {
+        $nodes = $this->buildTree($this->nodes);
         $out = Html::beginTag('ul');
         $nodeDepth = $currDepth = $counter = 0;
 
-        foreach ($this->nodes as $node) {
+        foreach ($nodes as $node) {
             $nodeOptions = ['class' => ''];
             if ($nodeDepth == $currDepth) {
                 if ($counter > 0) {
@@ -35,23 +36,11 @@ class Tree extends Widget
                 $currDepth = $currDepth - ($currDepth - $nodeDepth);
             }
 
-            $nodeDepth = $node->depth;
-            $nodeLeft = $node->lft;
-            $nodeRight = $node->rgt;
-            $nodeName = $node->name;
 
-            $isChild = ($nodeRight == $nodeLeft + 1);
+            $nodeDepth = $node['depth'];
+            $nodeName = $node['name'];
 
             $css = [];
-            if (!$isChild) {
-                $css[] = 'is-parent ';
-            }
-//            if ($node->isDisabled()) {
-//                $css[] = 'kv-disabled ';
-//            }
-//            if (!$node->isActive()) {
-//                $css[] = 'kv-inactive ';
-//            }
 
             if (!empty($css)) {
                 Html::addCssClass($nodeOptions, $css);
@@ -59,13 +48,8 @@ class Tree extends Widget
 
             $out .= Html::beginTag('li', $nodeOptions) . "\n";
             $out .= IconDisplay::widget(['model' => $node]) . " ";
-            $out .= Html::a(Html::encode($nodeName), ['properties', 'uuid' => $node->uuid], ['class' => 'node-label']) . "\n";
+            $out .= Html::a(Html::encode($nodeName), ['properties', 'uuid' => $node['uuid']], ['class' => 'node-label']) . "\n";
 
-            if ($currDepth >= 4) {
-                $out .= "<ul><li>...</li></ul>";
-//                $out .=Html::tag('span','...',['class'=>'text-muted']);
-
-            }
 
             ++$counter;
 
@@ -75,5 +59,25 @@ class Tree extends Widget
 
         return $out;
 
+    }
+
+    private function buildTree(array $elements, $parentId = 0, &$depth = 0)
+    {
+        $branch = [];
+
+        foreach ($elements as $element) {
+            if ($element['parent_id'] == $parentId) {
+                ++$depth;
+                $children = $this->buildTree($elements, $element['id']);
+                if ($children) {
+                    $element['children'] = $children;
+                }
+                $element['depth']=$depth;
+                $branch[] = $element;
+            }
+            $depth--;
+        }
+
+        return $branch;
     }
 }

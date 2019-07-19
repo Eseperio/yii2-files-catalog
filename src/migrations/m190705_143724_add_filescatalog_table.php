@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use yii\db\Migration;
 
@@ -39,9 +32,6 @@ class m190705_143724_add_filescatalog_table extends Migration
             'type' => $this->integer(1)->defaultValue(InodeTypes::TYPE_FILE)->notNull(),
             'parent_id' => $this->integer()->defaultValue(0)->notNull(),
             'md5hash' => $this->string(32),
-            //'tree' => $this->integer()->notNull(),
-            'lft' => $this->integer()->notNull(),
-            'rgt' => $this->integer()->notNull(),
             'depth' => $this->integer()->notNull(),
             'filesize' => $this->bigInteger(),
             'created_at' => $this->integer(),
@@ -50,13 +40,11 @@ class m190705_143724_add_filescatalog_table extends Migration
         ]);
         $this->createIndex('idx_name_ext_inode', $this->inodeTableName, [
             'uuid',
-            'name',
-            'type',
-            'mime'
+            'type'
         ]);
-        $this->createIndex('nests-idx', $this->inodeTableName, [
-            'lft',
-            'rgt'
+
+        $this->createIndex('parent_id_index',$this->inodeTableName,[
+            'parent_id'
         ]);
 
         $this->createTable($this->inodePermissionTableName, [

@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\widgets;
 
 
@@ -51,16 +44,17 @@ class IconDisplay extends Widget
 
     public function run()
     {
-        if (!$this->model instanceof Inode && !is_subclass_of($this->model, Inode::class))
-            throw new InvalidArgumentException("Model must be an instance of Inode");
+        if (!$this->model instanceof Inode && !is_subclass_of($this->model, Inode::class)
+            && (is_array($this->model) && !array_key_exists('extension', $this->model)))
+            throw new InvalidArgumentException("Model must be an instance of Inode or have property extension");
 
         if (empty($this->iconStyle))
             $this->iconStyle = self::ICON_STYLE_SQUARED_O;
 
-        if ($this->model->type === InodeTypes::TYPE_DIR) {
+        if ($this->model['type'] === InodeTypes::TYPE_DIR) {
             $icon = "folder";
         } else {
-            $icon = empty($this->model->extension) ? "blank" : $this->model->extension;
+            $icon = empty($this->model['extension']) ? "blank" : $this->model['extension'];
         }
 
         $classes = [

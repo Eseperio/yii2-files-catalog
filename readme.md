@@ -53,4 +53,6 @@ There is a default controller with the following actions.
 |NewFolder| Displays the "create directory" form|
 
 
+### Other
 
+This module use adjacency models concept to manage nesting. That requires extra queries to get parents or childrens, but is way more efficient than nested-set pattern on system that require a lot of nodes and writes

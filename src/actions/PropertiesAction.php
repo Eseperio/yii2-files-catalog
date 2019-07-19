@@ -27,15 +27,18 @@ class PropertiesAction extends Action
     {
 
         $model = $this->controller->findModel(Yii::$app->request->get('uuid', false));
-        $parent = $model->parents(1)->one();
 
-        $parentTreeNodes = $model->parents()
-            ->andWhere(['>', 'lft', 1])
+        $maxTreeDepth = $this->module->maxTreeDepthDisplay;
+        $parentTreeNodes = $model->getParents($maxTreeDepth)
             ->orderAZ()
+            ->asArray()
             ->all();
 
+        $parent = $model->getParent()->one();
 
-        $childrenTreeNodes = $model->children(4)->all();
+        $childrenTreeNodes = $model->getLeaves($maxTreeDepth)
+            ->asArray()
+            ->all();
 
         /* @todo: Check ACL */
 
@@ -43,7 +46,8 @@ class PropertiesAction extends Action
             'model' => $model,
             'parent' => $parent,
             'parentTreeNodes' => $parentTreeNodes,
-            'childrenTreeNodes' => $childrenTreeNodes
+            'childrenTreeNodes' => $childrenTreeNodes,
+            'maxTreeDepth' => $maxTreeDepth
         ]);
 
     }

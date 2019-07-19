@@ -7,7 +7,6 @@
  */
 
 
-
 /* @var $this \yii\web\View */
 /* @var $model \eseperio\filescatalog\models\base\Inode|\eseperio\filescatalog\models\Directory|\eseperio\filescatalog\models\File|\eseperio\filescatalog\models\Symlink */
 /* @var $pjaxId string */
@@ -28,6 +27,13 @@ use yii\helpers\Inflector;
 <div class="row">
     <div class="col-sm-8">
         <h2>
+            <?php if (Yii::$app->controller->action->id == "properties"): ?>
+                <?= Html::a(Yii::t('xenon', 'Back'), \yii\helpers\Url::previous(), ['class' => 'btn btn-default']) ?>
+            <?php elseif (!empty($parents)): ?>
+            <?php
+            ?>
+            <?= Html::a('..',['index','uuid'=> end($parents)['uuid']]) ?> /
+            <?php endif; ?>
             <?= IconDisplay::widget([
                 'model' => $model
             ]) ?>

@@ -6,7 +6,7 @@
     "yiisoft/yii2": "^2.0@dev",
     "creocoder/yii2-flysystem": "0.9.*",
     "dmhendricks/file-icon-vectors": "@dev",
-    "creocoder/yii2-nested-sets": "0.9.*",
+    "paulzi/yii2-adjacency-list": "2.1.*",
     "2amigos/yii2-file-upload-widget": "~1.0"
   },
   "license": "GPL-3.0-or-later",

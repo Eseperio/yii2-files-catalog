@@ -34,7 +34,7 @@ class Breadcrumb extends Widget
     public function run()
     {
 
-        $parents = $this->model->parents()->asArray()->all();
+        $parents = $this->model->getParents()->asArray()->all();
 
         return $this->render('breadcrumb', [
             'model' => $this->model,

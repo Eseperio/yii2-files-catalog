@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog;
 
 
@@ -65,7 +58,7 @@ class FilesCatalogModule extends Module
      */
     public $user = 'user';
 
-    public $userIdAttribute= 'id';
+    public $userIdAttribute = 'id';
     /**
      * @var string Name of the db component to use on data handling
      */
@@ -92,6 +85,10 @@ class FilesCatalogModule extends Module
     public $urlRules = [
         '<controller:[\w\-]+>/<action:[\w\-]+>' => '<controller>/<action>'
     ];
+    /**
+     * @var int the max amount of elements to display when using a tree view. Set to false to disable
+     */
+    public $maxTreeDepthDisplay = 4;
     /**
      * @var bool whether show icons grouped by extension
      */
