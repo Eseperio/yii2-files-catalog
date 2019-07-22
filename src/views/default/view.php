@@ -28,14 +28,21 @@ use yii\helpers\Inflector;
                     <?= Inflector::camel2words($model->name) ?></h1>
             </div>
             <div class="panel-body">
-                <?php if (!empty($tag)): ?>
+                <?php if ($tag !== false): ?>
 
+                    <?php if (!empty($tag)): ?>
+                        <?= $tag ?>
+                    <?php else: ?>
+                        <div class="alert alert-info">
+                            <p><?= Yii::t('filescatalog', 'This file cannot be displayed online.') ?></p>
+                            <p><?= Html::a(Yii::t('xenon', 'Download'), ['download', 'uuid' => $model->uuid], [
+                                    'class' => 'btn btn-default'
+                                ]) ?></p>
+                        </div>
+                    <?php endif; ?>
                 <?php else: ?>
-                    <div class="alert alert-info">
-                        <p><?= Yii::t('filescatalog', 'This file cannot be displayed online.') ?></p>
-                        <p><?= Html::a(Yii::t('xenon', 'Download'), ['download', 'uuid' => $model->uuid], [
-                                'class' => 'btn btn-default'
-                            ]) ?></p>
+                    <div class="alert alert-danger">
+                        <?= Yii::t('filescatalog', 'File does not exists') ?>
                     </div>
                 <?php endif; ?>
             </div>

@@ -39,7 +39,7 @@ class Uploader extends FileUpload
     /**
      * @var string jQuery selector for the progress bar where display progress.
      */
-    public $progressBarSelector="filex-progress";
+    public $progressBarSelector="#filex-progress";
 
     /**
      * @throws \yii\base\InvalidConfigException

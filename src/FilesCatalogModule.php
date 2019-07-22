@@ -117,6 +117,7 @@ class FilesCatalogModule extends Module
      */
     public $browserInlineMimeTypes = [
         'image/jpeg' => 'img',
+        'image/png' => 'img',
         'image/gif' => 'img',
         'image/svg+xml' => 'img',
         'image/webp' => 'img',

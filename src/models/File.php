@@ -124,6 +124,25 @@ class File extends Inode
     }
 
     /**
+     * @return bool|false|resource
+     * @throws \League\Flysystem\FileNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getFile()
+    {
+        return $this->module->getStorageComponent()->read($this->getInodeRealPath());
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function fileExists()
+    {
+        return $this->module->getStorageComponent()->has($this->getInodeRealPath());
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getVersions()

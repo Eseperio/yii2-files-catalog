@@ -405,7 +405,6 @@ class FakeAction extends Action
         $faker = Factory::create('es_ES');
         foreach (range(0, 100) as $item) {
             $modelb = new Directory();
-            $modelb->uuid = (string)Uuid::uuid4();
             $modelb->name = $faker->words(3, true);
             $modelb->parent_id = $model->id;
             if (!$modelb->appendTo($model)->save()) {

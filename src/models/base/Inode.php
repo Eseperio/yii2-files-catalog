@@ -154,9 +154,6 @@ class Inode extends ActiveRecord
         $behaviors = parent::behaviors();
 
         return array_replace_recursive($behaviors, [
-            'uuid' => [
-                'class' => UUID4Behavior::class
-            ],
             'adjacency' => [
                 'class' => AdjacencyListBehavior::class,
                 'sortable' => false
@@ -210,11 +207,8 @@ class Inode extends ActiveRecord
 
     }
 
+    
 
-    public function getStream()
-    {
-        return $this->module->getStorageComponent()->readStream($this->getInodeRealPath());
-    }
     /**
      * @return string with the real path where inode is supposed to be saved.
      */
@@ -273,6 +267,16 @@ class Inode extends ActiveRecord
         Yii::debug("EROS2 - " . nl2br(print_r($this->getParents()->asArray()->column(), true)));
 
         return $path;
+    }
+
+    /**
+     * @return bool|false|resource
+     * @throws \League\Flysystem\FileNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getStream()
+    {
+        return $this->module->getStorageComponent()->readStream($this->getInodeRealPath());
     }
 
 }
