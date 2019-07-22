@@ -113,15 +113,22 @@ class FilesCatalogModule extends Module
      */
     public $realFileNamesSystem = self::FILENAMES_BY_ID;
     /**
-     * @var array list of the mimetypes that can be represented directly in browser. Normally images, because
-     *            they will be rendered under an img tag
+     * @var array list of the mimetypes that can be represented directly in browser with their corresponding tag
      */
-    public $browserInlineMimeTypes =[
-        'image/jpeg',
-        'image/gif',
-        'image/svg+xml',
-        'image/webp',
-        'image/x-icon'
+    public $browserInlineMimeTypes = [
+        'image/jpeg' => 'img',
+        'image/gif' => 'img',
+        'image/svg+xml' => 'img',
+        'image/webp' => 'img',
+        'image/x-icon' => 'img',
+        'application/pdf' => 'iframe',
+        'audio/wave' => 'audio',
+        'audio/wav' => 'audio',
+        'audio/x-wav' => 'audio',
+        'audio/x-pn-wav' => 'audio',
+        'video/mp4' => 'video',
+        'video/webm' => 'video',
+        'video/ogg' => 'video',
 
     ];
     /**
@@ -129,11 +136,7 @@ class FilesCatalogModule extends Module
      *           In large filesystems it can make the database grow significantly.
      */
     public $checkFilesIntegrity = true;
-    /**
-     * @var bool whether use X-sendfile when downloading.
-     * @see Response::xSendFile()
-     */
-    public $useXSendFile=true;
+
     /**
      * @inheritdoc
      */

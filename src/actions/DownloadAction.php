@@ -26,10 +26,7 @@ class DownloadAction extends Action
     public function run()
     {
         $model = $this->controller->findModel(Yii::$app->request->get('uuid', false));
-        $method = 'sendFile';
-        if ($this->module->useXSendFile)
-            $method = 'xSendFile';
-
-        Yii::$app->response->$method($model->name . "." . $model->extension);
+        $stream = $model->getStream();
+        Yii::$app->response->sendStreamAsFile($stream, $model->name . "." . $model->extension);
     }
 }

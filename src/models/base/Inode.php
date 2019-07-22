@@ -211,6 +211,10 @@ class Inode extends ActiveRecord
     }
 
 
+    public function getStream()
+    {
+        return $this->module->getStorageComponent()->readStream($this->getInodeRealPath());
+    }
     /**
      * @return string with the real path where inode is supposed to be saved.
      */

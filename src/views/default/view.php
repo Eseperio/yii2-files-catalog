@@ -7,7 +7,7 @@
  */
 
 /* @var $model \eseperio\filescatalog\models\File */
-/* @var $canBeDisplayed boolean */
+/* @var $tag string */
 
 /* @var $checkFilesIntegrity boolean */
 
@@ -28,7 +28,7 @@ use yii\helpers\Inflector;
                     <?= Inflector::camel2words($model->name) ?></h1>
             </div>
             <div class="panel-body">
-                <?php if ($canBeDisplayed): ?>
+                <?php if (!empty($tag)): ?>
 
                 <?php else: ?>
                     <div class="alert alert-info">
@@ -57,7 +57,7 @@ use yii\helpers\Inflector;
 
                 <?php if ($checkFilesIntegrity): ?>
                     <h3><?= Yii::t('xenon', 'Md5 Checksum') ?></h3>
-                <?= Html::tag('pre',$model->md5hash) ?>
+                    <?= Html::tag('pre', $model->md5hash) ?>
                 <?php endif; ?>
             </div>
         </div>

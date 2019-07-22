@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog\actions;
 
 
+use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
@@ -30,14 +31,26 @@ class ViewAction extends Action
         /* @todo: Check ACL */
 
         $allowedMimes = $this->module->browserInlineMimeTypes;
-        $canBeDisplayed = false;
-        if (in_array($model->mime, $allowedMimes)) {
-            $canBeDisplayed = true;
+        $tag = false;
+        if (array_key_exists($model->mime, $allowedMimes)) {
+            $tagName = $allowedMimes[$model->mime];
+            switch ($tagName) {
+                case 'video':
+                    $tag= Html::tag('video',Html::tag('source','',[
+                        'src'=>"$model->"
+                    ]),['controls']);
+                    break;
+                case 'audio':
+                    break;
+                case 'img':
+                    break;
+            }
         }
+
 
         return $this->controller->render('view', [
             'model' => $model,
-            'canBeDisplayed' => $canBeDisplayed,
+            'tag' => $tag,
             'checkFilesIntegrity' => $this->module->checkFilesIntegrity
         ]);
 
