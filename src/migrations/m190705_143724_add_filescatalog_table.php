@@ -17,6 +17,7 @@ class m190705_143724_add_filescatalog_table extends Migration
 
     private $inodeTableName = "fcatalog_inodes";
     private $inodePermissionTableName = "fcatalog_inodes_perm";
+    private $inodeVersionsTableName = "fcatalog_inodes_version";
 
     /**
      * {@inheritdoc}
@@ -43,7 +44,7 @@ class m190705_143724_add_filescatalog_table extends Migration
             'type'
         ]);
 
-        $this->createIndex('parent_id_index',$this->inodeTableName,[
+        $this->createIndex('parent_id_index', $this->inodeTableName, [
             'parent_id'
         ]);
 
@@ -56,6 +57,20 @@ class m190705_143724_add_filescatalog_table extends Migration
             'inode_id',
             'user_id',
             'role'
+        ]);
+
+
+        $this->createTable($this->inodeVersionsTableName, [
+            'file_id' => $this->integer(),
+            'version_id' => $this->integer(),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer(),
+            'created_by' => $this->integer(),
+        ]);
+
+        $this->addPrimaryKey('inode_versions_pk', $this->inodeVersionsTableName, [
+            'file_id',
+            'version_id'
         ]);
 
     }

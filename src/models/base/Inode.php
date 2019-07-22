@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog\models\base;
 
 
+use app\modules\signature\behaviors\UUID4Behavior;
 use creocoder\nestedsets\NestedSetsBehavior;
 use eseperio\filescatalog\FilesCatalogModule;
 use eseperio\filescatalog\models\InodeQuery;
@@ -70,10 +71,6 @@ use yii\helpers\FileHelper;
  * @method  preDeleteWithChildren()
  * @method  deleteWithChildren()
  * @method  reorderChildren($middle = true)
- * @method  beforeSave()
- * @method  afterSave()
- * @method  beforeDelete($event)
- * @method  afterDelete()
  */
 class Inode extends ActiveRecord
 {
@@ -105,8 +102,6 @@ class Inode extends ActiveRecord
         return [
             [['type', 'parent_id', 'created_at', 'updated_at', 'created_by'], 'integer'],
             [['name'], 'default', 'value' => Yii::t('xenon', 'New inode')],
-            [['uuid'], 'string', 'max' => 36],
-            [['uuid', 'name'], 'required'],
             ['extension', 'match', 'pattern' => '/[\w\d]+/'],
             [['extension'], 'string', 'max' => 10],
             [['name'], 'string', 'max' => 255],
@@ -143,12 +138,12 @@ class Inode extends ActiveRecord
         ];
     }
 
-    public function beforeValidate()
+    public function beforeSave($insert)
     {
-        if (empty($this->uuid))
+        if (empty($this->uuid) && $insert)
             $this->uuid = (string)Uuid::uuid4();
 
-        return parent::beforeValidate();
+        return parent::beforeSave($insert);
     }
 
     /**
@@ -159,6 +154,9 @@ class Inode extends ActiveRecord
         $behaviors = parent::behaviors();
 
         return array_replace_recursive($behaviors, [
+            'uuid' => [
+                'class' => UUID4Behavior::class
+            ],
             'adjacency' => [
                 'class' => AdjacencyListBehavior::class,
                 'sortable' => false

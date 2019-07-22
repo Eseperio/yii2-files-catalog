@@ -14,6 +14,7 @@ use League\Flysystem\Filesystem;
 use Yii;
 use yii\base\Module;
 use yii\validators\FileValidator;
+use yii\web\Response;
 
 class FilesCatalogModule extends Module
 {
@@ -101,7 +102,7 @@ class FilesCatalogModule extends Module
     public $routePrefix = "filesCatalog";
     /**
      * @var string which kind of name use on saving files.
-     *             Defaults to FILENAMES_BY_ID. FIles will be stored using its own id, so an
+     *             Defaults to FILENAMES_BY_ID. Files will be stored using its own id, so an
      *             attacker can not find a file based on their public uuid.
      *             If you want to preserve an easy way to find physical
      *             FILENAMES_BY_ID: File 1979 will become prefix/1/9/7/9/1979
@@ -111,13 +112,31 @@ class FilesCatalogModule extends Module
      *             FILENAMES_REAL will create parent directories with the name of the parent virtual directories.
      */
     public $realFileNamesSystem = self::FILENAMES_BY_ID;
+    /**
+     * @var array list of the mimetypes that can be represented directly in browser. Normally images, because
+     *            they will be rendered under an img tag
+     */
+    public $browserInlineMimeTypes =[
+        'image/jpeg',
+        'image/gif',
+        'image/svg+xml',
+        'image/webp',
+        'image/x-icon'
 
+    ];
     /**
      * @var bool whether save file hashes in database and check integrity everytime a file is required.
      *           In large filesystems it can make the database grow significantly.
      */
     public $checkFilesIntegrity = true;
-
+    /**
+     * @var bool whether use X-sendfile when downloading.
+     * @see Response::xSendFile()
+     */
+    public $useXSendFile=true;
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         $this->registerTranslations();

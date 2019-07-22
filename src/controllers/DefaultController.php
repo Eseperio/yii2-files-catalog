@@ -6,16 +6,10 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\controllers;
 
 
+use eseperio\filescatalog\actions\DownloadAction;
 use eseperio\filescatalog\actions\FakeAction;
 use eseperio\filescatalog\actions\IndexAction;
 use eseperio\filescatalog\actions\NewFolderAction;
@@ -40,6 +34,7 @@ class DefaultController extends \yii\web\Controller
             'new-folder' => ['class' => NewFolderAction::class],
             'properties' => ['class' => PropertiesAction::class],
             'view' => ['class' => ViewAction::class],
+            'download' => ['class' => DownloadAction::class],
             'fake' => ['class' => FakeAction::class]
         ];
     }

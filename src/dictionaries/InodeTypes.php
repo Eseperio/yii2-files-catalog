@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\dictionaries;
 
 
@@ -30,6 +23,7 @@ class InodeTypes
     const TYPE_FILE = 1;
     const TYPE_DIR = 2;
     const TYPE_SYMLINK = 3;
+    const TYPE_VERSION = 4;
 
     /**
      * @return array with all names of words
@@ -37,9 +31,10 @@ class InodeTypes
     public static function getNames()
     {
         return [
-            self::TYPE_FILE=> Yii::t('filescatalog','File'),
-            self::TYPE_DIR=> Yii::t('filescatalog','Directory'),
-            self::TYPE_SYMLINK=> Yii::t('filescatalog','Symlink'),
+            self::TYPE_FILE => Yii::t('filescatalog', 'File'),
+            self::TYPE_DIR => Yii::t('filescatalog', 'Directory'),
+            self::TYPE_SYMLINK => Yii::t('filescatalog', 'Symlink'),
+            self::TYPE_VERSION => Yii::t('filescatalog', 'Version'),
         ];
     }
 

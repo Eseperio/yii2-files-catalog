@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\actions;
 
 
@@ -35,7 +28,7 @@ class UploadAction extends Action
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = Yii::createObject(File::class);
         $model->file = UploadedFile::getInstance($model, 'file');
-
+        $model->uuid = Yii::$app->request->get('file_uuid');
         if ($model->validate(['file'])) {
             $response = [
                 'name' => $model->file->name,
@@ -46,9 +39,8 @@ class UploadAction extends Action
         /* @todo: Check ACL */
 
         $targetNode = Inode::find()->uuid(Yii::$app->request->post('target'))->one();
-
         $model->parent_id = $targetNode->id;
-        $model->appendTo($targetNode ?? $root);
+        $model->appendTo($targetNode ?? $root)->save();
         if ($model->hasErrors())
             $response['errors'] = $model->errors;
 

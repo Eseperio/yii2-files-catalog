@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\models;
 
 
@@ -45,8 +38,4 @@ abstract class Inode extends \eseperio\filescatalog\models\base\Inode
      * @return int The type of inode
      */
     abstract function getInodeType();
-
-
-
-
 }

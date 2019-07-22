@@ -389,7 +389,6 @@ class FakeAction extends Action
         "zsh"
     ];
 
-
     public function run()
     {
 

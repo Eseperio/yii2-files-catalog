@@ -15,7 +15,7 @@ use Yii;
 use yii\base\Action;
 use yii\web\Controller;
 
-class ViewAction extends Action
+class DownloadAction extends Action
 {
     use ModuleAwareTrait;
     /**
@@ -26,20 +26,10 @@ class ViewAction extends Action
     public function run()
     {
         $model = $this->controller->findModel(Yii::$app->request->get('uuid', false));
+        $method = 'sendFile';
+        if ($this->module->useXSendFile)
+            $method = 'xSendFile';
 
-        /* @todo: Check ACL */
-
-        $allowedMimes = $this->module->browserInlineMimeTypes;
-        $canBeDisplayed = false;
-        if (in_array($model->mime, $allowedMimes)) {
-            $canBeDisplayed = true;
-        }
-
-        return $this->controller->render('view', [
-            'model' => $model,
-            'canBeDisplayed' => $canBeDisplayed,
-            'checkFilesIntegrity' => $this->module->checkFilesIntegrity
-        ]);
-
+        Yii::$app->response->$method($model->name . "." . $model->extension);
     }
 }
