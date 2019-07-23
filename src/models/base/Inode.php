@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog\models\base;
 
 
+use app\components\StringHelper;
 use creocoder\nestedsets\NestedSetsBehavior;
 use eseperio\filescatalog\FilesCatalogModule;
 use eseperio\filescatalog\helpers\Helper;
@@ -280,9 +281,14 @@ class Inode extends ActiveRecord
     /**
      * @return string
      */
-    public function getHumanName()
+    public function getHumanName($maxLenght = null)
     {
-        return Helper::humanize($this->name);
+
+        $humanized = Helper::humanize($this->name);
+        if (!empty($maxLenght))
+            $humanized = StringHelper::truncate($humanized, $maxLenght);
+
+        return $humanized;
     }
 
 }
