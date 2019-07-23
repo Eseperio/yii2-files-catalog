@@ -21,7 +21,8 @@ use yii\web\UploadedFile;
 /**
  * Class File
  * @package eseperio\filescatalog\models
- * @property FileVersion[] $versions
+ * @property File[] $versions
+ * @property File $original
  */
 class File extends Inode
 {
@@ -150,8 +151,22 @@ class File extends Inode
     public function getVersions()
     {
         return $this->hasMany(File::class, ['id' => 'version_id'])
-            ->viaTable('fcatalog_inodes_version', ['file_id' => 'id']);
-//        return $this->hasMany(FileVersion::class, ['file_id' => 'id']);
+            ->viaTable('fcatalog_inodes_version', ['file_id' => 'id'])
+            ->andWhere(['type' => InodeTypes::TYPE_VERSION]);
+    }
+
+    public function getFileVersions()
+    {
+        return $this->hasMany(FileVersion::class, ['file_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOriginal()
+    {
+        return $this->hasOne(File::class, ['id' => 'file_id'])
+            ->viaTable('fcatalog_inodes_version', ['version_id' => 'id']);
     }
 
     /**

@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\columns;
 
 
@@ -55,7 +48,7 @@ class InodeActionColumn extends Column
             $items = Html::tag(
                 'li',
                 Html::a(
-                    Yii::t('xenon','Properties'),
+                    Yii::t('filescatalog','Properties'),
                     ['properties','uuid'=>$model->uuid],
                     ['class' => 'dropdown-item'])
             );

@@ -84,7 +84,7 @@ FileTypeIconsAsset::register($this);
     <div class="col-md-6">
         <div class="panel">
             <div class="panel-body">
-                <p class="text-info"><?= Yii::t('xenon', 'Depth displayed is limited to {limit} in both directions', [
+                <p class="text-info"><?= Yii::t('filescatalog', 'Depth displayed is limited to {limit} in both directions', [
                         'limit' => $maxTreeDepth
                     ]) ?></p>
 
@@ -94,7 +94,7 @@ FileTypeIconsAsset::register($this);
 
                 <div class="panel-heading">
                     <div class="panel-title">
-                        <?= Yii::t('xenon', 'Parents') ?>
+                        <?= Yii::t('filescatalog', 'Parents') ?>
                     </div>
                 </div>
                 <div class="panel-body">

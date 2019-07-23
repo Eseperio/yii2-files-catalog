@@ -101,7 +101,7 @@ class Inode extends ActiveRecord
     {
         return [
             [['type', 'parent_id', 'created_at', 'updated_at', 'created_by'], 'integer'],
-            [['name'], 'default', 'value' => Yii::t('xenon', 'New inode')],
+            [['name'], 'default', 'value' => Yii::t('filescatalog', 'New inode')],
             ['extension', 'match', 'pattern' => '/[\w\d]+/'],
             [['extension'], 'string', 'max' => 10],
             [['name'], 'string', 'max' => 255],
@@ -196,7 +196,7 @@ class Inode extends ActiveRecord
     {
         $children = $this->getChildren()->count();
         if ($children > 0)
-            throw new UserException(Yii::t('xenon', 'This item has nested items and cannot be deleted.'));
+            throw new UserException(Yii::t('filescatalog', 'This item has nested items and cannot be deleted.'));
 
         return parent::delete();
     }

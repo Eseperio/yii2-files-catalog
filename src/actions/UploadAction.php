@@ -27,7 +27,7 @@ class UploadAction extends Action
     public $controller;
 
     /**
-     * @return array
+     * @return array|Response
      * @throws \yii\base\InvalidConfigException
      */
     public function run()
@@ -48,7 +48,7 @@ class UploadAction extends Action
         $targetUuid = Yii::$app->request->post('target');
 
         if (empty($targetUuid))
-            throw new UserException(Yii::t('xenon', 'Target not defined'));
+            throw new UserException(Yii::t('filescatalog', 'Target not defined'));
 
         $targetNode = $this->controller->findModel($targetUuid, File::class);
 
@@ -56,10 +56,12 @@ class UploadAction extends Action
             $realParent = $targetNode->getParent()->one();
 
             if (empty($realParent))
-                throw new InvalidArgumentException(Yii::t('xenon', 'Unable to get parent'));
+                throw new InvalidArgumentException(Yii::t('filescatalog', 'Unable to get parent'));
 
             $model->setAsVersion($targetNode->uuid);
-            $model->appendTo($realParent)->save();
+            if ($model->appendTo($realParent)->save())
+                return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
+
 
         } else {
             $model->appendTo($targetNode)->save();
