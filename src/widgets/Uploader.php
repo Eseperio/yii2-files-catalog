@@ -26,6 +26,11 @@ class Uploader extends FileUpload
 {
 
     use ModuleAwareTrait;
+
+    /**
+     * @inheritdoc
+     */
+    public $useDefaultButton = true;
     /**
      * @var Inode
      */
@@ -76,13 +81,12 @@ class Uploader extends FileUpload
 
     private function initTargetDir()
     {
-        if (empty($this->targetUuid) && !empty($this->model)) {
+        if (empty($this->targetUuid) && empty($this->model))
+            throw new InvalidConfigException(__CLASS__ . "::targetUuid or model must be defined");
+
+        if (!empty($this->model)) {
             $this->targetUuid = $this->model->uuid;
-            return;
         }
-
-        throw new InvalidConfigException(__CLASS__."::targetUuid or model must be defined");
-
 
     }
 
@@ -153,9 +157,11 @@ JS
             ? Html::activeFileInput($this->model, $this->attribute, $this->options)
             : Html::fileInput($this->name, $this->value, $this->options);
 
-        echo $this->useDefaultButton
-            ? $this->render($this->uploadButtonTemplateView, ['input' => $input, 'id' => $this->id])
-            : $input;
+        echo $this->render($this->uploadButtonTemplateView, [
+            'input' => $input,
+            'id' => $this->id,
+            'isVersion' => isset($this->model->uuid) && $this->module->allowVersioning
+        ]);
 
         $this->registerClientScript();
     }

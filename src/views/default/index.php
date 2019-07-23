@@ -12,6 +12,7 @@
 
 /* @var $parents array with the parents inodes */
 
+use eseperio\filescatalog\widgets\Breadcrumb;
 use eseperio\filescatalog\widgets\GridView;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
@@ -26,7 +27,7 @@ if ($usePjax)
     Pjax::begin([
         'id' => $pjaxId
     ]);
-echo \eseperio\filescatalog\widgets\Breadcrumb::widget([
+echo Breadcrumb::widget([
     'model' => $model,
     'pjaxId' => $pjaxId
 ]) ?>

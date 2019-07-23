@@ -46,7 +46,7 @@ class IndexAction extends Action
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
 
         Url::remember();
-        $childrenQuery = $model->getChildren();
+        $childrenQuery = $model->getChildren()->excludeVersions();
         $childrenQuery->orderBy([])->orderByType();
 
         if ($this->module->groupFilesByExt)

@@ -394,6 +394,8 @@ class FakeAction extends Action
 
 
         \Yii::$app->db->createCommand()->truncateTable('fcatalog_inodes')->execute();
+        \Yii::$app->db->createCommand()->truncateTable('fcatalog_inodes_perm')->execute();
+        \Yii::$app->db->createCommand()->truncateTable('fcatalog_inodes_version')->execute();
         $model = new Directory();
         $model->name = "Root";
         $model->uuid = (string)Uuid::uuid4();
@@ -403,7 +405,7 @@ class FakeAction extends Action
 
 
         $faker = Factory::create('es_ES');
-        foreach (range(0, 100) as $item) {
+        foreach (range(0, 5) as $item) {
             $modelb = new Directory();
             $modelb->name = $faker->words(3, true);
             $modelb->parent_id = $model->id;

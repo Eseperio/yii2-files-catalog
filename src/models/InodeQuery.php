@@ -22,6 +22,7 @@ class InodeQuery extends ActiveQuery
 {
 
     use AdjacencyListQueryTrait;
+
     /**
      * Filters only root files
      * @return InodeQuery
@@ -31,6 +32,10 @@ class InodeQuery extends ActiveQuery
         return $this->roots()->limit(1);
     }
 
+    public function excludeVersions()
+    {
+        return $this->andWhere(['!=', 'type', InodeTypes::TYPE_VERSION]);
+    }
 
     /**
      * @param $uuid

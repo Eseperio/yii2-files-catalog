@@ -15,11 +15,11 @@
 /* @var $parents array */
 
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\helpers\Helper;
 use eseperio\filescatalog\widgets\IconDisplay;
 use eseperio\filescatalog\widgets\Uploader;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Inflector;
 
 ?>
 
@@ -30,16 +30,16 @@ use yii\helpers\Inflector;
             <?php if (Yii::$app->controller->action->id == "properties"): ?>
                 <?= Html::a(Yii::t('xenon', 'Back'), \yii\helpers\Url::previous(), ['class' => 'btn btn-default']) ?>
             <?php elseif (!empty($parents)): ?>
-            <?php
-            ?>
-            <?= Html::a('..',['index','uuid'=> end($parents)['uuid']]) ?> /
+                <?php
+                ?>
+                <?= Html::a('..', ['index', 'uuid' => end($parents)['uuid']]) ?> /
             <?php endif; ?>
             <?= IconDisplay::widget([
                 'model' => $model
             ]) ?>
             <?= $model->name ?></h2>
         <p class="text-muted"><?= join('/', ArrayHelper::map($parents, 'uuid', function ($item) {
-                return Html::a(Inflector::camel2words($item['name']), ['index', 'uuid' => $item['uuid']]);
+                return Html::a(Helper::humanize($item['name']), ['index', 'uuid' => $item['uuid']]);
             })) ?></p>
     </div>
     <div class="col-sm-4 text-right">
@@ -53,8 +53,10 @@ use yii\helpers\Inflector;
                         echo Html::a(Yii::t('filescatalog', 'Properties'), ['properties', 'uuid' => $model->uuid], ['class' => 'btn btn-default'])
                     ?>
 
-                    <?= Uploader::widget(['targetUuid' => $model->uuid,
-                        'pjaxId' => $pjaxId]) ?>
+                    <?= Uploader::widget([
+                        'targetUuid' => $model->uuid,
+                        'pjaxId' => $pjaxId,
+                    ]) ?>
                 </div>
             </div>
         <?php endif; ?>

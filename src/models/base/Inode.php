@@ -9,9 +9,9 @@
 namespace eseperio\filescatalog\models\base;
 
 
-use app\modules\signature\behaviors\UUID4Behavior;
 use creocoder\nestedsets\NestedSetsBehavior;
 use eseperio\filescatalog\FilesCatalogModule;
+use eseperio\filescatalog\helpers\Helper;
 use eseperio\filescatalog\models\InodeQuery;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListBehavior;
@@ -44,7 +44,7 @@ use yii\helpers\FileHelper;
  * @property int $created_by
  *
  * Methods inherited from nested sets behavior:
- *
+ * @property string $humanName
  * @method  events()
  * @method  attach($owner)
  * @method  InodeQuery getParents($depth = null)
@@ -207,7 +207,15 @@ class Inode extends ActiveRecord
 
     }
 
-
+    /**
+     * @return bool|false|resource
+     * @throws \League\Flysystem\FileNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getStream()
+    {
+        return $this->module->getStorageComponent()->readStream($this->getInodeRealPath());
+    }
 
     /**
      * @return string with the real path where inode is supposed to be saved.
@@ -270,13 +278,11 @@ class Inode extends ActiveRecord
     }
 
     /**
-     * @return bool|false|resource
-     * @throws \League\Flysystem\FileNotFoundException
-     * @throws \yii\base\InvalidConfigException
+     * @return string
      */
-    public function getStream()
+    public function getHumanName()
     {
-        return $this->module->getStorageComponent()->readStream($this->getInodeRealPath());
+        return Helper::humanize($this->name);
     }
 
 }

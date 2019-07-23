@@ -124,6 +124,7 @@ class File extends Inode
             if ($this->inodeType == InodeTypes::TYPE_VERSION && $insert) {
                 $version = new FileVersion();
                 $version->file_id = $this->originalId;
+                $version->version_id = $this->id;
                 if (!$version->save()) {
                     throw new Exception('Unable to save version.');
                 }
@@ -148,7 +149,9 @@ class File extends Inode
      */
     public function getVersions()
     {
-        return $this->hasMany(FileVersion::class, ['file_id' => 'id']);
+        return $this->hasMany(File::class, ['id' => 'version_id'])
+            ->viaTable('fcatalog_inodes_version', ['file_id' => 'id']);
+//        return $this->hasMany(FileVersion::class, ['file_id' => 'id']);
     }
 
     /**

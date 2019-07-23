@@ -9,7 +9,6 @@
 namespace eseperio\filescatalog\models;
 
 use Yii;
-use yii\base\UserException;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 
@@ -57,19 +56,6 @@ class FileVersion extends \yii\db\ActiveRecord
             'updated_at' => Yii::t('filescatalog', 'Updated At'),
             'created_by' => Yii::t('filescatalog', 'Created By'),
         ];
-    }
-
-    public function beforeSave($insert)
-    {
-        $original = $this->original;
-
-        if (empty($original))
-            throw new UserException(Yii::t('filescatalog', 'Unable to add version'));
-
-        $max = FileVersion::find()->where(['file_id' => $original->id])->max('version_id');
-        $this->version_id = empty($max) ? 2 : $max;
-
-        return parent::beforeSave($insert);
     }
 
     /**

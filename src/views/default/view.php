@@ -13,7 +13,6 @@
 /* @var $checkFilesIntegrity boolean */
 
 use yii\helpers\Html;
-use yii\helpers\Inflector;
 
 ?>
 <?= \eseperio\filescatalog\widgets\Breadcrumb::widget([
@@ -26,7 +25,7 @@ use yii\helpers\Inflector;
             <div class="panel-heading">
                 <h1 class="panel-title">
                     <span class="fiv-sqo fiv-icon-<?= Html::encode($model->extension) ?>"></span>
-                    <?= Inflector::camel2words($model->name) ?></h1>
+                    <?= $model->humanName ?></h1>
             </div>
             <div class="panel-body">
                 <?php if ($tag !== false): ?>
@@ -58,7 +57,11 @@ use yii\helpers\Inflector;
                 <div class="panel-body versioning">
 
                     <?php if (!empty($model->versions)): ?>
-
+                        <?php
+                        foreach ($model->versions as $version) {
+                            echo Html::a($version->humanName, ['view', 'uuid' => $version->uuid]);
+                        }
+                        ?>
                     <?php else: ?>
                         <p class="text-muted">
                             <?= Yii::t('xenon', 'This document has not versions') ?>
