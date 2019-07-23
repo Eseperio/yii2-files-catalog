@@ -140,7 +140,7 @@ class Inode extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        if (empty($this->uuid) && $insert)
+        if ($insert)
             $this->uuid = (string)Uuid::uuid4();
 
         return parent::beforeSave($insert);
@@ -207,7 +207,7 @@ class Inode extends ActiveRecord
 
     }
 
-    
+
 
     /**
      * @return string with the real path where inode is supposed to be saved.

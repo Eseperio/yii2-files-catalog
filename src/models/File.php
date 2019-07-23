@@ -12,6 +12,7 @@ use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
+use yii\base\Exception;
 use yii\base\UserException;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
@@ -34,6 +35,10 @@ class File extends Inode
      * @var bool whether file instance is a version
      */
     private $inodeType = InodeTypes::TYPE_FILE;
+    /**
+     * @var integer id of the original file. Used when creating a version
+     */
+    private $originalId;
 
     /**
      * @return array
@@ -51,7 +56,7 @@ class File extends Inode
             $id = File::find()->where(['uuid' => $this->uuid])->select('id')->scalar();
             if (empty($id))
                 throw new UserException(Yii::t('filescatalog', 'File not found'));
-            $this->inodeType = InodeTypes::TYPE_VERSION;
+            $this->originalId = $id;
         }
 
         return parent::beforeSave($insert);
@@ -104,9 +109,7 @@ class File extends Inode
                         $method = "updateStream";
 
 
-                    if ($filesystem->{$method}($inodeRealPath, $tmpFile)) {
-                        return;
-                    } else {
+                    if (!$filesystem->{$method}($inodeRealPath, $tmpFile)) {
                         $this->addError(Yii::t('filescatalog', 'Unable to move file to its destination'));
                     }
 
@@ -118,10 +121,12 @@ class File extends Inode
                 $this->delete();
             }
 
-            if ($this->inodeType === InodeTypes::TYPE_VERSION && $insert) {
+            if ($this->inodeType == InodeTypes::TYPE_VERSION && $insert) {
                 $version = new FileVersion();
-                $version->file_id = $this->id;
-                $version->save();
+                $version->file_id = $this->originalId;
+                if (!$version->save()) {
+                    throw new Exception('Unable to save version.');
+                }
             }
 
         }

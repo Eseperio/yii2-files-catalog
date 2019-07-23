@@ -13,6 +13,7 @@ use dosamigos\fileupload\FileUpload;
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\validators\FileValidator;
 use yii\web\JsExpression;
@@ -25,7 +26,10 @@ class Uploader extends FileUpload
 {
 
     use ModuleAwareTrait;
-
+    /**
+     * @var Inode
+     */
+    public $model;
     /**
      * @var null
      */
@@ -70,13 +74,16 @@ class Uploader extends FileUpload
         parent::init();
     }
 
-    /**
-     * If target dir is not defined, save file in root
-     */
     private function initTargetDir()
     {
-        if (empty($this->targetUuid))
-            $this->targetUuid = Inode::find()->roots()->select('uuid')->asArray()->scalar();
+        if (empty($this->targetUuid) && !empty($this->model)) {
+            $this->targetUuid = $this->model->uuid;
+            return;
+        }
+
+        throw new InvalidConfigException(__CLASS__."::targetUuid or model must be defined");
+
+
     }
 
     /**

@@ -10,6 +10,8 @@ namespace eseperio\filescatalog\models;
 
 use Yii;
 use yii\base\UserException;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%fcatalog_inodes_version}}".
@@ -37,7 +39,7 @@ class FileVersion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['file_id', 'version_id'], 'required'],
+            [['file_id'], 'required'],
             [['file_id', 'version_id', 'created_at', 'updated_at', 'created_by'], 'integer'],
             [['file_id', 'version_id'], 'unique', 'targetAttribute' => ['file_id', 'version_id']],
         ];
@@ -76,5 +78,18 @@ class FileVersion extends \yii\db\ActiveRecord
     public function getOriginal()
     {
         return $this->hasOne(File::class, ['id' => 'file_id']);
+    }
+
+    public function behaviors()
+    {
+        return [
+            'blameable' => [
+                'class' => BlameableBehavior::class,
+                'updatedByAttribute' => false
+            ],
+            'timestamp' => [
+                'class' => TimestampBehavior::class
+            ]
+        ];
     }
 }
