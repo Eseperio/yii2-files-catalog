@@ -32,39 +32,98 @@ class ViewAction extends Action
         /* @todo: Check ACL */
 
         $allowedMimes = $this->module->browserInlineMimeTypes;
+        /**
+         * $tag
+         *  null: No tag available. Display download button
+         *  false: Files does not exist. Display error message.
+         */
         $tag = null;
 
         if (!$model->fileExists()) {
             $tag = false;
         }
 
-        if (!empty($tag) && array_key_exists($model->mime, $allowedMimes)) {
+        if (is_null($tag) && array_key_exists($model->mime, $allowedMimes)
+            && $model->filesize < $this->module->maxInlineFileSize) {
             $tagName = $allowedMimes[$model->mime];
-            switch ($tagName) {
-                case 'video':
-                    $tag = Html::tag('video', Html::tag('source', '', [
-                        'src' => "$model->"
-                    ]), ['controls']);
-                    break;
-                case 'audio':
-                    break;
-                case 'img':
-                    if ($model->filesize < 6000000) {
-                        $data = $model->getFile();
-                        $tag = Html::img('data:' . $model->mime . ';base64,' . base64_encode($data), [
-                            'class' => 'img-responsive'
-                        ]);
-                    }
-                    break;
-            }
+            $tag = $this->getTag($tagName, $model->getContentAsBase64(), $model);
         }
-
 
         return $this->controller->render('view', [
             'model' => $model,
             'tag' => $tag,
-            'checkFilesIntegrity' => $this->module->checkFilesIntegrity
+            'checkFilesIntegrity' => $this->module->checkFilesIntegrity,
         ]);
 
+    }
+
+    /**
+     * @param $tagName
+     * @param string $base64data
+     * @param $model
+     * @return string
+     */
+    private function getTag($tagName, string $base64data, $model): string
+    {
+        switch ($tagName) {
+            case 'video':
+            case 'audio':
+                $tag = $this->getAudioVideoTag($tagName, $base64data, $model);
+                break;
+            case 'img':
+                $tag = $this->getImgTag($base64data);
+                break;
+            case 'iframe':
+                $tag = $this->getIframeTag($base64data);
+                break;
+        }
+
+        return $tag;
+    }
+
+    /**
+     * @param $tagName
+     * @param string $base64data
+     * @param $model
+     * @return string
+     */
+    private function getAudioVideoTag($tagName, string $base64data, $model): string
+    {
+        $tag = Html::tag($tagName, Html::tag('source', '', [
+            'src' => $base64data,
+            'type' => $model->mime
+        ]), ['controls' => 1]);
+
+        return $tag;
+    }
+
+    /**
+     * @param string $base64data
+     * @return string
+     */
+    private function getImgTag(string $base64data): string
+    {
+        $tag = Html::img($base64data, [
+            'class' => 'img-responsive'
+        ]);
+
+        return $tag;
+    }
+
+    /**
+     * @param string $base64data
+     * @return string
+     */
+    private function getIframeTag(string $base64data): string
+    {
+        $tag = Html::tag('iframe', '', [
+            'src' => $base64data,
+            'style' => [
+                'width' => '100%',
+                'min-height' => '70vh'
+            ]
+        ]);
+
+        return $tag;
     }
 }

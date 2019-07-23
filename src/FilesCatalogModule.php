@@ -14,7 +14,6 @@ use League\Flysystem\Filesystem;
 use Yii;
 use yii\base\Module;
 use yii\validators\FileValidator;
-use yii\web\Response;
 
 class FilesCatalogModule extends Module
 {
@@ -123,20 +122,31 @@ class FilesCatalogModule extends Module
         'image/webp' => 'img',
         'image/x-icon' => 'img',
         'application/pdf' => 'iframe',
-        'audio/wave' => 'audio',
+        'audio/mpeg' => 'audio',
+        'audio/ogg' => 'audio',
         'audio/wav' => 'audio',
-        'audio/x-wav' => 'audio',
-        'audio/x-pn-wav' => 'audio',
         'video/mp4' => 'video',
         'video/webm' => 'video',
         'video/ogg' => 'video',
 
     ];
     /**
+     * Since this module relies on Flysystem, you can not have a direct link to the file, so in order to preview
+     * images or mp4 videos they are converted to base64. This number limits the maximun size allowed for a file to be
+     * embedded.
+     * @var int max inline file size in bytes. Defaults to 10Mb
+     */
+    public $maxInlineFileSize = 10000000;
+    /**
      * @var bool whether save file hashes in database and check integrity everytime a file is required.
      *           In large filesystems it can make the database grow significantly.
      */
     public $checkFilesIntegrity = true;
+
+    /**
+     * @var bool whether allow multiple versions of a file.
+     */
+    public $allowVersioning = true;
 
     /**
      * @inheritdoc

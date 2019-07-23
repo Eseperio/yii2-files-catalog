@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\actions;
 
 
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\File;
 use Yii;
 use yii\base\Action;
@@ -27,22 +27,31 @@ class UploadAction extends Action
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = Yii::createObject(File::class);
+        /* @var $model File */
         $model->file = UploadedFile::getInstance($model, 'file');
-        $model->uuid = Yii::$app->request->get('file_uuid');
         if ($model->validate(['file'])) {
             $response = [
                 'name' => $model->file->name,
             ];
         }
 
-        $root = Inode::find()->roots()->one();
         /* @todo: Check ACL */
 
-        $targetNode = Inode::find()->uuid(Yii::$app->request->post('target'))->one();
-        $model->parent_id = $targetNode->id;
-        $model->appendTo($targetNode ?? $root)->save();
+        $targetNode = File::find()->uuid(Yii::$app->request->post('target'))->one();
+        if ($targetNode->type == InodeTypes::TYPE_FILE) {
+            $realParent = $targetNode->getParent()->one();
+            $model->setAsVersion($targetNode->uuid);
+            $model->appendTo($realParent)->save();
+
+        } else {
+            $model->parent_id = $targetNode->id;
+            $model->appendTo($targetNode)->save();
+
+        }
+
         if ($model->hasErrors())
             $response['errors'] = $model->errors;
+
 
         return [
             'files' => [

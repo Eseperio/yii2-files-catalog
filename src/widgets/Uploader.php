@@ -30,16 +30,18 @@ class Uploader extends FileUpload
      * @var null
      */
     public $targetUuid = null;
-
+    /**
+     * @var string id of pjax container to be refreshed when load finished
+     */
     public $pjaxId;
     /**
      * @var string jQuery selector for the container where upload errors must be displayed
      */
-    public $errorsContainerSelector="#filex-error";
+    public $errorsContainerSelector = "#filex-error";
     /**
      * @var string jQuery selector for the progress bar where display progress.
      */
-    public $progressBarSelector="#filex-progress";
+    public $progressBarSelector = "#filex-progress";
 
     /**
      * @throws \yii\base\InvalidConfigException
@@ -49,7 +51,9 @@ class Uploader extends FileUpload
 
         $this->initTargetDir();
 
-        $this->model = new File();
+        if (empty($this->model))
+            $this->model = new File();
+
         $this->attribute = 'file';
         $this->url = ['/filex/default/upload'];
         $this->options['multiple'] = true;
@@ -58,7 +62,7 @@ class Uploader extends FileUpload
         $this->clientOptions = [
             'maxFileSize' => $fileValidator->getSizeLimit(),
             'formData' => [
-                'target' => $this->targetUuid
+                'target' => $this->targetUuid,
             ]
         ];
 
@@ -67,7 +71,7 @@ class Uploader extends FileUpload
     }
 
     /**
-     *
+     * If target dir is not defined, save file in root
      */
     private function initTargetDir()
     {

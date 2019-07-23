@@ -19,10 +19,13 @@ use eseperio\filescatalog\actions\ViewAction;
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
+use eseperio\filescatalog\traits\ModuleAwareTrait;
 use yii\web\NotFoundHttpException;
 
 class DefaultController extends \yii\web\Controller
 {
+    use ModuleAwareTrait;
+
     /**
      * @inheritdoc
      */
@@ -37,6 +40,19 @@ class DefaultController extends \yii\web\Controller
             'download' => ['class' => DownloadAction::class],
             'fake' => ['class' => FakeAction::class]
         ];
+    }
+
+    /**
+     * @inheritdoc Additionaly adds module to all views in order to have configuration params
+     * @param string $view
+     * @param array $params
+     * @return string
+     */
+    public function render($view, $params = [])
+    {
+        \yii\helpers\ArrayHelper::setValue($params, 'filexModule', $this->module);
+
+        return parent::render($view, $params);
     }
 
     /**

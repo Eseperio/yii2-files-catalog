@@ -57,6 +57,12 @@ class File extends Inode
         return parent::beforeSave($insert);
     }
 
+    public function setAsVersion($originalUuid)
+    {
+        $this->uuid = $originalUuid;
+        $this->inodeType = InodeTypes::TYPE_VERSION;
+    }
+
     /**
      * @return int
      */
@@ -124,16 +130,6 @@ class File extends Inode
     }
 
     /**
-     * @return bool|false|resource
-     * @throws \League\Flysystem\FileNotFoundException
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function getFile()
-    {
-        return $this->module->getStorageComponent()->read($this->getInodeRealPath());
-    }
-
-    /**
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */
@@ -148,5 +144,27 @@ class File extends Inode
     public function getVersions()
     {
         return $this->hasMany(FileVersion::class, ['file_id' => 'id']);
+    }
+
+    /**
+     * @return string the content of the file as base64 ready to be embedded.
+     * @throws \League\Flysystem\FileNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getContentAsBase64()
+    {
+        $data = $this->getFile();
+
+        return 'data:' . $this->mime . ';base64,' . base64_encode($data);
+    }
+
+    /**
+     * @return bool|false|resource
+     * @throws \League\Flysystem\FileNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getFile()
+    {
+        return $this->module->getStorageComponent()->read($this->getInodeRealPath());
     }
 }

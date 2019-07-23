@@ -8,6 +8,7 @@
 
 /* @var $model \eseperio\filescatalog\models\File */
 /* @var $tag string */
+/* @var $filexModule \eseperio\filescatalog\FilesCatalogModule */
 
 /* @var $checkFilesIntegrity boolean */
 
@@ -29,7 +30,6 @@ use yii\helpers\Inflector;
             </div>
             <div class="panel-body">
                 <?php if ($tag !== false): ?>
-
                     <?php if (!empty($tag)): ?>
                         <?= $tag ?>
                     <?php else: ?>
@@ -53,19 +53,34 @@ use yii\helpers\Inflector;
             <div class="panel-heading">
                 <div class="panel-title"><?= Yii::t('xenon', 'Info') ?></div>
             </div>
-            <div class="panel-body">
-                <?php if (!empty($model->versions)): ?>
+            <?php if ($filexModule->allowVersioning): ?>
 
-                <?php else: ?>
-                    <p class="text-muted">
-                        <?= Yii::t('xenon', 'This document has not versions') ?>
-                    </p>
-                <?php endif; ?>
+                <div class="panel-body versioning">
+
+                    <?php if (!empty($model->versions)): ?>
+
+                    <?php else: ?>
+                        <p class="text-muted">
+                            <?= Yii::t('xenon', 'This document has not versions') ?>
+                        </p>
+                    <?php endif; ?>
+                    <?= \eseperio\filescatalog\widgets\Uploader::widget([
+                        'model' => $model,
+                    ]) ?>
+                </div>
+                <hr>
+            <?php endif; ?>
+
+            <div class="panel-body">
 
                 <?php if ($checkFilesIntegrity): ?>
-                    <h3><?= Yii::t('xenon', 'Md5 Checksum') ?></h3>
-                    <?= Html::tag('pre', $model->md5hash) ?>
+                    <p><strong><?= Yii::t('xenon', 'Md5 Checksum') ?></strong></p>
+                    <?= $model->md5hash ?>
                 <?php endif; ?>
+            </div>
+            <hr>
+            <div class="panel-body">
+                <?= Html::a(Yii::t('xenon', 'Properties'), ['properties', 'uuid' => $model->uuid], ['class' => 'btn btn-default']) ?>
             </div>
         </div>
 
