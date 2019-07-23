@@ -6,6 +6,7 @@
  *
  */
 
+use eseperio\filescatalog\widgets\Uploader;
 use yii\helpers\Html;
 
 /* @var \eseperio\filescatalog\models\File[] $versions */
@@ -15,7 +16,17 @@ use yii\helpers\Html;
     <ol class="filex-versions ">
         <?php foreach ($versions as $version): ?>
             <li>
-                <?= Html::a($version->humanName, ['view', 'uuid' => $version->uuid]); ?>
+                <?php if($model->id!==$version->id): ?>
+                    <?= Html::a($version->humanName, ['view', 'uuid' => $version->uuid], [
+                        'class' => $model->id === $version->id ? "text-info" : ""
+                    ]); ?>
+
+                <?php else: ?>
+                    <?= Html::tag('strong',$version->humanName, [
+                        'class' => ''
+                    ]); ?>
+
+                <?php endif; ?>
             </li>
         <?php endforeach; ?>
     </ol>
@@ -25,7 +36,7 @@ use yii\helpers\Html;
     </p>
 <?php endif; ?>
 <hr>
-<?= \eseperio\filescatalog\widgets\Uploader::widget([
+<?= Uploader::widget([
     'model' => $model,
 ]) ?>
 

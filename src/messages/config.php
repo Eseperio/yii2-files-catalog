@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 return [
     // string, required, root directory of all source files
     'sourcePath' => __DIR__ . DIRECTORY_SEPARATOR . '../',
@@ -70,12 +63,10 @@ return [
     'phpDocBlock' => null,
     */
 
-    /*
     // Message categories to ignore
     'ignoreCategories' => [
         'yii',
     ],
-     */
 
     /*
     // 'db' output format is for saving messages to database.
