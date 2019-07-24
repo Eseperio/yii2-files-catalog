@@ -30,6 +30,10 @@ class FilesCatalogModule extends Module
      */
     public $inodeTableName = "fcatalog_inodes";
     /**
+     * @var string name of access control tablename
+     */
+    public $inodeAccessControlTableName = 'fcatalog_inodes_perm';
+    /**
      * @var int the maximum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
      * Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting

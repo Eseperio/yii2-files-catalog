@@ -54,7 +54,8 @@ class m190705_143724_add_filescatalog_table extends Migration
         $this->createTable($this->inodePermissionTableName, [
             'inode_id' => $this->integer()->comment('Inode id'),
             'user_id' => $this->integer(),
-            'role' => $this->string(64)
+            'role' => $this->string(64),
+            'crud_mask'=>$this->smallInteger()->comment('4 bit Binary mask for access permission.CRUD = C=>8 R=>4 U=>2 D=>1')->defaultValue(4)
         ]);
         $this->addPrimaryKey('inode_perms', $this->inodePermissionTableName, [
             'inode_id',
