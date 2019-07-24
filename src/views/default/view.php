@@ -65,7 +65,7 @@ use yii\helpers\Html;
             <div class="panel-body">
 
                 <?php if ($checkFilesIntegrity): ?>
-                    <p><strong><?= Yii::t('filescatalog', 'Md5 Checksum') ?></strong></p>
+                    <p><strong><?= Yii::t('filescatalog', 'MD5 Checksum') ?></strong></p>
                     <?= $model->md5hash ?>
                 <?php endif; ?>
             </div>

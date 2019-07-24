@@ -20,15 +20,18 @@ use eseperio\filescatalog\widgets\IconDisplay;
 use eseperio\filescatalog\widgets\Uploader;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
 
 
 <div class="row">
-    <div class="col-sm-8">
-        <h2>
+    <div class="col-sm-7">
+        <h1>
             <?php if (Yii::$app->controller->action->id == "properties"): ?>
-                <?= Html::a(Yii::t('filescatalog', 'Back'), \yii\helpers\Url::previous(), ['class' => 'btn btn-default']) ?>
+                <?= Html::a(Yii::t('filescatalog', 'Back'), Url::previous(), [
+                    'class' => 'btn btn-default'
+                ]) ?>
             <?php elseif (!empty($parents)): ?>
                 <?php
                 ?>
@@ -37,15 +40,16 @@ use yii\helpers\Html;
             <?= IconDisplay::widget([
                 'model' => $model
             ]) ?>
-            <?= $model->name ?></h2>
+            <span title="<?= $model->humanName ?>"><?= $model->getHumanName(30) ?></span>
+        </h1>
         <p class="text-muted"><?= join('/', ArrayHelper::map($parents, 'uuid', function ($item) {
                 return Html::a(Helper::humanize($item['name']), ['index', 'uuid' => $item['uuid']]);
             })) ?></p>
     </div>
-    <div class="col-sm-4 text-right">
+    <div class="col-sm-5 text-right">
         <?php if ($model->type == InodeTypes::TYPE_DIR): ?>
 
-            <div class="h2">
+            <div class="h1">
                 <div class="btn-group">
                     <?php
                     echo Html::a(Yii::t('filescatalog', 'New folder'), ['new-folder', 'uuid' => $model->uuid], ['class' => 'btn btn-default']);

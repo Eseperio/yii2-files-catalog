@@ -10,7 +10,7 @@ namespace eseperio\filescatalog\models\base;
 
 
 use app\components\StringHelper;
-use creocoder\nestedsets\NestedSetsBehavior;
+use eseperio\filescatalog\behaviors\FilexBehavior;
 use eseperio\filescatalog\FilesCatalogModule;
 use eseperio\filescatalog\helpers\Helper;
 use eseperio\filescatalog\models\InodeQuery;
@@ -19,9 +19,7 @@ use paulzi\adjacencyList\AdjacencyListBehavior;
 use Ramsey\Uuid\Uuid;
 use Yii;
 use yii\base\UserException;
-use yii\behaviors\BlameableBehavior;
 use yii\behaviors\SluggableBehavior;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
 
@@ -43,6 +41,9 @@ use yii\helpers\FileHelper;
  * @property int $created_at
  * @property int $updated_at
  * @property int $created_by
+ * @property int $updated_by
+ * @property string $author_name
+ * @property string $editor_name
  *
  * Methods inherited from nested sets behavior:
  * @property string $humanName
@@ -126,7 +127,7 @@ class Inode extends ActiveRecord
             'created_at' => Yii::t('filescatalog', 'Created At'),
             'updated_at' => Yii::t('filescatalog', 'Updated At'),
             'created_by' => Yii::t('filescatalog', 'Created By'),
-            'md5hash' => Yii::t('filescatalog', 'md5 Checksum'),
+            'md5hash' => Yii::t('filescatalog', 'MD5 Checksum'),
             'realPath' => Yii::t('filescatalog', 'Real path'),
             'filesize' => Yii::t('filescatalog', 'File size'),
         ];
@@ -164,23 +165,8 @@ class Inode extends ActiveRecord
                 'slugAttribute' => 'name',
                 'attribute' => 'name'
             ],
-            'timestamp' => [
-                'class' => TimestampBehavior::class,
-                'createdAtAttribute' => 'created_at',
-                'updatedAtAttribute' => 'updated_at'
-            ],
-            'blame' => [
-                'class' => BlameableBehavior::class,
-                'updatedByAttribute' => false,
-                'value' => function ($item) {
-                    if (Yii::$app->has($this->module->user))
-                        $userId = Yii::$app->get($this->module->user)->{$this->module->userIdAttribute};
-                    if ($userId === null) {
-                        return null;
-                    }
-
-                    return $userId;
-                }
+            'filex' => [
+                'class' => FilexBehavior::class
             ]
         ]);
 

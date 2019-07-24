@@ -16,6 +16,7 @@ use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class ViewAction extends Action
 {
@@ -27,11 +28,24 @@ class ViewAction extends Action
 
     public function run()
     {
-        $model = $this->controller->findModel(Yii::$app->request->get('uuid', false), File::class);
+
+
+        $model = File::find()
+            ->where(['uuid' => Yii::$app->request->get('uuid')])
+            ->with(['versions'])
+            ->one();
+
+        if (empty($model))
+            throw new NotFoundHttpException('Page not found');
+
+        $versions = $model->versions;
+        if (!empty($versions) && is_array($versions) && !Yii::$app->request->get('original', false)) {
+
+            $model = end($versions);
+        }
 
         /* @todo: Check ACL */
 
-        $allowedMimes = $this->module->browserInlineMimeTypes;
         /**
          * $tag
          *  null: No tag available. Display download button
@@ -43,6 +57,7 @@ class ViewAction extends Action
             $tag = false;
         }
 
+        $allowedMimes = $this->module->browserInlineMimeTypes;
         if (is_null($tag) && array_key_exists($model->mime, $allowedMimes)
             && $model->filesize < $this->module->maxInlineFileSize) {
             $tagName = $allowedMimes[$model->mime];

@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\columns;
 
 
@@ -65,7 +58,7 @@ CSS
     {
         $html = Html::tag('div', $model->uuid, ['class' => 'fc-uuid-cl text-center text-muted']);
         if ($this->module->checkFilesIntegrity && $model->type == InodeTypes::TYPE_FILE)
-            $html .= Html::tag('div', Yii::t('filescatalog', 'md5 Checksum') . ": " . $model->md5hash, ['class' => 'fc-uuid-cl text-center text-muted']);
+            $html .= Html::tag('div', Yii::t('filescatalog', 'MD5 Checksum') . ": " . $model->md5hash, ['class' => 'fc-uuid-cl text-center text-muted']);
 
         return $html;
     }

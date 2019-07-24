@@ -38,6 +38,9 @@ class m190705_143724_add_filescatalog_table extends Migration
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'created_by' => $this->integer(),
+            'updated_by' => $this->integer(),
+            'author_name' => $this->string(128),
+            'editor_name' => $this->string(128)
         ]);
         $this->createIndex('idx_name_ext_inode', $this->inodeTableName, [
             'uuid',
@@ -66,6 +69,8 @@ class m190705_143724_add_filescatalog_table extends Migration
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'created_by' => $this->integer(),
+            'author_name' => $this->string(128),
+            'editor_name' => $this->string(128),
         ]);
 
         $this->addPrimaryKey('inode_versions_pk', $this->inodeVersionsTableName, [

@@ -29,7 +29,7 @@ FileTypeIconsAsset::register($this);
     'showPropertiesBtn' => false
 ]) ?>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6 col-sm-offset-3">
         <div class="panel">
 
             <div class="panel-body">
@@ -80,44 +80,5 @@ FileTypeIconsAsset::register($this);
                 <?= Html::a(Yii::t('filescatalog', 'View contents'), ['index', 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>
             </div>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel">
-            <div class="panel-body">
-                <p class="text-info"><?= Yii::t('filescatalog', 'Depth displayed is limited to {limit} in both directions', [
-                        'limit' => $maxTreeDepth
-                    ]) ?></p>
-
-
-            </div>
-            <?php if (!empty($parentTreeNodes)): ?>
-
-                <div class="panel-heading">
-                    <div class="panel-title">
-                        <?= Yii::t('filescatalog', 'Parents') ?>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <?= Tree::widget([
-                        'nodes' => $parentTreeNodes
-                    ]) ?>
-
-                </div>
-            <?php endif; ?>
-            <?php if (!empty($childrenTreeNodes)): ?>
-
-                <div class="panel-heading">
-                    <div class="panel-title"><?= Yii::t('filescatalog', 'Children') ?></div>
-                </div>
-                <div class="panel-body">
-                    <?= Tree::widget([
-                        'nodes' => $childrenTreeNodes
-                    ]) ?>
-
-                </div>
-            <?php endif; ?>
-
-        </div>
-
     </div>
 </div>

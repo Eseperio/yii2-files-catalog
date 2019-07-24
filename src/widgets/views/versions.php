@@ -6,7 +6,6 @@
  *
  */
 
-use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\widgets\Uploader;
 use yii\helpers\Html;
 
@@ -14,24 +13,26 @@ use yii\helpers\Html;
 /* @var \eseperio\filescatalog\models\File $model */
 /* @var \eseperio\filescatalog\models\File $lastVersion */
 /* @var boolean $isLast whether current model is last version */
+/* @var boolean $isVersion whether current model version */
+
 ?>
 <?php if (!empty($versions)): ?>
     <h4><?= Yii::t('filescatalog', 'Versions') ?></h4>
     <?php if (!$isLast): ?>
         <div class="alert alert-warning">
-            <i class="glyphicon glyphicon-warning-sign"></i>
-            <?= Yii::t('xenon', 'This is an older version of the document') ?>.
-            <?= Html::a(Yii::t('xenon','Go last'), ['view', 'uuid' => $lastVersion->uuid], [
-                'class' => $model->id === $lastVersion->id ? "text-info" : ""
-            ]); ?>
+            <?= Yii::t('filescatalog', 'This is an older version of the document') ?>.
+            <?= Html::a(Yii::t('filescatalog', 'Go last'), ['view', 'uuid' => $lastVersion->uuid]); ?>
         </div>
     <?php endif; ?>
-    <?php if ($model->type == InodeTypes::TYPE_VERSION): ?>
-        <?= Html::a($model->original->getHumanName(30), ['view', 'uuid' => $model->original->uuid], [
+    <?php if ($isVersion): ?>
+        <?php
+        $name = $model->original->getHumanName(30);
+        $name .= Html::tag('span', "(" . Yii::t('filescatalog', 'Original') . ")", ['class' => 'text-muted']);
+        echo Html::a($name, ['view', 'uuid' => $model->original->uuid, 'original' => true], [
             'class' => ''
         ]); ?>
     <?php else: ?>
-        <?= Html::tag('strong', $model->humanName, [
+        <?= Html::tag('strong', $model->getHumanName(30), [
             'class' => ''
         ]); ?>
     <?php endif; ?>
@@ -60,6 +61,6 @@ use yii\helpers\Html;
 <?php endif; ?>
 <hr>
 <?= Uploader::widget([
-    'model' => $model,
+    'model' => $isVersion ? $model->original : $model,
 ]) ?>
 

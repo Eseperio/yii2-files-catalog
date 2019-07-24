@@ -54,11 +54,17 @@ class FilesCatalogModule extends Module
      */
     public $fileModel = File::class;
     /**
-     * @var string The user component.
+     * @var string The user component. This is used on blameable behavior
      */
     public $user = 'user';
-
+    /**
+     * @var string attribute of the user component
+     */
     public $userIdAttribute = 'id';
+    /**
+     * @var string user attribute that returns the name. Can be a anything valid for [[ArrayHelper::getValue()]]
+     */
+    public $userNameAttribute = 'username';
     /**
      * @var string Name of the db component to use on data handling
      */
@@ -93,6 +99,10 @@ class FilesCatalogModule extends Module
      * @var bool whether show icons grouped by extension
      */
     public $groupFilesByExt = false;
+    /**
+     * @var bool whether display author names on views
+     */
+    public $displayAuthorNames = true;
     /**
      * @var string the prefix for the route part of every rule declared in [[rules]].
      * The prefix and the route will be separated with a slash.
@@ -130,6 +140,10 @@ class FilesCatalogModule extends Module
         'video/ogg' => 'video',
 
     ];
+    /**
+     * @var bool whether enable access control list
+     */
+    public $enableACL = true;
     /**
      * Since this module relies on Flysystem, you can not have a direct link to the file, so in order to preview
      * images or mp4 videos they are converted to base64. This number limits the maximun size allowed for a file to be
