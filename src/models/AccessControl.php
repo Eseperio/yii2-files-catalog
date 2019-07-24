@@ -37,9 +37,16 @@ class AccessControl extends ActiveRecord
         return static::getModule()->inodeAccessControlTableName;
     }
 
-    public static function grantAccessToUsers($file, $users, $mask)
-    {
 
+    /**
+     * @param $files
+     * @param $users
+     * @param null $mask
+     * @return bool|int
+     */
+    public static function grantAccessToUsers($files, $users, $mask = null)
+    {
+        return self::setInodesAccessRules($files, $users, $mask);
     }
 
     /**
@@ -53,8 +60,10 @@ class AccessControl extends ActiveRecord
     {
         $filesCatalogModule = self::getModule();
 
-        if(is_null($mask))
-            $mask= $filesCatalogModule->mask;
+        if (is_null($mask))
+            $mask = $filesCatalogModule->defaultACLmask;
+
+
         $usersList = is_array($usersOrRoles) ? $usersOrRoles : [$usersOrRoles];
         $filesList = is_array($files) ? $files : [$files];
 
@@ -72,11 +81,7 @@ class AccessControl extends ActiveRecord
                 $userId = $user;
             }
             foreach ($filesList as $file) {
-                if (is_object($file) && is_subclass_of($file, Inode::class)) {
-                    $id = $file->id;
-                } else {
-                    $id = $file;
-                }
+                $id = self::getInodeRealId($file);
                 if ($type === self::TYPE_USER) {
                     $rows[] = [
                         $id,
@@ -105,5 +110,83 @@ class AccessControl extends ActiveRecord
         return false;
 
 
+    }
+
+    /**
+     * @param $item
+     * @return int the id
+     */
+    private static function getInodeRealId($item)
+    {
+        if (is_object($item) && is_subclass_of($item, Inode::class))
+            return $item->id;
+
+        return $item;
+    }
+
+    public static function removeAccessToUser($files, $user)
+    {
+        $ids = [];
+        $filesCatalogModule = self::getModule();
+        if (is_object($user)) {
+            $userId = ArrayHelper::getValue($user, $filesCatalogModule->userIdAttribute);
+        } else {
+            $userId = $user;
+        }
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                $ids[] = self::getInodeRealId($file);
+            }
+        } else {
+            $ids = [self::getInodeRealId($files)];
+        }
+
+        $condition = [
+            'inode_id' => $ids,
+            'user_id' => $userId
+        ];
+
+        $rowsAffected = self::deleteAll($condition);
+
+        return !$rowsAffected === false;
+    }
+
+    /**
+     * Removes all role access to the file or files specified
+     * Delete all returns number of rows affected, so it can be a false false reponse
+     * @param $files
+     * @param $role
+     * @return bool
+     */
+    public static function removeAccessToRole($files, $role)
+    {
+        $ids = [];
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                $ids[] = self::getInodeRealId($file);
+            }
+        } else {
+            $ids = [self::getInodeRealId($files)];
+        }
+
+        $condition = [
+            'inode_id' => $ids,
+            'role' => $role
+        ];
+
+        $rowsAffected = self::deleteAll($condition);
+
+        return !$rowsAffected === false;
+    }
+
+    /**
+     * @param $files
+     * @param $roles
+     * @param null $mask
+     * @return bool|int
+     */
+    public static function grantAccessToRoles($files, $roles, $mask = null)
+    {
+        return self::setInodesAccessRules($files, $roles, $mask);
     }
 }
