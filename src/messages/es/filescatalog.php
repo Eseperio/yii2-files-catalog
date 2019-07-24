@@ -33,7 +33,7 @@ return [
     'Depth displayed is limited to {limit} in both directions' => 'La profundida está limitada a {limit} en ambas direcciones',
     'Directory' => 'Directorio',
     'Download' => 'Descargar',
-    'Extension' => 'Extension',
+    'Extension' => 'Extensión',
     'File' => 'Archivo',
     'File ID' => 'Id de Archivo',
     'File does not exists' => 'El archivo no existe',

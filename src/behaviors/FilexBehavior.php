@@ -12,6 +12,7 @@ namespace eseperio\filescatalog\behaviors;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Behavior;
+use yii\base\ModelEvent;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 
@@ -32,6 +33,10 @@ class FilexBehavior extends Behavior
         ];
     }
 
+    /**
+     * @param $event ModelEvent
+     * @throws \yii\base\InvalidConfigException
+     */
     public function setControlInfo($event)
     {
 
@@ -40,7 +45,7 @@ class FilexBehavior extends Behavior
         $userId = ArrayHelper::getValue($user, $this->module->userIdAttribute);
         $userName = ArrayHelper::getValue($user, $this->module->userNameAttribute);
 
-        if ($event == BaseActiveRecord::EVENT_BEFORE_INSERT) {
+        if ($event->name == BaseActiveRecord::EVENT_BEFORE_INSERT) {
             $owner->created_by = $userId;
             $owner->created_at = time();
             $owner->author_name = $userName;

@@ -21,6 +21,9 @@ class FilesCatalogModule extends Module
     const FILENAMES_BY_UUID = 1;
     const FILENAMES_BY_ID = 2;
     const FILENAMES_REAL = 3;
+    /**
+     * @inheritdoc
+     */
     public $controllerNamespace = "eseperio\\filescatalog\\controllers";
     /**
      * @var string Name of the table where inode are gonna be stored

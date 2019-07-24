@@ -32,9 +32,7 @@ use yii\helpers\Html;
             'class' => ''
         ]); ?>
     <?php else: ?>
-        <?= Html::tag('strong', $model->getHumanName(30), [
-            'class' => ''
-        ]); ?>
+        <?= Html::tag('strong', $model->getHumanName(30)); ?>
     <?php endif; ?>
 
     <ol class="filex-versions ">
@@ -46,10 +44,8 @@ use yii\helpers\Html;
                     ]); ?>
 
                 <?php else: ?>
-                    <?= Html::tag('strong', $version->humanName, [
-                        'class' => ''
-                    ]); ?>
-
+                    <?= Html::tag('strong', $version->getHumanName(30)); ?>
+                    <?= Html::tag('span', "(" . Yii::$app->formatter->asDate($version->created_at) . ")", ['class' => 'text-muted']) ?>
                 <?php endif; ?>
             </li>
         <?php endforeach; ?>

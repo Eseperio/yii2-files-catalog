@@ -32,7 +32,7 @@ use yii\helpers\Html;
                     <?php if (!empty($tag)): ?>
                         <?= $tag ?>
                     <?php else: ?>
-                        <div class="alert alert-info">
+                        <div class="alert alert-default text-center">
                             <p><?= Yii::t('filescatalog', 'This file cannot be displayed online.') ?></p>
                             <p><?= Html::a(Yii::t('filescatalog', 'Download'), ['download', 'uuid' => $model->uuid], [
                                     'class' => 'btn btn-default'
@@ -63,15 +63,7 @@ use yii\helpers\Html;
             <?php endif; ?>
 
             <div class="panel-body">
-
-                <?php if ($checkFilesIntegrity): ?>
-                    <p><strong><?= Yii::t('filescatalog', 'MD5 Checksum') ?></strong></p>
-                    <?= $model->md5hash ?>
-                <?php endif; ?>
-            </div>
-            <hr>
-            <div class="panel-body">
-                <?= Html::a(Yii::t('filescatalog', 'Properties'), ['properties', 'uuid' => $model->uuid], ['class' => 'btn btn-default']) ?>
+                <?= Html::a(Yii::t('filescatalog', 'View file properties'), ['properties', 'uuid' => $model->uuid], ['class' => '']) ?>
             </div>
         </div>
 

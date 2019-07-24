@@ -17,7 +17,6 @@
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\widgets\IconDisplay;
-use eseperio\filescatalog\widgets\Tree;
 use yii\helpers\Html;
 
 FileTypeIconsAsset::register($this);
@@ -38,7 +37,7 @@ FileTypeIconsAsset::register($this);
                     'options' => ['class' => 'table'],
                     'attributes' => [
                         'created_at:datetime',
-                        'created_by',
+                        'author_name',
                         [
                             'attribute' => 'extension',
                             'format' => 'raw',
@@ -60,6 +59,7 @@ FileTypeIconsAsset::register($this);
                             'attribute' => 'filesize',
                             'format' => [
                                 'shortSize',
+                                'decimals'=>0
 
                             ]
                         ],

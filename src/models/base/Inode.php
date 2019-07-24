@@ -118,7 +118,7 @@ class Inode extends ActiveRecord
     {
         return [
             'id' => Yii::t('filescatalog', 'ID'),
-            'uuid' => Yii::t('filescatalog', 'Uuid'),
+            'uuid' => Yii::t('filescatalog', 'ID'),
             'name' => Yii::t('filescatalog', 'Name'),
             'extension' => Yii::t('filescatalog', 'Extension'),
             'mime' => Yii::t('filescatalog', 'Mime'),
