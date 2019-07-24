@@ -148,6 +148,11 @@ class FilesCatalogModule extends Module
 
     ];
     /**
+     * @var int Default value for access control crud mask when no one has been provided.
+     *          ACL mask is a 4 bit binary mask
+     */
+    public $defaultACLmask = 4;
+    /**
      * @var bool whether enable access control list
      */
     public $enableACL = true;

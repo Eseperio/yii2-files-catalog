@@ -33,6 +33,23 @@ This module supports file versioning. You can set how much files must be kept. F
 Inodes access control is performed by ACLs. Any inode must have a rule associated in order to give access to it.
 Access can be granted to a user id or a role.
 
+### How access control crud mask works
+
+Access control is stored in a different table. Each inode must have its own records defining who or which role
+will be able to view, edit or append files.
+That permissions are managed via a crud_mask. It is a 4 bit binary mask, in its integer representation
+
+
+
+||C|R|U|D|
+|---|---|---|---|---|
+||Append subfolders|Read|Update|Delete|
+|Bit|0|0|0|0|
+|Value|8|4|2|1|
+
+So if we want to give only read access to a file, the crud mask must be 0100, or its integer representation, which is what we store in database: 4
+Otherwise, if we want all permissions, then all bits are on and the result is 15.
+
 ## Customization
 You can customize any element of the module by overriding the classes in container definitions.
 Gridview uses column classes, controller uses actions, and so on.
@@ -77,9 +94,12 @@ There is a default controller with the following actions.
 |`realFileNamesSystem`| @var string which kind of name use on saving files. Defaults to FILENAMES_BY_ID. Files will be stored using its own id, so an attacker can not find a file based on their public uuid. If you want to preserve an easy way to find physical FILENAMES_BY_ID: File 1979 will become prefix|1|9|7|9|1979 FILENAMES_BY_UUID: File 146d8c31-ca60-411f-b112-7dd1bc5e8e46 will become prefix|14|6d|8c|31|ca|60|41|1f|b1|12|7d|d1|bc|5e|8e|46|146d8c31-ca60-411f-b112-7dd1bc5e8e46 FILENAMES_REAL will create parent directories with the name of the parent virtual directories.|self::FILENAMES_BY_ID|
 |`browserInlineMimeTypes`| @var array list of the mimetypes that can be represented directly in browser with their corresponding tag||
 |`enableACL`| @var bool whether enable access control list|true|
+|`defaultACLmask`|Default value for access control crud mask when no one has been defined|4|
 |`maxInlineFileSize`| Since this module relies on Flysystem, you can not have a direct link to the file, so in order to preview images or mp4 videos they are converted to base64. This number limits the maximun size allowed for a file to be embedded. @var int max inline file size in bytes. Defaults to 10Mb|10000000|
 |`checkFilesIntegrity`| @var bool whether save file hashes in database and check integrity everytime a file is required.   In large filesystems it can make the database grow significantly.|true|
 |`allowVersioning`| @var bool whether allow multiple versions of a file.|true|
+
+
 
 
 ### Other

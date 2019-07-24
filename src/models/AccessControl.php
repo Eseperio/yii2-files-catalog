@@ -37,13 +37,24 @@ class AccessControl extends ActiveRecord
         return static::getModule()->inodeAccessControlTableName;
     }
 
-    public static function grantAccessToUsers($file, $users)
+    public static function grantAccessToUsers($file, $users, $mask)
     {
 
     }
 
-    private static function setInodesAccessRules($files, $usersOrRoles, $mask, $type = self::TYPE_USER)
+    /**
+     * @param $files
+     * @param $usersOrRoles
+     * @param $mask
+     * @param int $type
+     * @return bool|int the number of rows inserted
+     */
+    private static function setInodesAccessRules($files, $usersOrRoles, $mask = null, $type = self::TYPE_USER)
     {
+        $filesCatalogModule = self::getModule();
+
+        if(is_null($mask))
+            $mask= $filesCatalogModule->mask;
         $usersList = is_array($usersOrRoles) ? $usersOrRoles : [$usersOrRoles];
         $filesList = is_array($files) ? $files : [$files];
 
@@ -54,7 +65,6 @@ class AccessControl extends ActiveRecord
             'crud_mask'
         ];
         $rows = [];
-        $filesCatalogModule = self::getModule();
         foreach ($usersList as $user) {
             if (is_object($user)) {
                 $userId = ArrayHelper::getValue($user, $filesCatalogModule->userIdAttribute);
@@ -85,10 +95,14 @@ class AccessControl extends ActiveRecord
 
             }
         }
+        try {
+            return $command = \Yii::$app->db->createCommand()
+                ->batchInsert($filesCatalogModule->inodeAccessControlTableName, $columns, $rows)->execute();
+        } catch (\Throwable $e) {
+            \Yii::debug($e->getMessage(), 'error');
+        }
 
-
-        $command = \Yii::$app->db->createCommand()
-            ->batchInsert($filesCatalogModule->inodeAccessControlTableName, $columns, $rows);
+        return false;
 
 
     }
