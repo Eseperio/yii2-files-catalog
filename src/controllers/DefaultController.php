@@ -148,8 +148,9 @@ class DefaultController extends \yii\web\Controller
 //                    die(var_dump(($acl->crud_mask & ACL::ACTION_READ) === ACL::ACTION_READ));
                 }
             }
-            if (!$aclStatus)
-                throw new NotFoundHttpException();
+            if (!$aclStatus) {
+                throw new $module->aclException;
+            }
         }
 
         return $model;

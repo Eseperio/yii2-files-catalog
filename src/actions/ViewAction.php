@@ -30,15 +30,13 @@ class ViewAction extends Action
     {
 
 
-        $model = File::find()
-            ->where(['uuid' => Yii::$app->request->get('uuid')])
-            ->with(['versions'])
-            ->one();
+        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), File::class);
 
         if (empty($model))
             throw new NotFoundHttpException('Page not found');
 
         $versions = $model->versions;
+
         if (!empty($versions) && is_array($versions) && !Yii::$app->request->get('original', false)) {
 
             $model = end($versions);

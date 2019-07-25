@@ -16,6 +16,8 @@ use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\ArrayHelper;
 use yii\validators\FileValidator;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 
 class FilesCatalogModule extends Module
 {
@@ -188,7 +190,10 @@ class FilesCatalogModule extends Module
      * @var bool whether allow multiple versions of a file.
      */
     public $allowVersioning = true;
-
+    /**
+     * @var string Exception to be throw when a user can not view an inode.
+     */
+    public $aclException = ForbiddenHttpException::class;
     /**
      * @inheritdoc
      */
