@@ -24,6 +24,7 @@ Then run migration
 php yii migrate/up --migrationPath=@vendor/eseperio/yii2-files-catalog/src/migrations
 ```
 
+To manage access control list, add administrators to module configuration.
 ## Versioning.
 
 This module supports file versioning. You can set how much files must be kept. File versioning can be disabled via configuration
@@ -94,6 +95,7 @@ There is a default controller with the following actions.
 |`realFileNamesSystem`| @var string which kind of name use on saving files. Defaults to FILENAMES_BY_ID. Files will be stored using its own id, so an attacker can not find a file based on their public uuid. If you want to preserve an easy way to find physical FILENAMES_BY_ID: File 1979 will become prefix|1|9|7|9|1979 FILENAMES_BY_UUID: File 146d8c31-ca60-411f-b112-7dd1bc5e8e46 will become prefix|14|6d|8c|31|ca|60|41|1f|b1|12|7d|d1|bc|5e|8e|46|146d8c31-ca60-411f-b112-7dd1bc5e8e46 FILENAMES_REAL will create parent directories with the name of the parent virtual directories.|self::FILENAMES_BY_ID|
 |`browserInlineMimeTypes`| @var array list of the mimetypes that can be represented directly in browser with their corresponding tag||
 |`enableACL`| @var bool whether enable access control list|true|
+|`administrators`| List of roles or usernames that can manage acl|\['admin'\]|
 |`defaultACLmask`|Default value for access control crud mask when no one has been defined|4|
 |`maxInlineFileSize`| Since this module relies on Flysystem, you can not have a direct link to the file, so in order to preview images or mp4 videos they are converted to base64. This number limits the maximun size allowed for a file to be embedded. @var int max inline file size in bytes. Defaults to 10Mb|10000000|
 |`checkFilesIntegrity`| @var bool whether save file hashes in database and check integrity everytime a file is required.   In large filesystems it can make the database grow significantly.|true|

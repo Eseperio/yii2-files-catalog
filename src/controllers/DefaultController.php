@@ -17,10 +17,13 @@ use eseperio\filescatalog\actions\PropertiesAction;
 use eseperio\filescatalog\actions\RemoveACL;
 use eseperio\filescatalog\actions\UploadAction;
 use eseperio\filescatalog\actions\ViewAction;
+use eseperio\filescatalog\models\AccessControl as ACL;
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
+use eseperio\filescatalog\models\Symlink;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -115,11 +118,39 @@ class DefaultController extends \yii\web\Controller
             $query->where(['id' => $id]);
         }
 
-        if ($this->module->enableACL)
+        $module = $this->module;
+        if ($module->enableACL)
             $query->with(['accessControlList']);
-
+        /* @var $model Inode|File|Symlink */
         if (($model = $query->one()) == null)
             throw new NotFoundHttpException();
+
+        if ($module->enableACL && !$module->isAdmin()) {
+            $user = Yii::$app->get($module->user);
+            $userId = $this->module->getUserId();
+            $aclStatus = false;
+            foreach ($model->accessControlList as $acl) {
+                if ($aclStatus)
+                    continue;
+
+                if (
+                    (
+                        (
+                            $acl->role !== ACL::DUMMY_ROLE && $user->can($acl->role)
+                        )
+                        || $acl->user_id == $userId)
+                    &&
+                    (($acl->crud_mask & ACL::ACTION_READ) === ACL::ACTION_READ)
+                ) {
+                    $aclStatus = true;
+//                    var_dump($acl);
+//                    var_dump("EROS   " . $acl->crud_mask);
+//                    die(var_dump(($acl->crud_mask & ACL::ACTION_READ) === ACL::ACTION_READ));
+                }
+            }
+            if (!$aclStatus)
+                throw new NotFoundHttpException();
+        }
 
         return $model;
     }

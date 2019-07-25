@@ -8,12 +8,12 @@
 
 namespace eseperio\filescatalog\widgets;
 
+use app\helpers\Html;
+use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\base\Inode;
+use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\Widget;
-use Yii;
-use app\helpers\Html;
-use app\modules\status\models\Status;
 
 class CrudStatus extends Widget
 {
@@ -37,23 +37,23 @@ class CrudStatus extends Widget
         $mask = $this->model->getCrud();
         $createLabel = Yii::t('filescatalog', 'Create');
         $html = Html::tag('span', substr($createLabel, 0, 1), [
-            'class' => 'label label-' . (in_array(Status::ACTION_CREATE, $mask) ? "danger" : "default"),
+            'class' => 'label label-' . (in_array(AccessControl::ACTION_CREATE, $mask) ? "danger" : "default"),
             'title' => $createLabel, 'data-toggle' => 'tooltip'
         ]);
 
         $readLabel = Yii::t('filescatalog', 'Read');
         $html .= Html::tag('span', substr($readLabel, 0, 1), [
-            'class' => 'label label-' . (in_array(Status::ACTION_READ, $mask) ? "danger" : "default"),
+            'class' => 'label label-' . (in_array(AccessControl::ACTION_READ, $mask) ? "danger" : "default"),
             'title' => $readLabel, 'data-toggle' => 'tooltip'
         ]);
         $updateLabel = Yii::t('filescatalog', 'Update');
         $html .= Html::tag('span', substr($updateLabel, 0, 1), [
-            'class' => 'label label-' . (in_array(Status::ACTION_UPDATE, $mask) ? "danger" : "default"),
+            'class' => 'label label-' . (in_array(AccessControl::ACTION_UPDATE, $mask) ? "danger" : "default"),
             'title' => $updateLabel, 'data-toggle' => 'tooltip'
         ]);
         $deleteLabel = Yii::t('filescatalog', 'Delete');
         $html .= Html::tag('span', substr($deleteLabel, 0, 1), [
-            'class' => 'label label-' . (in_array(Status::ACTION_DELETE, $mask) ? "danger" : "default"),
+            'class' => 'label label-' . (in_array(AccessControl::ACTION_DELETE, $mask) ? "danger" : "default"),
             'title' => $deleteLabel, 'data-toggle' => 'tooltip'
         ]);
 

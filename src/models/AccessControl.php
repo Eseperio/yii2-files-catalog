@@ -36,10 +36,10 @@ class AccessControl extends ActiveRecord
     const TYPE_USER = 1;
     const TYPE_ROLE = 2;
 
-    const ACTION_CREATE = 1;
-    const ACTION_READ = 2;
-    const ACTION_UPDATE = 4;
-    const ACTION_DELETE = 8;
+    const ACTION_CREATE = 8;
+    const ACTION_READ = 4;
+    const ACTION_UPDATE = 2;
+    const ACTION_DELETE = 1;
 
     const SCENARIO_DELETE = 'delscen';
 

@@ -14,6 +14,7 @@ use League\Flysystem\Filesystem;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module;
+use yii\helpers\ArrayHelper;
 use yii\validators\FileValidator;
 
 class FilesCatalogModule extends Module
@@ -154,6 +155,14 @@ class FilesCatalogModule extends Module
 
     ];
     /**
+     * @var array a list of admin usernames
+     */
+    public $administrators = [];
+    /**
+     * @var string the administrator permission name
+     */
+    public $administratorPermissionName;
+    /**
      * @var int Default value for access control crud mask when no one has been provided.
      *          ACL mask is a 4 bit binary mask
      */
@@ -210,5 +219,46 @@ class FilesCatalogModule extends Module
         $storage = \Yii::$app->get($this->storage);
 
         return $storage;
+    }
+
+    /**
+     * @return mixed
+     * @throws InvalidConfigException
+     */
+    public function getUsername()
+    {
+        $user = Yii::$app->get($this->user);
+
+        return ArrayHelper::getValue($user, $this->userNameAttribute);
+
+    }
+
+    /**
+     * @return mixed
+     * @throws InvalidConfigException
+     */
+    public function getUserId()
+    {
+        $user = Yii::$app->get($this->user);
+
+        return ArrayHelper::getValue($user, $this->userIdAttribute);
+    }
+
+    /**
+     * Checks whether a user is an administrator.
+     * @param $username
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        $user = Yii::$app->get($this->user);
+        $username = ArrayHelper::getValue($user, $this->userNameAttribute);
+        $hasAdministratorPermissionName = Yii::$app->getAuthManager() && $this->administratorPermissionName
+            ? Yii::$app->getUser()->can($this->administratorPermissionName)
+            : false;
+
+        return $hasAdministratorPermissionName || in_array($username, $this->administrators, false);
+
     }
 }
