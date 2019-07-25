@@ -12,6 +12,7 @@ namespace eseperio\filescatalog;
 use eseperio\filescatalog\models\File;
 use League\Flysystem\Filesystem;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\validators\FileValidator;
 
@@ -64,6 +65,10 @@ class FilesCatalogModule extends Module
      * @var string The user component. This is used on blameable behavior
      */
     public $user = 'user';
+    /**
+     * @var string the class name of the [[identity]] object.
+     */
+    public $identityClass;
     /**
      * @var string attribute of the user component
      */
@@ -179,6 +184,9 @@ class FilesCatalogModule extends Module
      */
     public function init()
     {
+        if ($this->identityClass === null) {
+            throw new InvalidConfigException('User::identityClass must be set.');
+        }
         $this->registerTranslations();
         parent::init();
     }

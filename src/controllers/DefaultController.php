@@ -69,6 +69,10 @@ class DefaultController extends \yii\web\Controller
         } else {
             $query->where(['id' => $id]);
         }
+
+        if ($this->module->enableACL)
+            $query->with(['accessControlList']);
+
         if (($model = $query->one()) == null)
             throw new NotFoundHttpException();
 

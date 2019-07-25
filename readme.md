@@ -98,6 +98,7 @@ There is a default controller with the following actions.
 |`maxInlineFileSize`| Since this module relies on Flysystem, you can not have a direct link to the file, so in order to preview images or mp4 videos they are converted to base64. This number limits the maximun size allowed for a file to be embedded. @var int max inline file size in bytes. Defaults to 10Mb|10000000|
 |`checkFilesIntegrity`| @var bool whether save file hashes in database and check integrity everytime a file is required.   In large filesystems it can make the database grow significantly.|true|
 |`allowVersioning`| @var bool whether allow multiple versions of a file.|true|
+|`identityClass`|@var string the class name of the [[identity]] object.|null|
 
 
 

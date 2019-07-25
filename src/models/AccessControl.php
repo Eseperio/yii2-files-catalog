@@ -29,6 +29,11 @@ class AccessControl extends ActiveRecord
     const TYPE_USER = 1;
     const TYPE_ROLE = 2;
 
+    const ACTION_CREATE = 1;
+    const ACTION_READ = 2;
+    const ACTION_UPDATE = 4;
+    const ACTION_DELETE = 8;
+
     /**
      * {@inheritdoc}
      */
@@ -37,8 +42,8 @@ class AccessControl extends ActiveRecord
         return static::getModule()->inodeAccessControlTableName;
     }
 
-
     /**
+     * Allow one or many users to access a file.
      * @param $files
      * @param $users
      * @param null $mask
@@ -124,6 +129,12 @@ class AccessControl extends ActiveRecord
         return $item;
     }
 
+    /**
+     * Removes access to one or many files for a user
+     * @param $files
+     * @param $user
+     * @return bool
+     */
     public static function removeAccessToUser($files, $user)
     {
         $ids = [];
@@ -188,5 +199,42 @@ class AccessControl extends ActiveRecord
     public static function grantAccessToRoles($files, $roles, $mask = null)
     {
         return self::setInodesAccessRules($files, $roles, $mask);
+    }
+
+    /**
+     * @return array with each action and if it is enabled or not
+     */
+    public function getCrud()
+    {
+        $values = [
+            self::ACTION_CREATE,
+            self::ACTION_READ,
+            self::ACTION_UPDATE,
+            self::ACTION_DELETE,
+        ];
+
+        if ($this->isNewRecord)
+            return $values;
+
+        $crud = [];
+        foreach ($values as $value) {
+            if (($this->crud_mask & $value) === $value)
+                $crud[] = $value;
+        }
+
+        return $crud;
+    }
+
+    /**
+     * @param mixed $crud
+     */
+    public function setCrud($crud): void
+    {
+        if (is_array($crud)) {
+            $this->crud_mask = 0;
+            foreach ($crud as $value) {
+                $this->crud_mask |= (int)$value;
+            }
+        }
     }
 }

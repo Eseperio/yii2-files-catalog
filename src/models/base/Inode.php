@@ -13,6 +13,7 @@ use app\components\StringHelper;
 use eseperio\filescatalog\behaviors\FilexBehavior;
 use eseperio\filescatalog\FilesCatalogModule;
 use eseperio\filescatalog\helpers\Helper;
+use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\InodeQuery;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListBehavior;
@@ -277,4 +278,8 @@ class Inode extends ActiveRecord
         return $humanized;
     }
 
+    public function getAccessControlList()
+    {
+        return $this->hasMany(AccessControl::class, ['inode_id' => 'id']);
+    }
 }
