@@ -24,13 +24,12 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'Add' => 'Añadir',
     'Add files' => 'Añadir archivos',
     'Add version' => 'Añadir versión',
     'Back' => 'Atrás',
-    'Children' => 'Hijos',
     'Created At' => 'Creado',
     'Created By' => 'Creado por',
-    'Depth displayed is limited to {limit} in both directions' => 'La profundida está limitada a {limit} en ambas direcciones',
     'Directory' => 'Directorio',
     'Download' => 'Descargar',
     'Extension' => 'Extensión',
@@ -49,7 +48,6 @@ return [
     'Open parent' => 'Abrir padre',
     'Original' => 'Original',
     'Parent ID' => 'Id del padre',
-    'Parents' => 'Padres',
     'Properties' => 'Propiedades',
     'Real path' => 'Ruta real',
     'Symlink' => 'Enlace simbólico',
@@ -67,9 +65,17 @@ return [
     'Versions' => 'Versiones',
     'View' => 'Ver',
     'View contents' => 'Ver contenido',
-    'Add' => 'Añadir',
+    'Access control' => 'Control de acceso',
+    'Add permission' => 'Añadir permiso',
+    'Create' => 'Crear',
+    'Delete' => 'Borrar',
     'ID' => '',
     'MD5 Checksum' => '',
     'Mime' => '',
-    'Uuid' => '',
+    'Read' => 'Leer',
+    'Role' => 'Rol',
+    'This permission is already assigned' => 'Este permiso ya está asignado',
+    'Update' => 'Editar',
+    'User' => 'Usuario',
+    'View file properties' => 'Ver propiedades del archivo'
 ];

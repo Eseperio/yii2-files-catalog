@@ -90,16 +90,21 @@ FileTypeIconsAsset::register($this);
         <div class="panel">
             <div class="panel-heading">
                 <div class="panel-title">
-                    <?= Yii::t('xenon', 'Access control') ?>
+                    <?= Yii::t('filescatalog', 'Access control') ?>
                 </div>
             </div>
             <div class="panel-body">
                 <?php
-                $form = ActiveForm::begin([]);
-                echo $form->field($accessControlFormModel, 'inode_id')->hiddenInput();
+                $form = ActiveForm::begin([
+                    'enableAjaxValidation' => true,
+                    'id' => 'contact-form',
+
+                ]);
+                echo $form->errorSummary($model);
+                echo $form->field($accessControlFormModel, 'inode_id')->hiddenInput()->label(false);
                 echo $form->field($accessControlFormModel, 'type')->radioList([
-                    InodePermissionsForm::TYPE_USER => Yii::t('xenon', 'User'),
-                    InodePermissionsForm::TYPE_ROLE => Yii::t('xenon', 'Role'),
+                    InodePermissionsForm::TYPE_USER => Yii::t('filescatalog', 'User'),
+                    InodePermissionsForm::TYPE_ROLE => Yii::t('filescatalog', 'Role'),
                 ]);
                 ?>
                 <div class="row">
@@ -108,7 +113,9 @@ FileTypeIconsAsset::register($this);
                         ?>
                     </div>
                     <div class="col-sm-12">
-                        <?= $form->field($accessControlFormModel, 'role')->textInput();
+                        <?= $form->field($accessControlFormModel, 'role', [
+                            'options' => ['class' => 'form-group collapse']
+                        ])->textInput();
                         ?>
                     </div>
                 </div>
@@ -119,8 +126,23 @@ FileTypeIconsAsset::register($this);
                     AccessControl::ACTION_UPDATE => Yii::t('filescatalog', 'Update'),
                     AccessControl::ACTION_DELETE => Yii::t('filescatalog', 'Delete')
                 ]);
+                echo Html::submitButton(Yii::t('filescatalog', 'Add permission'), ['class' => 'btn btn-primary']);
                 ActiveForm::end();
                 ?>
+            </div>
+            <div class="panel-heading">
+                <div class="panel-title"><?= Yii::t('filescatalog','Current permissions') ?></div>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group"><?php
+                    foreach ($model->accessControlList as $item) :?>
+                        <li class="list-group-item">
+                            <?= $item->role == AccessControl::DUMMY_ROLE ? $item->user_id : $item->role ?>
+                        </li>
+
+
+                    <?php endforeach; ?>
+                </ul>
             </div>
         </div>
     </div>

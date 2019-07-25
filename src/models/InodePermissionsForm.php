@@ -19,21 +19,29 @@ class InodePermissionsForm extends AccessControl
 
     public function rules()
     {
-        return [
-            [['item_id', 'inode_id'], 'integer'],
-            [['item_id', 'inode_id'], 'required'],
+        $rules = array_merge_recursive(parent::rules(), [
+            [['user_id', 'inode_id'], 'integer'],
+            ['user_id', 'default', 'value' => self::DUMMY_USER],
+            ['role', 'default', 'value' => self::DUMMY_ROLE],
+            ['role', 'string'],
+            [['inode_id'], 'required'],
             [['crud', 'type'], 'safe'],
-        ];
+        ]);
+
+        return $rules;
     }
 
-    public function beforeSave($insert)
+    public function beforeValidate()
     {
         if ($this->type == self::TYPE_USER && !empty($this->user_id))
-            $this->role = null;
+            $this->role = self::DUMMY_ROLE;
 
         if ($this->type == self::TYPE_ROLE && !empty($this->role))
-            $this->user_id = null;
+            $this->user_id = self::DUMMY_USER;
+
+        return parent::beforeValidate();
     }
+
 
     public function init()
     {
@@ -46,14 +54,17 @@ class InodePermissionsForm extends AccessControl
     {
         $typeInputFormName = Html::getInputName($this, 'type');
         $userIdInputFormId = Html::getInputId($this, 'user_id');
-        $RoleInputFormId = Html::getInputId($this, 'role');
+        $roleInputFormId = Html::getInputId($this, 'role');
         $typeUser = self::TYPE_USER;
         $typeRole = self::TYPE_ROLE;
         $js = <<<JS
-        
+        document.getElementsByName('{$typeInputFormName}').forEach((e,i,a)=>{
+        e.addEventListener('click',filexCheckType);
+        });
         function filexCheckType(){
-    let sel= document.querySelector('input[name="{$typeInputFormName}"]:checked').value;
-    document.getElementsByName()
+    let sel= document.querySelector('input[name="{$typeInputFormName}"]:checked').value == {$typeRole};
+    document.querySelector('.field-{$userIdInputFormId}').classList.toggle('collapse',sel);
+    document.querySelector('.field-{$roleInputFormId}').classList.toggle('collapse',!sel);
         }
         
 

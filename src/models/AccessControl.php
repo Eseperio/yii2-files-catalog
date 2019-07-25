@@ -11,6 +11,7 @@ namespace eseperio\filescatalog\models;
 
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
@@ -24,8 +25,14 @@ use yii\helpers\ArrayHelper;
  */
 class AccessControl extends ActiveRecord
 {
-    use ModuleAwareTrait;
 
+    use ModuleAwareTrait;
+    /**
+     * This role is used to keep primary index working
+     */
+    const DUMMY_ROLE = 'filexdmr';
+
+    const DUMMY_USER = 0;
     const TYPE_USER = 1;
     const TYPE_ROLE = 2;
 
@@ -199,6 +206,23 @@ class AccessControl extends ActiveRecord
     public static function grantAccessToRoles($files, $roles, $mask = null)
     {
         return self::setInodesAccessRules($files, $roles, $mask);
+    }
+
+    public function rules()
+    {
+        return [
+            [
+                ['inode_id', 'role', 'user_id'],
+                'unique',
+                'targetAttribute' =>
+                    [
+                        'inode_id',
+                        'role',
+                        'user_id'
+                    ],
+                'message' => Yii::t('filescatalog','This permission is already assigned')
+            ]
+        ];
     }
 
     /**

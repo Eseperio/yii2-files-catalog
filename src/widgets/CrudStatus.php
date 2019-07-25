@@ -35,23 +35,23 @@ class CrudStatus extends Widget
     public function run()
     {
         $mask = $this->model->getCrud();
-        $createLabel = Yii::t('gvp', 'Create');
+        $createLabel = Yii::t('filescatalog', 'Create');
         $html = Html::tag('span', substr($createLabel, 0, 1), [
             'class' => 'label label-' . (in_array(Status::ACTION_CREATE, $mask) ? "danger" : "default"),
             'title' => $createLabel, 'data-toggle' => 'tooltip'
         ]);
 
-        $readLabel = Yii::t('gvp', 'Read');
+        $readLabel = Yii::t('filescatalog', 'Read');
         $html .= Html::tag('span', substr($readLabel, 0, 1), [
             'class' => 'label label-' . (in_array(Status::ACTION_READ, $mask) ? "danger" : "default"),
             'title' => $readLabel, 'data-toggle' => 'tooltip'
         ]);
-        $updateLabel = Yii::t('gvp', 'Update');
+        $updateLabel = Yii::t('filescatalog', 'Update');
         $html .= Html::tag('span', substr($updateLabel, 0, 1), [
             'class' => 'label label-' . (in_array(Status::ACTION_UPDATE, $mask) ? "danger" : "default"),
             'title' => $updateLabel, 'data-toggle' => 'tooltip'
         ]);
-        $deleteLabel = Yii::t('gvp', 'Delete');
+        $deleteLabel = Yii::t('filescatalog', 'Delete');
         $html .= Html::tag('span', substr($deleteLabel, 0, 1), [
             'class' => 'label label-' . (in_array(Status::ACTION_DELETE, $mask) ? "danger" : "default"),
             'title' => $deleteLabel, 'data-toggle' => 'tooltip'

@@ -45,6 +45,7 @@ use yii\helpers\FileHelper;
  * @property int $updated_by
  * @property string $author_name
  * @property string $editor_name
+ * @property AccessControl[] $accessControlList
  *
  * Methods inherited from nested sets behavior:
  * @property string $humanName
@@ -257,11 +258,7 @@ class Inode extends ActiveRecord
      */
     public function getRealPath()
     {
-
         $path = join(DIRECTORY_SEPARATOR, $this->getParents()->asArray()->select('name')->column());
-
-        Yii::debug("EROS2 - " . nl2br(print_r($this->getParents()->asArray()->column(), true)));
-
         return $path;
     }
 
