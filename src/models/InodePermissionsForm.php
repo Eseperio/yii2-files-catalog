@@ -16,6 +16,14 @@ class InodePermissionsForm extends AccessControl
 
     public $type;
 
+public function scenarios()
+{
+    $scenarios = parent::scenarios();
+
+    $scenarios[self::SCENARIO_DELETE][]='type';
+    $scenarios[self::SCENARIO_DEFAULT][]='type';
+    return $scenarios;
+}
 
     public function rules()
     {
@@ -25,6 +33,12 @@ class InodePermissionsForm extends AccessControl
             ['role', 'default', 'value' => self::DUMMY_ROLE],
             ['role', 'string'],
             [['inode_id'], 'required'],
+            [['user_id'], 'required', 'when' => function ($model) {
+                return $model->type == self::TYPE_USER;
+            }],
+            [['role'], 'required', 'when' => function ($model) {
+                return $model->type == self::TYPE_ROLE;
+            }],
             [['crud', 'type'], 'safe'],
         ]);
 

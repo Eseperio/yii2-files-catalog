@@ -41,6 +41,8 @@ class AccessControl extends ActiveRecord
     const ACTION_UPDATE = 4;
     const ACTION_DELETE = 8;
 
+    const SCENARIO_DELETE = 'delscen';
+
     /**
      * {@inheritdoc}
      */
@@ -208,6 +210,14 @@ class AccessControl extends ActiveRecord
         return self::setInodesAccessRules($files, $roles, $mask);
     }
 
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_DELETE => ['inode_id', 'user_id', 'role', 'crud'],
+            self::SCENARIO_DEFAULT => ['inode_id', 'user_id', 'role', 'crud'],
+        ];
+    }
+
     /**
      * @return array
      */
@@ -215,7 +225,7 @@ class AccessControl extends ActiveRecord
     {
         return [
             [
-                [ 'role', 'user_id'],
+                ['role', 'user_id'],
                 'unique',
                 'targetAttribute' =>
                     [
@@ -223,7 +233,8 @@ class AccessControl extends ActiveRecord
                         'role',
                         'user_id'
                     ],
-                'message' => Yii::t('filescatalog', 'This permission is already assigned')
+                'message' => Yii::t('filescatalog', 'This permission is already assigned'),
+                'on' => self::SCENARIO_DEFAULT
             ]
         ];
     }

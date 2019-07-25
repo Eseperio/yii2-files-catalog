@@ -31,15 +31,16 @@ class PropertiesAction extends Action
         $model = $this->controller->findModel(Yii::$app->request->get('uuid', false));
         $permModel = new InodePermissionsForm();
         $permModel->inode_id = $model->id;
+
         if ($permModel->load(Yii::$app->request->post())) {
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($permModel);
             }
+
             if ($permModel->save()) {
                 $permModel = new InodePermissionsForm();
                 $permModel->inode_id = $model->id;
-
                 $model->refresh();
             }
         }

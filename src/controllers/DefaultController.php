@@ -14,6 +14,7 @@ use eseperio\filescatalog\actions\FakeAction;
 use eseperio\filescatalog\actions\IndexAction;
 use eseperio\filescatalog\actions\NewFolderAction;
 use eseperio\filescatalog\actions\PropertiesAction;
+use eseperio\filescatalog\actions\RemoveACL;
 use eseperio\filescatalog\actions\UploadAction;
 use eseperio\filescatalog\actions\ViewAction;
 use eseperio\filescatalog\models\base\Inode;
@@ -38,6 +39,7 @@ class DefaultController extends \yii\web\Controller
             'properties' => ['class' => PropertiesAction::class],
             'view' => ['class' => ViewAction::class],
             'download' => ['class' => DownloadAction::class],
+            'remove-acl'=>['class'=> RemoveACL::class],
             'fake' => ['class' => FakeAction::class]
         ];
     }

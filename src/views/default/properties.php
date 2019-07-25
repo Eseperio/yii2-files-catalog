@@ -97,10 +97,11 @@ FileTypeIconsAsset::register($this);
                 <?php
                 $form = ActiveForm::begin([
                     'enableAjaxValidation' => true,
+                    'enableClientValidation' => false,
                     'id' => 'contact-form',
 
                 ]);
-                echo $form->errorSummary($model);
+                echo $form->errorSummary($accessControlFormModel);
                 echo $form->field($accessControlFormModel, 'inode_id')->hiddenInput()->label(false);
                 echo $form->field($accessControlFormModel, 'type')->radioList([
                     InodePermissionsForm::TYPE_USER => Yii::t('filescatalog', 'User'),
@@ -140,7 +141,7 @@ FileTypeIconsAsset::register($this);
                             <div class="row">
 
                                 <div class="col-sm-4">
-                                    <?php if ($item->role == AccessControl::DUMMY_ROLE): ?>
+                                    <?php if ($item->role !== AccessControl::DUMMY_ROLE): ?>
                                         <strong><?= Yii::t('xenon', 'Role') ?>:</strong>  <?= $item->role ?>
                                     <?php else: ?>
                                         <strong><?= Yii::t('xenon', 'User') ?>:</strong>
@@ -152,14 +153,19 @@ FileTypeIconsAsset::register($this);
                                 </div>
                                 <div class="col-sm-4">
                                     <?= Html::a(Yii::t('xenon', 'Delete'), [
-                                        'removeacl',
-                                        'inode_id' => $item->inode_id,
-                                        'role' => $item->role,
-                                        'user_id' => $item->user_id
+                                        'remove-acl',
+
                                     ], [
-                                        'data-method' => 'post',
                                         'class' => 'pull-right',
-                                        'data-confirm' => Yii::t('xenon', 'Confirm deletetion')
+                                        'data' => [
+                                            'method' => 'post',
+                                            'confirm' => Yii::t('xenon', 'Confirm deletetion'),
+                                            'params'=>[
+                                                'inode_id' => $item->inode_id,
+                                                'role' => $item->role,
+                                                'user_id' => $item->user_id
+                                            ]
+                                        ],
                                     ]) ?>
                                 </div>
                             </
