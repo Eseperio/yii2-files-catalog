@@ -131,16 +131,40 @@ FileTypeIconsAsset::register($this);
                 ?>
             </div>
             <div class="panel-heading">
-                <div class="panel-title"><?= Yii::t('filescatalog','Current permissions') ?></div>
+                <div class="panel-title"><?= Yii::t('filescatalog', 'Current permissions') ?></div>
             </div>
             <div class="panel-body">
                 <ul class="list-group"><?php
                     foreach ($model->accessControlList as $item) :?>
                         <li class="list-group-item">
-                            <?= $item->role == AccessControl::DUMMY_ROLE ? $item->user_id : $item->role ?>
+                            <div class="row">
+
+                                <div class="col-sm-4">
+                                    <?php if ($item->role == AccessControl::DUMMY_ROLE): ?>
+                                        <strong><?= Yii::t('xenon', 'Role') ?>:</strong>  <?= $item->role ?>
+                                    <?php else: ?>
+                                        <strong><?= Yii::t('xenon', 'User') ?>:</strong>
+                                        <?= $item->user_id ?>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <?= \eseperio\filescatalog\widgets\CrudStatus::widget(['model' => $item]) ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <?= Html::a(Yii::t('xenon', 'Delete'), [
+                                        'removeacl',
+                                        'inode_id' => $item->inode_id,
+                                        'role' => $item->role,
+                                        'user_id' => $item->user_id
+                                    ], [
+                                        'data-method' => 'post',
+                                        'class' => 'pull-right',
+                                        'data-confirm' => Yii::t('xenon', 'Confirm deletetion')
+                                    ]) ?>
+                                </div>
+                            </
+                            >
                         </li>
-
-
                     <?php endforeach; ?>
                 </ul>
             </div>

@@ -208,11 +208,14 @@ class AccessControl extends ActiveRecord
         return self::setInodesAccessRules($files, $roles, $mask);
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
             [
-                ['inode_id', 'role', 'user_id'],
+                [ 'role', 'user_id'],
                 'unique',
                 'targetAttribute' =>
                     [
@@ -220,7 +223,7 @@ class AccessControl extends ActiveRecord
                         'role',
                         'user_id'
                     ],
-                'message' => Yii::t('filescatalog','This permission is already assigned')
+                'message' => Yii::t('filescatalog', 'This permission is already assigned')
             ]
         ];
     }
