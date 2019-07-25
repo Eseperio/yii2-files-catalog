@@ -16,21 +16,21 @@ class InodePermissionsForm extends AccessControl
 
     public $type;
 
-public function scenarios()
-{
-    $scenarios = parent::scenarios();
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
 
-    $scenarios[self::SCENARIO_DELETE][]='type';
-    $scenarios[self::SCENARIO_DEFAULT][]='type';
-    return $scenarios;
-}
+        $scenarios[self::SCENARIO_DELETE][] = 'type';
+        $scenarios[self::SCENARIO_DEFAULT][] = 'type';
+
+        return $scenarios;
+    }
 
     public function rules()
     {
         $rules = array_merge_recursive(parent::rules(), [
             [['user_id', 'inode_id'], 'integer'],
-            ['user_id', 'default', 'value' => self::DUMMY_USER],
-            ['role', 'default', 'value' => self::DUMMY_ROLE],
+
             ['role', 'string'],
             [['inode_id'], 'required'],
             [['user_id'], 'required', 'when' => function ($model) {
@@ -40,6 +40,8 @@ public function scenarios()
                 return $model->type == self::TYPE_ROLE;
             }],
             [['crud', 'type'], 'safe'],
+            ['user_id', 'default', 'value' => self::DUMMY_USER],
+            ['role', 'default', 'value' => self::DUMMY_ROLE],
         ]);
 
         return $rules;

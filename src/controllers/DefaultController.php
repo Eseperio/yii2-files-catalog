@@ -21,11 +21,54 @@ use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 class DefaultController extends \yii\web\Controller
 {
     use ModuleAwareTrait;
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'properties', 'download'],
+                        'roles' => ['?', '@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['upload', 'new-folder', 'remove-acl'],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'remove-acl' => ['post'],
+                    'upload' => ['post'],
+                ],
+            ],
+        ];
+    }
+
+    public function beforeAction($action)
+    {
+        if (\Yii::$app->request->isGet)
+            Url::remember();
+
+        return parent::beforeAction($action);
+    }
 
     /**
      * @inheritdoc
@@ -39,7 +82,7 @@ class DefaultController extends \yii\web\Controller
             'properties' => ['class' => PropertiesAction::class],
             'view' => ['class' => ViewAction::class],
             'download' => ['class' => DownloadAction::class],
-            'remove-acl'=>['class'=> RemoveACL::class],
+            'remove-acl' => ['class' => RemoveACL::class],
             'fake' => ['class' => FakeAction::class]
         ];
     }

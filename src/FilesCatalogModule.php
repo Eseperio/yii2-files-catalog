@@ -74,7 +74,8 @@ class FilesCatalogModule extends Module
      */
     public $userIdAttribute = 'id';
     /**
-     * @var string user attribute that returns the name. Can be a anything valid for [[ArrayHelper::getValue()]]
+     * @var string user attribute that returns the name.
+     * Can be a anything valid for [[ArrayHelper::getValue()]]. Will be used both for user component and user identity
      */
     public $userNameAttribute = 'username';
     /**
