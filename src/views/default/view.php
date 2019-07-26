@@ -34,9 +34,6 @@ use yii\helpers\Html;
                     <?php else: ?>
                         <div class="alert alert-default text-center">
                             <p><?= Yii::t('filescatalog', 'This file cannot be displayed online.') ?></p>
-                            <p><?= Html::a(Yii::t('filescatalog', 'Download'), ['download', 'uuid' => $model->uuid], [
-                                    'class' => 'btn btn-default'
-                                ]) ?></p>
                         </div>
                     <?php endif; ?>
                 <?php else: ?>
@@ -44,6 +41,13 @@ use yii\helpers\Html;
                         <?= Yii::t('filescatalog', 'File does not exists') ?>
                     </div>
                 <?php endif; ?>
+            </div>
+            <div class="panel-footer">
+                <div class="text-center">
+                    <p><?= Html::a(Yii::t('filescatalog', 'Download'), ['download', 'uuid' => $model->uuid], [
+                            'class' => 'btn btn-default'
+                        ]) ?></p>
+                </div>
             </div>
         </div>
     </div>
@@ -63,7 +67,7 @@ use yii\helpers\Html;
             <?php endif; ?>
 
             <div class="panel-body">
-                <?= Html::a(Yii::t('filescatalog', 'View file properties'), ['properties', 'uuid' => $model->uuid], ['class' => '']) ?>
+                <?= Html::a(Yii::t('filescatalog', 'View file properties'), ['properties', 'uuid' => $model->uuid, 'original' => true], ['class' => '']) ?>
             </div>
         </div>
 

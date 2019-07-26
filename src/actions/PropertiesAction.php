@@ -40,8 +40,11 @@ class PropertiesAction extends Action
         if (!empty($versions) && is_array($versions) && !Yii::$app->request->get('original', false))
             $model = end($versions);
 
+
+        $referenceId = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original->id : $model->id;
+
         $permModel = new InodePermissionsForm();
-        $permModel->inode_id = $model->id;
+        $permModel->inode_id = $referenceId;
 
         if ($permModel->load(Yii::$app->request->post())) {
             if (Yii::$app->request->isAjax) {
@@ -52,11 +55,10 @@ class PropertiesAction extends Action
 
             if ($permModel->save()) {
                 $permModel = new InodePermissionsForm();
-                $permModel->inode_id = $model->id;
+                $permModel->inode_id = $referenceId;
                 $model->refresh();
             }
         }
-
 
         return $this->controller->render('properties', [
             'model' => $model,
@@ -65,6 +67,7 @@ class PropertiesAction extends Action
         ]);
 
     }
+
 
     /**
      * @param $inode

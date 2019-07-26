@@ -14,6 +14,7 @@
 
 /* @var $parents array */
 
+use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\Helper;
 use eseperio\filescatalog\widgets\IconDisplay;
@@ -22,6 +23,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+FileTypeIconsAsset::register($this);
 ?>
 
 
@@ -36,6 +38,11 @@ use yii\helpers\Url;
                 <?php
                 ?>
                 <?= Html::a('..', ['index', 'uuid' => end($parents)['uuid']]) ?> /
+            <?php endif; ?>
+
+            <?php if ($model->type === InodeTypes::TYPE_VERSION): ?>
+                <small class=""
+                       title="<?= $model->original->humanName ?>"><?= $model->original->getHumanName(15) ?></small>
             <?php endif; ?>
             <?= IconDisplay::widget([
                 'model' => $model

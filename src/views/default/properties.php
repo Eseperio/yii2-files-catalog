@@ -21,6 +21,7 @@
 
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use yii\helpers\Html;
 
@@ -41,7 +42,7 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
             <div class="panel-body">
                 <?php if ($model->type == InodeTypes::TYPE_VERSION): ?>
                     <div class="alert alert-warning">
-                        <?= Yii::t('xenon', 'This are the properties of this file version.') ?>
+                        <?= Yii::t('filescatalog', 'This are the properties of this file version.') ?>
                     </div>
                 <?php endif; ?>
                 <?= \yii\widgets\DetailView::widget([
@@ -55,18 +56,35 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 <?php if (!empty($parent)): ?>
                     <?= Html::a(Yii::t('filescatalog', 'Open parent'), ['index', 'uuid' => $parent->uuid], ['class' => 'btn btn-default']) ?>
                 <?php endif; ?>
-                <?= Html::a(Yii::t('filescatalog', 'View contents'), ['index', 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>
+                <?= Html::a(Yii::t('filescatalog', 'View contents'), [($model->type === InodeTypes::TYPE_DIR ? "index" : "view"), 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>
             </div>
         </div>
-        <?= Html::a(Yii::t('xenon', 'Delete'), ['delete', 'uuid' => $model->uuid], [
-            'class' => 'text-danger',
-            'data' => [
-                'method' => 'post',
-                'params' => [
-                    $filexModule->secureHashParamName => $model->deleteHash
+        <?php if (AclHelper::canDelete($model)): ?>
+            <?php if ($model->type === InodeTypes::TYPE_VERSION): ?>
+
+                <?= Html::a(Yii::t('filescatalog', 'Delete only this version'), ['delete', 'uuid' => $model->uuid], [
+                    'class' => 'text-danger',
+                    'data' => [
+                        'method' => 'post',
+                        'params' => [
+                            $filexModule->secureHashParamName => $model->deleteHash
+                        ],
+                        'confirm' => Yii::t('filescatalog', 'Confirm deletion?')
+                    ]
+                ]) ?> |
+            <?php endif; ?>
+            <?= Html::a(Yii::t('filescatalog', 'Delete'), ['delete', 'uuid' => $model->uuid], [
+                'class' => 'text-danger',
+                'data' => [
+                    'method' => 'post',
+                    'params' => [
+                        $filexModule->secureHashParamName => $model->deleteHash,
+                        'delall' => true
+                    ],
+                    'confirm' => Yii::t('filescatalog', 'Confirm deletion?')
                 ]
-            ]
-        ]) ?>
+            ]) ?>
+        <?php endif; ?>
     </div>
     <?php /** @var \eseperio\filescatalog\FilesCatalogModule $filexModule */
     if ($canManageAcl): ?>

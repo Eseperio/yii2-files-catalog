@@ -9,13 +9,15 @@
 namespace eseperio\filescatalog\actions;
 
 
+use app\helpers\ArrayHelper;
 use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\controllers\DefaultController;
+use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
-use yii\base\UserException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 
@@ -30,17 +32,24 @@ class DeleteAction extends Action
     public function run()
     {
         $model = $this->controller->findModel(Yii::$app->request->get('uuid'), File::class);
-        $versions = $model->versions;
 
-        if (!empty($versions) && is_array($versions) && !Yii::$app->request->get('original', false))
-            $model = end($versions);
 
         $parentUuid = $model->getParent()->select('uuid')->scalar();
 
         $rcvdHash = Yii::$app->request->post($this->module->secureHashParamName);
 
-        if (!empty($rcvdHash) && $rcvdHash === $model->deleteHash) {
-            $model->delete();
+        if (!empty($rcvdHash) && $rcvdHash === $model->deleteHash && AclHelper::canDelete($model)) {
+            if (Yii::$app->request->post('delall')) {
+                if ($model->type === InodeTypes::TYPE_VERSION) {
+                    File::deleteAll([
+                        'id' => ArrayHelper::getColumn($model->original->versions, 'id')
+                    ]);
+                    $model->original->delete();
+                }
+            } else {
+                $model->delete();
+            }
+
             return $this->controller->redirect(['index', 'uuid' => $parentUuid]);
         } else {
             throw new BadRequestHttpException('Could not trust sender');

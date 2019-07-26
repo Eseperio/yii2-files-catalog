@@ -111,7 +111,7 @@ There is a default controller with the following actions.
 |`browserInlineMimeTypes`| @var array list of the mimetypes that can be represented directly in browser with their corresponding tag||
 |`enableACL`| @var bool whether enable access control list|true|
 |`administrators`| List of roles or usernames that can manage acl|\['admin'\]|
-|`aclException`| Classname of the exception to be thrown when user can access an inode|`ForbiddenHttpException::class`|
+|`aclException`| Classname of the exception to be thrown when user can access an inode|`eseperio\filescatalog\exceptions\FilexAccessDeniedException`|
 |`defaultACLmask`|Default value for access control crud mask when no one has been defined|4|
 |`maxInlineFileSize`| Since this module relies on Flysystem, you can not have a direct link to the file, so in order to preview images or mp4 videos they are converted to base64. This number limits the maximun size allowed for a file to be embedded. @var int max inline file size in bytes. Defaults to 10Mb|10000000|
 |`checkFilesIntegrity`| @var bool whether save file hashes in database and check integrity everytime a file is required.   In large filesystems it can make the database grow significantly.|true|

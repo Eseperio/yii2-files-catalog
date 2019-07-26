@@ -16,7 +16,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\ArrayHelper;
 use yii\validators\FileValidator;
-use yii\web\ForbiddenHttpException as ForbiddenHttpExceptionAlias;
 
 class FilesCatalogModule extends Module
 {
@@ -192,7 +191,7 @@ class FilesCatalogModule extends Module
     /**
      * @var string Exception to be throw when a user can not view an inode.
      */
-    public $aclException = ForbiddenHttpExceptionAlias::class;
+    public $aclException = 'eseperio\filescatalog\exceptions\FilexAccessDeniedException';
     /**
      * @var string random string to be used on sensitive actions
      */

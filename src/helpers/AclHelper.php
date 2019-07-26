@@ -9,7 +9,11 @@
 namespace eseperio\filescatalog\helpers;
 
 
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\AccessControl;
+use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Directory;
+use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 
@@ -32,7 +36,7 @@ class AclHelper
     }
 
     /**
-     * @param $inode
+     * @param $inode Inode|File|Directory
      * @param $permission
      * @return bool
      * @throws \yii\base\InvalidConfigException
@@ -45,7 +49,8 @@ class AclHelper
             $user = Yii::$app->get($module->user);
             $userId = $module->getUserId();
             $grantAccess = false;
-            foreach ($inode->accessControlList as $acl) {
+            $refInode = ($inode->type === InodeTypes::TYPE_VERSION) ? $inode->original : $inode;
+            foreach ($refInode->accessControlList as $acl) {
 
                 if (($acl->crud_mask & $permission) !== $permission)
                     continue;
@@ -69,12 +74,11 @@ class AclHelper
                     break;
             }
             if (!$grantAccess) {
-                throw new $module->aclException;
+                return false;
             }
         }
 
         return true;
-
 
     }
 

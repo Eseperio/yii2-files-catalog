@@ -6,7 +6,7 @@
  *
  */
 
-/* @var $model \eseperio\filescatalog\models\base\Inode */
+/* @var $model \eseperio\filescatalog\models\base\Inode|\eseperio\filescatalog\models\File */
 
 /* @var $parent \eseperio\filescatalog\models\base\Inode */
 /* @var $parentTreeNodes \eseperio\filescatalog\models\base\Inode[] */
@@ -16,6 +16,7 @@
 
 /* @var $accessControlFormModel InodePermissionsForm */
 
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use eseperio\filescatalog\widgets\CrudStatus;
@@ -57,11 +58,11 @@ use yii\helpers\Html;
                 ?>
             </div>
             <div class="col-sm-12 filex-role-input <?= $accessControlFormModel->type !== InodePermissionsForm::TYPE_ROLE ? "collapse" : "" ?>">
-                <h4><?= Yii::t('xenon', 'Wildcards') ?></h4>
-                <p><?= Yii::t('xenon', '{wildcard} allow everyone access to this item.', [
+                <h4><?= Yii::t('filescatalog', 'Wildcards') ?></h4>
+                <p><?= Yii::t('filescatalog', '{wildcard} allow everyone access to this item.', [
                         'wildcard' => Html::tag('strong', AccessControl::WILDCARD_ROLE, ['class' => 'text-info'])
                     ]) ?></p>
-                <p><?= Yii::t('xenon', '{wildcard} allow everyone logged in access to this item.', [
+                <p><?= Yii::t('filescatalog', '{wildcard} allow everyone logged in access to this item.', [
                         'wildcard' => Html::tag('strong', AccessControl::LOGGED_IN_USERS, ['class' => 'text-info'])
                     ]) ?></p>
                 <?= $form->field($accessControlFormModel, 'role')->textInput();
@@ -87,8 +88,16 @@ use yii\helpers\Html;
         <div class="panel-title"><?= Yii::t('filescatalog', 'Current permissions') ?></div>
     </div>
     <div class="panel-body">
+        <?php if ($model->type === InodeTypes::TYPE_VERSION): ?>
+            <div class="text-warning">
+                <?= Yii::t('filescatalog', 'Permissions are for the original and all versions.') ?>
+            </div>
+        <?php endif; ?>
         <ul class="list-group"><?php
-            foreach ($model->accessControlList as $item) :?>
+
+
+            $accessControls = ($model->type == InodeTypes::TYPE_VERSION) ? $model->original->accessControlList:$model->accessControlList;
+            foreach ($accessControls as $item) :?>
                 <li class="list-group-item">
                     <div class="row">
 
@@ -96,17 +105,17 @@ use yii\helpers\Html;
                             <?php
                             switch ($item->role) {
                                 case AccessControl::WILDCARD_ROLE:
-                                    echo Html::tag('div', Yii::t('xenon', 'Everyone'), ['class' => 'label label-danger']);
+                                    echo Html::tag('div', Yii::t('filescatalog', 'Everyone'), ['class' => 'label label-danger']);
                                     break;
                                 case AccessControl::LOGGED_IN_USERS:
-                                    echo Html::tag('div', Yii::t('xenon', 'All logged in'), ['class' => 'label label-warning']);
+                                    echo Html::tag('div', Yii::t('filescatalog', 'All logged in'), ['class' => 'label label-warning']);
                                     break;
                                 case AccessControl::DUMMY_ROLE:
-                                    echo Html::tag('strong', Yii::t('xenon', 'User'))
+                                    echo Html::tag('strong', Yii::t('filescatalog', 'User'))
                                         . ": " . $item->user_id;
                                     break;
                                 default:
-                                    echo Html::tag('strong', Yii::t('xenon', 'Role'))
+                                    echo Html::tag('strong', Yii::t('filescatalog', 'Role'))
                                         . ": " . Html::encode($item->role);
                                     break;
                             }
@@ -117,13 +126,13 @@ use yii\helpers\Html;
                             <?= CrudStatus::widget(['model' => $item]) ?>
                         </div>
                         <div class="col-sm-4">
-                            <?= Html::a(Yii::t('xenon', 'Delete'), [
+                            <?= Html::a(Yii::t('filescatalog', 'Delete'), [
                                 'remove-acl',
                             ], [
                                 'class' => 'pull-right',
                                 'data' => [
                                     'method' => 'post',
-                                    'confirm' => Yii::t('xenon', 'Confirm deletetion'),
+                                    'confirm' => Yii::t('filescatalog', 'Confirm deletion'),
                                     'params' => [
                                         'inode_id' => $item->inode_id,
                                         'role' => $item->role,

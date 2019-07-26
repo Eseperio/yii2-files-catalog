@@ -18,6 +18,8 @@ use eseperio\filescatalog\actions\PropertiesAction;
 use eseperio\filescatalog\actions\RemoveACL;
 use eseperio\filescatalog\actions\UploadAction;
 use eseperio\filescatalog\actions\ViewAction;
+use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\models\Directory;
@@ -50,7 +52,7 @@ class DefaultController extends \yii\web\Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['upload', 'new-folder', 'remove-acl','delete'],
+                        'actions' => ['upload', 'new-folder', 'remove-acl', 'delete'],
                         'roles' => ['@'],
                     ],
                     [
@@ -132,7 +134,12 @@ class DefaultController extends \yii\web\Controller
         if (($model = $query->one()) == null)
             throw new NotFoundHttpException();
 
-        AclHelper::canRead($model);
+        if ($module->enableACL) {
+            $aclModel = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original : $model;
+            if (!AclHelper::canRead($aclModel))
+                throw new FilexAccessDeniedException();
+        }
+
 
         return $model;
     }
