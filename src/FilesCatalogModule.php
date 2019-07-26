@@ -16,7 +16,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\ArrayHelper;
 use yii\validators\FileValidator;
-use yii\web\ForbiddenHttpException;
+use yii\web\ForbiddenHttpException as ForbiddenHttpExceptionAlias;
 use yii\web\NotFoundHttpException;
 
 class FilesCatalogModule extends Module
@@ -193,19 +193,30 @@ class FilesCatalogModule extends Module
     /**
      * @var string Exception to be throw when a user can not view an inode.
      */
-    public $aclException = ForbiddenHttpException::class;
+    public $aclException = ForbiddenHttpExceptionAlias::class;
+    /**
+     * @var string random string to be used on sensitive actions
+     */
+    public $salt;
     /**
      * @inheritdoc
      */
     public function init()
     {
         if ($this->identityClass === null) {
-            throw new InvalidConfigException('User::identityClass must be set.');
+            throw new InvalidConfigException(__CLASS__.'::identityClass must be set.');
+        }
+
+        if ($this->salt === null) {
+            throw new InvalidConfigException(__CLASS__.'::salt must be set.');
         }
         $this->registerTranslations();
         parent::init();
     }
 
+    /**
+     * registers translation messages in the app
+     */
     public function registerTranslations()
     {
         Yii::$app->i18n->translations['filescatalog'] = [

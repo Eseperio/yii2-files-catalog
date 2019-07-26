@@ -16,9 +16,8 @@ use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 
-class ViewAction extends Action
+class DeleteAction extends Action
 {
     use ModuleAwareTrait;
     /**
@@ -28,37 +27,16 @@ class ViewAction extends Action
 
     public function run()
     {
-
-
         $model = $this->controller->findModel(Yii::$app->request->get('uuid'), File::class);
         $versions = $model->versions;
 
         if (!empty($versions) && is_array($versions) && !Yii::$app->request->get('original', false))
             $model = end($versions);
 
-        /**
-         * $tag
-         *  null: No tag available. Display download button
-         *  false: Files does not exist. Display error message.
-         */
-        $tag = null;
+        $parentUuid = $model->getParent()->select('uuid')->scalar();
 
-        if (!$model->fileExists()) {
-            $tag = false;
-        }
 
-        $allowedMimes = $this->module->browserInlineMimeTypes;
-        if (is_null($tag) && array_key_exists($model->mime, $allowedMimes)
-            && $model->filesize < $this->module->maxInlineFileSize) {
-            $tagName = $allowedMimes[$model->mime];
-            $tag = $this->getTag($tagName, $model->getContentAsBase64(), $model);
-        }
 
-        return $this->controller->render('view', [
-            'model' => $model,
-            'tag' => $tag,
-            'checkFilesIntegrity' => $this->module->checkFilesIntegrity,
-        ]);
 
     }
 

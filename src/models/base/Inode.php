@@ -279,4 +279,5 @@ class Inode extends ActiveRecord
     {
         return $this->hasMany(AccessControl::class, ['inode_id' => 'id']);
     }
+
 }

@@ -18,6 +18,7 @@
 
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\InodePermissionsForm;
+use eseperio\filescatalog\widgets\CrudStatus;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
@@ -48,7 +49,10 @@ use yii\helpers\Html;
                 <?= $form->field($accessControlFormModel, 'user_id')->textInput(['type' => 'number']);
                 ?>
             </div>
-            <div class="col-sm-12">
+            <div class="col-sm-12 filex-role-input">
+                <p><?= Yii::t('xenon', 'You can use also the wildcard {wildcard} to give access to everyone.', [
+                        'wildcard' => Html::tag('strong', AccessControl::WILDCARD_ROLE,['class'=>'label label-info'])
+                    ]) ?></p>
                 <?= $form->field($accessControlFormModel, 'role', [
                     'options' => ['class' => 'form-group collapse']
                 ])->textInput();
@@ -76,20 +80,22 @@ use yii\helpers\Html;
                     <div class="row">
 
                         <div class="col-sm-4">
-                            <?php if ($item->role !== AccessControl::DUMMY_ROLE): ?>
-                                <strong><?= Yii::t('xenon', 'Role') ?>:</strong>  <?= $item->role ?>
+                            <?php if ($item->role === AccessControl::WILDCARD_ROLE): ?>
+                                <div class="label label-warning"><?= Yii::t('xenon', 'EVERYONE') ?></div>
+                            <?php elseif ($item->role !== AccessControl::DUMMY_ROLE): ?>
+                                <strong><?= Yii::t('xenon', 'Role') ?>
+                                    :</strong>  <?= Html::encode($item->role) ?>
                             <?php else: ?>
                                 <strong><?= Yii::t('xenon', 'User') ?>:</strong>
                                 <?= $item->user_id ?>
                             <?php endif; ?>
                         </div>
                         <div class="col-sm-4">
-                            <?= \eseperio\filescatalog\widgets\CrudStatus::widget(['model' => $item]) ?>
+                            <?= CrudStatus::widget(['model' => $item]) ?>
                         </div>
                         <div class="col-sm-4">
                             <?= Html::a(Yii::t('xenon', 'Delete'), [
                                 'remove-acl',
-
                             ], [
                                 'class' => 'pull-right',
                                 'data' => [

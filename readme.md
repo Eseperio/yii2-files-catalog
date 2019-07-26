@@ -24,6 +24,21 @@ Then run migration
 php yii migrate/up --migrationPath=@vendor/eseperio/yii2-files-catalog/src/migrations
 ```
 
+Add the module to your modules configuration
+```
+'modules' => [
+     'filex' => [
+            'class' => \eseperio\filescatalog\FilesCatalogModule::class,
+            'salt' => 'yourrandomstringhere'
+            'identityClass' => 'youridentity/classname',
+            'administrators' => ['adminusername']
+            // 'administratorPermissionName' => ['permissionname']
+        ]
+      ]
+
+```
+
+
 To manage access control list, add administrators to module configuration.
 ## Versioning.
 
@@ -96,12 +111,13 @@ There is a default controller with the following actions.
 |`browserInlineMimeTypes`| @var array list of the mimetypes that can be represented directly in browser with their corresponding tag||
 |`enableACL`| @var bool whether enable access control list|true|
 |`administrators`| List of roles or usernames that can manage acl|\['admin'\]|
-|`aclException`| Classname of the exception to be thrown when user can access an inode|
+|`aclException`| Classname of the exception to be thrown when user can access an inode|`ForbiddenHttpException::class`|
 |`defaultACLmask`|Default value for access control crud mask when no one has been defined|4|
 |`maxInlineFileSize`| Since this module relies on Flysystem, you can not have a direct link to the file, so in order to preview images or mp4 videos they are converted to base64. This number limits the maximun size allowed for a file to be embedded. @var int max inline file size in bytes. Defaults to 10Mb|10000000|
 |`checkFilesIntegrity`| @var bool whether save file hashes in database and check integrity everytime a file is required.   In large filesystems it can make the database grow significantly.|true|
 |`allowVersioning`| @var bool whether allow multiple versions of a file.|true|
 |`identityClass`|@var string the class name of the [[identity]] object.|null|
+|`salt`|String to be used as hash salt on sensitive operations, like delete|null|
 
 
 

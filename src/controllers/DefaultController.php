@@ -17,6 +17,7 @@ use eseperio\filescatalog\actions\PropertiesAction;
 use eseperio\filescatalog\actions\RemoveACL;
 use eseperio\filescatalog\actions\UploadAction;
 use eseperio\filescatalog\actions\ViewAction;
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\AccessControl as ACL;
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\models\Directory;
@@ -125,33 +126,7 @@ class DefaultController extends \yii\web\Controller
         if (($model = $query->one()) == null)
             throw new NotFoundHttpException();
 
-        if ($module->enableACL && !$module->isAdmin()) {
-            $user = Yii::$app->get($module->user);
-            $userId = $this->module->getUserId();
-            $aclStatus = false;
-            foreach ($model->accessControlList as $acl) {
-                if ($aclStatus)
-                    continue;
-
-                if (
-                    (
-                        (
-                            $acl->role !== ACL::DUMMY_ROLE && $user->can($acl->role)
-                        )
-                        || $acl->user_id == $userId)
-                    &&
-                    (($acl->crud_mask & ACL::ACTION_READ) === ACL::ACTION_READ)
-                ) {
-                    $aclStatus = true;
-//                    var_dump($acl);
-//                    var_dump("EROS   " . $acl->crud_mask);
-//                    die(var_dump(($acl->crud_mask & ACL::ACTION_READ) === ACL::ACTION_READ));
-                }
-            }
-            if (!$aclStatus) {
-                throw new $module->aclException;
-            }
-        }
+        AclHelper::canRead($model);
 
         return $model;
     }
