@@ -33,6 +33,53 @@ class AclHelper
 
     /**
      * @param $inode
+     * @param $permission
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    private static function can($inode, $permission)
+    {
+        $module = self::getModule();
+
+        if ($module->enableACL && !$module->isAdmin()) {
+            $user = Yii::$app->get($module->user);
+            $userId = $module->getUserId();
+            $grantAccess = false;
+            foreach ($inode->accessControlList as $acl) {
+
+                if (($acl->crud_mask & $permission) !== $permission)
+                    continue;
+
+                switch ($acl->role) {
+                    case AccessControl::WILDCARD_ROLE:
+                        $grantAccess = true;
+                        break;
+                    case AccessControl::LOGGED_IN_USERS:
+                        $grantAccess = !Yii::$app->get($module->user)->getIsGuest();
+                        break;
+                    case AccessControl::DUMMY_ROLE:
+                        $grantAccess = $acl->user_id == $userId;
+                        break;
+                    default:
+                        $grantAccess = $user->can($acl->role);
+                        break;
+                }
+
+                if ($grantAccess)
+                    break;
+            }
+            if (!$grantAccess) {
+                throw new $module->aclException;
+            }
+        }
+
+        return true;
+
+
+    }
+
+    /**
+     * @param $inode
      * @return bool
      */
     public static function canCreate($inode)
@@ -56,39 +103,5 @@ class AclHelper
     public static function canDelete($inode)
     {
         return self::can($inode, AccessControl::ACTION_DELETE);
-    }
-
-    /**
-     * @param $inode
-     * @param $permission
-     * @return bool
-     * @throws \yii\base\InvalidConfigException
-     */
-    private static function can($inode, $permission)
-    {
-        $module = self::getModule();
-
-        if ($module->enableACL && !$module->isAdmin()) {
-            $user = Yii::$app->get($module->user);
-            $userId = $module->getUserId();
-            $aclStatus = false;
-            foreach ($inode->accessControlList as $acl) {
-                if ($aclStatus)
-                    continue;
-
-                if ((($acl->role !== AccessControl::DUMMY_ROLE && $user->can($acl->role))
-                        || $acl->user_id == $userId)
-                    && (($acl->crud_mask & $permission) === $permission)) {
-                    $aclStatus = true;
-                }
-            }
-            if (!$aclStatus) {
-                throw new $module->aclException;
-            }
-        }
-
-        return true;
-
-
     }
 }

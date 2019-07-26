@@ -37,6 +37,7 @@ class AccessControl extends ActiveRecord
     const TYPE_ROLE = 2;
 
     const WILDCARD_ROLE = '*';
+    const LOGGED_IN_USERS = '@';
 
     const ACTION_CREATE = 8;
     const ACTION_READ = 4;
