@@ -175,26 +175,14 @@ class Inode extends ActiveRecord
 
     }
 
-    /**
-     * Prevent deletion of any item that has nested items
-     * @return false|int
-     * @throws UserException
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function delete()
+
+    public function beforeDelete()
     {
         $children = $this->getChildren()->count();
         if ($children > 0)
             throw new UserException(Yii::t('filescatalog', 'This item has nested items and cannot be deleted.'));
 
-        return parent::delete();
-    }
-
-    public function getParentsTree()
-    {
-        $parents = $this->getParents()->asArray()->orderBy('left')->all();
-
+        return parent::beforeDelete();
     }
 
     /**

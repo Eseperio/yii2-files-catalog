@@ -130,4 +130,5 @@ This module use adjacency models concept to manage nesting. That requires extra 
 
 
 #### To do:
-[ ] Check whether new version is of the same type of previous file. Allow disable this via module config.
+- [ ] Check whether new version is of the same type of previous file. Allow disable this via module config.
+- [ ] Improve how different InodeTypes are handled. Currently only File type allows versioning, making it so much different from the other types.

@@ -11,6 +11,7 @@ namespace eseperio\filescatalog\actions;
 
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use eseperio\filescatalog\widgets\IconDisplay;
@@ -31,7 +32,14 @@ class PropertiesAction extends Action
 
     public function run()
     {
-        $model = $this->controller->findModel(Yii::$app->request->get('uuid', false));
+
+
+        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), File::class);
+        $versions = $model->versions;
+
+        if (!empty($versions) && is_array($versions) && !Yii::$app->request->get('original', false))
+            $model = end($versions);
+
         $permModel = new InodePermissionsForm();
         $permModel->inode_id = $model->id;
 

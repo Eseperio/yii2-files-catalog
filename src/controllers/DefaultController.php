@@ -50,8 +50,13 @@ class DefaultController extends \yii\web\Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['upload', 'new-folder', 'remove-acl'],
+                        'actions' => ['upload', 'new-folder', 'remove-acl','delete'],
                         'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['fake'],
+                        'roles' => ['admin'],
                     ],
                 ],
             ],

@@ -29,7 +29,6 @@ class ViewAction extends Action
     public function run()
     {
 
-
         $model = $this->controller->findModel(Yii::$app->request->get('uuid'), File::class);
         $versions = $model->versions;
 

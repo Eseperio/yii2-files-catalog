@@ -20,6 +20,7 @@
 
 
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use yii\helpers\Html;
 
@@ -38,6 +39,11 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
     <div class="col-md-6 <?= $canManageAcl ? "" : "col-md-offset-3" ?>">
         <div class="panel">
             <div class="panel-body">
+                <?php if ($model->type == InodeTypes::TYPE_VERSION): ?>
+                    <div class="alert alert-warning">
+                        <?= Yii::t('xenon', 'This are the properties of this file version.') ?>
+                    </div>
+                <?php endif; ?>
                 <?= \yii\widgets\DetailView::widget([
                     'model' => $model,
                     'options' => ['class' => 'table'],
@@ -45,6 +51,7 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 ]) ?>
             </div>
             <div class="panel-footer clearfix">
+
                 <?php if (!empty($parent)): ?>
                     <?= Html::a(Yii::t('filescatalog', 'Open parent'), ['index', 'uuid' => $parent->uuid], ['class' => 'btn btn-default']) ?>
                 <?php endif; ?>
@@ -67,7 +74,6 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
             <?= $this->render('partials/_acl', [
                 'accessControlFormModel' => $accessControlFormModel,
                 'model' => $model
-
             ]) ?>
         </div>
     <?php endif; ?>

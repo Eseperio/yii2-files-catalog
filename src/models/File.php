@@ -137,6 +137,28 @@ class File extends Inode
     }
 
     /**
+     * @param bool $ensureRealDeletion whether throw an error when realfile can not be deleted
+     * @return false|int
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function delete()
+    {
+        try {
+            $filesystem = $this->module->getStorageComponent();
+            $realPath = $this->getInodeRealPath();
+
+            if ($filesystem->has($realPath)) {
+                $filesystem->delete($realPath);
+            }
+        } catch (\Throwable $e) {
+            Yii::error($e->getMessage());
+        }
+
+        parent::delete();
+    }
+
+    /**
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */

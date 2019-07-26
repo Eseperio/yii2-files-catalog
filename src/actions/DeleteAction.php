@@ -15,6 +15,8 @@ use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
+use yii\base\UserException;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 
 class DeleteAction extends Action
@@ -39,10 +41,9 @@ class DeleteAction extends Action
 
         if (!empty($rcvdHash) && $rcvdHash === $model->deleteHash) {
             $model->delete();
-
             return $this->controller->redirect(['index', 'uuid' => $parentUuid]);
         } else {
-            return $this->controller->goBack();
+            throw new BadRequestHttpException('Could not trust sender');
         }
 
 
