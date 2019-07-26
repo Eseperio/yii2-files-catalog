@@ -14,13 +14,12 @@
 /* @var $this \yii\web\View */
 /* @var $childrenTreeNodes \eseperio\filescatalog\models\base\Inode[] */
 /* @var $filexModule \eseperio\filescatalog\FilesCatalogModule */
+/* @var $attributes array */
 
 /* @var $accessControlFormModel InodePermissionsForm */
 
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
-use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\InodePermissionsForm;
-use eseperio\filescatalog\widgets\IconDisplay;
 use yii\helpers\Html;
 
 FileTypeIconsAsset::register($this);
@@ -41,42 +40,7 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 <?= \yii\widgets\DetailView::widget([
                     'model' => $model,
                     'options' => ['class' => 'table'],
-                    'attributes' => [
-                        'created_at:datetime',
-                        'author_name',
-                        [
-                            'attribute' => 'extension',
-                            'format' => 'raw',
-                            'visible' => $model->type === InodeTypes::TYPE_FILE,
-                            'value' => function ($model) {
-                                $html = IconDisplay::widget([
-                                    'model' => $model,
-                                    'iconSize' => IconDisplay::SIZE_MD
-                                ]);
-
-                                if ($model->type === InodeTypes::TYPE_FILE) {
-                                    $html .= " *." . Html::encode($model->extension);
-                                }
-
-                                return $html;
-                            }
-                        ],
-                        [
-                            'attribute' => 'filesize',
-                            'format' => [
-                                'shortSize',
-                                'decimals' => 0
-
-                            ]
-                        ],
-                        [
-                            'attribute' => 'md5hash',
-                            'visible' => Yii::$app->getModule('filex')->checkFilesIntegrity
-                        ],
-                        'mime',
-                        'uuid',
-//                        'realPath'
-                    ]
+                    'attributes' => $attributes
                 ]) ?>
             </div>
             <div class="panel-footer clearfix">

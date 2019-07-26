@@ -37,35 +37,48 @@ use yii\helpers\Html;
             'id' => 'contact-form',
 
         ]);
-        echo $form->errorSummary($accessControlFormModel);
         echo $form->field($accessControlFormModel, 'inode_id')->hiddenInput()->label(false);
-        echo $form->field($accessControlFormModel, 'type')->radioList([
-            InodePermissionsForm::TYPE_USER => Yii::t('filescatalog', 'User'),
-            InodePermissionsForm::TYPE_ROLE => Yii::t('filescatalog', 'Role'),
-        ]);
+
         ?>
+        <div class="">
+            <?php
+            echo $form->field($accessControlFormModel, 'type')->radioList([
+                InodePermissionsForm::TYPE_USER => Yii::t('filescatalog', 'User'),
+                InodePermissionsForm::TYPE_ROLE => Yii::t('filescatalog', 'Role'),
+            ]);
+            ?>
+        </div>
         <div class="row">
+
             <div class="col-sm-12">
-                <?= $form->field($accessControlFormModel, 'user_id')->textInput(['type' => 'number']);
+                <?= $form->field($accessControlFormModel, 'user_id', [
+                    'options' => ['class' => 'form-group ' . ($accessControlFormModel->type !== InodePermissionsForm::TYPE_USER ? "collapse" : "")]
+                ])->textInput(['type' => 'number']);
                 ?>
             </div>
-            <div class="col-sm-12 filex-role-input">
-                <p><?= Yii::t('xenon', 'You can use also the wildcard {wildcard} to give access to everyone.', [
-                        'wildcard' => Html::tag('strong', AccessControl::WILDCARD_ROLE,['class'=>'label label-info'])
+            <div class="col-sm-12 filex-role-input <?= $accessControlFormModel->type !== InodePermissionsForm::TYPE_ROLE ? "collapse" : "" ?>">
+                <h4><?= Yii::t('xenon', 'Wildcards') ?></h4>
+                <p><?= Yii::t('xenon', '{wildcard} allow everyone access to this item.', [
+                        'wildcard' => Html::tag('strong', AccessControl::WILDCARD_ROLE, ['class' => 'text-info'])
                     ]) ?></p>
-                <?= $form->field($accessControlFormModel, 'role', [
-                    'options' => ['class' => 'form-group collapse']
-                ])->textInput();
+                <p><?= Yii::t('xenon', '{wildcard} allow everyone logged in access to this item.', [
+                        'wildcard' => Html::tag('strong', AccessControl::LOGGED_IN_USERS, ['class' => 'text-info'])
+                    ]) ?></p>
+                <?= $form->field($accessControlFormModel, 'role')->textInput();
                 ?>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <?= $form->field($accessControlFormModel, 'crud')->checkboxList([
+                    AccessControl::ACTION_CREATE => Yii::t('filescatalog', 'Create'),
+                    AccessControl::ACTION_READ => Yii::t('filescatalog', 'Read'),
+                    AccessControl::ACTION_UPDATE => Yii::t('filescatalog', 'Update'),
+                    AccessControl::ACTION_DELETE => Yii::t('filescatalog', 'Delete')
+                ]); ?>
+            </div>
+        </div>
         <?php
-        echo $form->field($accessControlFormModel, 'crud')->checkboxList([
-            AccessControl::ACTION_CREATE => Yii::t('filescatalog', 'Create'),
-            AccessControl::ACTION_READ => Yii::t('filescatalog', 'Read'),
-            AccessControl::ACTION_UPDATE => Yii::t('filescatalog', 'Update'),
-            AccessControl::ACTION_DELETE => Yii::t('filescatalog', 'Delete')
-        ]);
         echo Html::submitButton(Yii::t('filescatalog', 'Add permission'), ['class' => 'btn btn-primary']);
         ActiveForm::end();
         ?>
@@ -80,15 +93,25 @@ use yii\helpers\Html;
                     <div class="row">
 
                         <div class="col-sm-4">
-                            <?php if ($item->role === AccessControl::WILDCARD_ROLE): ?>
-                                <div class="label label-warning"><?= Yii::t('xenon', 'EVERYONE') ?></div>
-                            <?php elseif ($item->role !== AccessControl::DUMMY_ROLE): ?>
-                                <strong><?= Yii::t('xenon', 'Role') ?>
-                                    :</strong>  <?= Html::encode($item->role) ?>
-                            <?php else: ?>
-                                <strong><?= Yii::t('xenon', 'User') ?>:</strong>
-                                <?= $item->user_id ?>
-                            <?php endif; ?>
+                            <?php
+                            switch ($item->role) {
+                                case AccessControl::WILDCARD_ROLE:
+                                    echo Html::tag('div', Yii::t('xenon', 'Everyone'), ['class' => 'label label-danger']);
+                                    break;
+                                case AccessControl::LOGGED_IN_USERS:
+                                    echo Html::tag('div', Yii::t('xenon', 'All logged in'), ['class' => 'label label-warning']);
+                                    break;
+                                case AccessControl::DUMMY_ROLE:
+                                    echo Html::tag('strong', Yii::t('xenon', 'User'))
+                                        . ": " . $item->user_id;
+                                    break;
+                                default:
+                                    echo Html::tag('strong', Yii::t('xenon', 'Role'))
+                                        . ": " . Html::encode($item->role);
+                                    break;
+                            }
+                            ?>
+
                         </div>
                         <div class="col-sm-4">
                             <?= CrudStatus::widget(['model' => $item]) ?>

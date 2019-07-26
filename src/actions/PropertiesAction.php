@@ -10,11 +10,14 @@ namespace eseperio\filescatalog\actions;
 
 
 use eseperio\filescatalog\controllers\DefaultController;
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use eseperio\filescatalog\widgets\IconDisplay;
 use Yii;
 use yii\base\Action;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -48,8 +51,78 @@ class PropertiesAction extends Action
 
         return $this->controller->render('properties', [
             'model' => $model,
-            'accessControlFormModel' => $permModel
+            'accessControlFormModel' => $permModel,
+            'attributes'=> $this->getAttributes($model)
         ]);
 
+    }
+
+
+    public function getAttributes($inode)
+    {
+        switch ($inode->type){
+            case InodeTypes::TYPE_FILE:
+                return $this->getFileAttributes($inode);
+                break;
+            default:
+                return $this->getCommonAttributes($inode);
+                break;
+        }
+    }
+
+    /**
+     * @param $inode
+     * @return array
+     */
+    private function getCommonAttributes($inode): array
+    {
+        return [
+            'created_at:datetime',
+            'author_name',
+            'uuid',
+        ];
+    }
+
+    /**
+     * @param $inode
+     * @return array
+     */
+    private function getFileAttributes($inode): array
+    {
+        return [
+            'created_at:datetime',
+            'author_name',
+            [
+                'attribute' => 'extension',
+                'format' => 'raw',
+                'visible' => $inode->type === InodeTypes::TYPE_FILE,
+                'value' => function ($model) {
+                    $html = IconDisplay::widget([
+                        'model' => $model,
+                        'iconSize' => IconDisplay::SIZE_MD
+                    ]);
+
+                    if ($model->type === InodeTypes::TYPE_FILE) {
+                        $html .= " *." . Html::encode($model->extension);
+                    }
+
+                    return $html;
+                }
+            ],
+            [
+                'attribute' => 'filesize',
+                'format' => [
+                    'shortSize',
+                    'decimals' => 0
+
+                ]
+            ],
+            [
+                'attribute' => 'md5hash',
+                'visible' => Yii::$app->getModule('filex')->checkFilesIntegrity
+            ],
+            'mime',
+            'uuid',
+        ];
     }
 }

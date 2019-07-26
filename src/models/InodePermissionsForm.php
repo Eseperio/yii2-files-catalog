@@ -30,7 +30,6 @@ class InodePermissionsForm extends AccessControl
     {
         $rules = array_merge_recursive(parent::rules(), [
             [['user_id', 'inode_id'], 'integer'],
-
             ['role', 'string'],
             [['inode_id'], 'required'],
             [['user_id'], 'required', 'when' => function ($model) {
@@ -80,7 +79,7 @@ class InodePermissionsForm extends AccessControl
         function filexCheckType(){
     let sel= document.querySelector('input[name="{$typeInputFormName}"]:checked').value == {$typeRole};
     document.querySelector('.field-{$userIdInputFormId}').classList.toggle('collapse',sel);
-    document.querySelector('.field-{$roleInputFormId}').classList.toggle('collapse',!sel);
+    document.querySelector('.filex-role-input').classList.toggle('collapse',!sel);
         }
         
 
