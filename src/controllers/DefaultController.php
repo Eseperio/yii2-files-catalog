@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog\controllers;
 
 
+use eseperio\filescatalog\actions\DeleteAction;
 use eseperio\filescatalog\actions\DownloadAction;
 use eseperio\filescatalog\actions\FakeAction;
 use eseperio\filescatalog\actions\IndexAction;
@@ -18,13 +19,11 @@ use eseperio\filescatalog\actions\RemoveACL;
 use eseperio\filescatalog\actions\UploadAction;
 use eseperio\filescatalog\actions\ViewAction;
 use eseperio\filescatalog\helpers\AclHelper;
-use eseperio\filescatalog\models\AccessControl as ACL;
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Symlink;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
-use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -61,6 +60,7 @@ class DefaultController extends \yii\web\Controller
                 'actions' => [
                     'remove-acl' => ['post'],
                     'upload' => ['post'],
+                    'delete' => ['post'],
                 ],
             ],
         ];
@@ -86,6 +86,7 @@ class DefaultController extends \yii\web\Controller
             'properties' => ['class' => PropertiesAction::class],
             'view' => ['class' => ViewAction::class],
             'download' => ['class' => DownloadAction::class],
+            'delete' => ['class' => DeleteAction::class],
             'remove-acl' => ['class' => RemoveACL::class],
             'fake' => ['class' => FakeAction::class]
         ];

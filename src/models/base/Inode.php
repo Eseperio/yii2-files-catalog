@@ -45,6 +45,7 @@ use yii\helpers\FileHelper;
  * @property int $updated_by
  * @property string $author_name
  * @property string $editor_name
+ * @property string $deleteHash
  * @property AccessControl[] $accessControlList
  *
  * Methods inherited from nested sets behavior:
@@ -259,6 +260,7 @@ class Inode extends ActiveRecord
     public function getRealPath()
     {
         $path = join(DIRECTORY_SEPARATOR, $this->getParents()->asArray()->select('name')->column());
+
         return $path;
     }
 
@@ -280,4 +282,23 @@ class Inode extends ActiveRecord
         return $this->hasMany(AccessControl::class, ['inode_id' => 'id']);
     }
 
+    /**
+     * @return string the hash required to confirm deletion
+     */
+    public function getDeleteHash()
+    {
+        return $this->getSecureHash('delete');
+    }
+
+    /**
+     * Returns a secure hash for an specific action. This must be used to check whether a request
+     * is valid for this file.
+     * @param $action
+     * @return string
+     * @internal
+     */
+    protected function getSecureHash($action)
+    {
+        return hash('SHA3-256', $this->id . $action . $this->module->salt . $this->uuid);
+    }
 }

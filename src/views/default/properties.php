@@ -18,6 +18,7 @@
 
 /* @var $accessControlFormModel InodePermissionsForm */
 
+
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use yii\helpers\Html;
@@ -50,6 +51,15 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 <?= Html::a(Yii::t('filescatalog', 'View contents'), ['index', 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>
             </div>
         </div>
+        <?= Html::a(Yii::t('xenon', 'Delete'), ['delete', 'uuid' => $model->uuid], [
+            'class' => 'text-danger',
+            'data' => [
+                'method' => 'post',
+                'params' => [
+                    $filexModule->secureHashParamName => $model->deleteHash
+                ]
+            ]
+        ]) ?>
     </div>
     <?php /** @var \eseperio\filescatalog\FilesCatalogModule $filexModule */
     if ($canManageAcl): ?>
@@ -61,5 +71,4 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
             ]) ?>
         </div>
     <?php endif; ?>
-
 </div>

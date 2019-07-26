@@ -118,6 +118,8 @@ There is a default controller with the following actions.
 |`allowVersioning`| @var bool whether allow multiple versions of a file.|true|
 |`identityClass`|@var string the class name of the [[identity]] object.|null|
 |`salt`|String to be used as hash salt on sensitive operations, like delete|null|
+|`secureHashParamName`|name of the parameter to be used when sending and receiving secure hash|fxsh|
+|`secureHashAlgorithm`| which algorithm use for secure hash generation| SHA3-256|
 
 
 

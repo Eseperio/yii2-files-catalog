@@ -17,7 +17,6 @@ use yii\base\Module;
 use yii\helpers\ArrayHelper;
 use yii\validators\FileValidator;
 use yii\web\ForbiddenHttpException as ForbiddenHttpExceptionAlias;
-use yii\web\NotFoundHttpException;
 
 class FilesCatalogModule extends Module
 {
@@ -199,16 +198,24 @@ class FilesCatalogModule extends Module
      */
     public $salt;
     /**
+     * @var string name of the parameter to be used when sending and receiving secure hash
+     */
+    public $secureHashParamName = "fxsh";
+    /**
+     * @var string which algorithm use for secure hash generation
+     */
+    public $secureHashAlgorithm = 'SHA3-256';
+    /**
      * @inheritdoc
      */
     public function init()
     {
         if ($this->identityClass === null) {
-            throw new InvalidConfigException(__CLASS__.'::identityClass must be set.');
+            throw new InvalidConfigException(__CLASS__ . '::identityClass must be set.');
         }
 
         if ($this->salt === null) {
-            throw new InvalidConfigException(__CLASS__.'::salt must be set.');
+            throw new InvalidConfigException(__CLASS__ . '::salt must be set.');
         }
         $this->registerTranslations();
         parent::init();

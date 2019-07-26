@@ -38,6 +38,7 @@ class PropertiesAction extends Action
         if ($permModel->load(Yii::$app->request->post())) {
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
+
                 return ActiveForm::validate($permModel);
             }
 
@@ -52,35 +53,26 @@ class PropertiesAction extends Action
         return $this->controller->render('properties', [
             'model' => $model,
             'accessControlFormModel' => $permModel,
-            'attributes'=> $this->getAttributes($model)
+            'attributes' => $this->getAttributes($model),
         ]);
 
     }
 
-
+    /**
+     * @param $inode
+     * @return array with the attributes to be displayed on detailview
+     */
     public function getAttributes($inode)
     {
-        switch ($inode->type){
+        switch ($inode->type) {
             case InodeTypes::TYPE_FILE:
+            case InodeTypes::TYPE_VERSION:
                 return $this->getFileAttributes($inode);
                 break;
             default:
                 return $this->getCommonAttributes($inode);
                 break;
         }
-    }
-
-    /**
-     * @param $inode
-     * @return array
-     */
-    private function getCommonAttributes($inode): array
-    {
-        return [
-            'created_at:datetime',
-            'author_name',
-            'uuid',
-        ];
     }
 
     /**
@@ -122,6 +114,19 @@ class PropertiesAction extends Action
                 'visible' => Yii::$app->getModule('filex')->checkFilesIntegrity
             ],
             'mime',
+            'uuid',
+        ];
+    }
+
+    /**
+     * @param $inode
+     * @return array
+     */
+    private function getCommonAttributes($inode): array
+    {
+        return [
+            'created_at:datetime',
+            'author_name',
             'uuid',
         ];
     }

@@ -35,7 +35,15 @@ class DeleteAction extends Action
 
         $parentUuid = $model->getParent()->select('uuid')->scalar();
 
+        $rcvdHash = Yii::$app->request->post($this->module->secureHashParamName);
 
+        if (!empty($rcvdHash) && $rcvdHash === $model->deleteHash) {
+            $model->delete();
+
+            return $this->controller->redirect(['index', 'uuid' => $parentUuid]);
+        } else {
+            return $this->controller->goBack();
+        }
 
 
     }
