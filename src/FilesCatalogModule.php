@@ -211,7 +211,22 @@ class FilesCatalogModule extends Module
      * @var string which algorithm use for secure hash generation
      */
     public $secureHashAlgorithm = 'SHA3-256';
-
+    /**
+     * @var string css classname for the new folder icon
+     */
+    public $newFolderIconclass= '';
+    /**
+     * @var string css classname for the properties icon
+     */
+    public $propertiesIconClass= '';
+    /**
+     * @var string css classname for the add files icon
+     */
+    public $addFilesIconClass= '';
+    /**
+     * @var string whether display labels in breadcrumb buttons
+     */
+    public $showBreadcrumbButtonLabels = false;
     /**
      * @inheritdoc
      */
