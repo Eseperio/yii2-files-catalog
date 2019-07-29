@@ -16,6 +16,7 @@
 
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\helpers\Helper;
 use eseperio\filescatalog\widgets\IconDisplay;
 use eseperio\filescatalog\widgets\Uploader;
@@ -33,21 +34,20 @@ FileTypeIconsAsset::register($this);
             <?php if (Yii::$app->controller->action->id == "properties"): ?>
                 <?= Html::a(Yii::t('filescatalog', 'Back'), Url::previous(), [
                     'class' => 'btn btn-default'
-                ]) ?>
-            <?php elseif (!empty($parents)): ?>
-                <?php
-                ?>
-                <?= Html::a('..', ['index', 'uuid' => end($parents)['uuid']]) ?> /
-            <?php endif; ?>
-
-            <?php if ($model->type === InodeTypes::TYPE_VERSION): ?>
+                ]);
+            elseif (!empty($parents)):
+                $parent = end($parents);
+                if (AclHelper::canRead($parent))
+                    echo Html::a('..', ['index', 'uuid' => $parent['uuid']]) . "/";
+            endif;
+            if ($model->type === InodeTypes::TYPE_VERSION): ?>
                 <small class=""
-                       title="<?= $model->original->humanName ?>"><?= $model->original->getHumanName(15) ?></small>
+                       title="<?= Yii::t('xenon', 'Original') . ": " . $model->original->humanName ?>"><?= $model->original->getHumanName(12) ?></small>
             <?php endif; ?>
             <?= IconDisplay::widget([
                 'model' => $model
             ]) ?>
-            <span title="<?= $model->humanName ?>"><?= $model->getHumanName(30) ?></span>
+            <span title="<?= $model->humanName ?>"><?= $model->getHumanName(23) ?></span>
         </h1>
         <p class="text-muted"><?= join('/', ArrayHelper::map($parents, 'uuid', function ($item) {
                 return Html::a(Helper::humanize($item['name']), ['index', 'uuid' => $item['uuid']]);

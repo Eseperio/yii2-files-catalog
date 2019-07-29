@@ -26,6 +26,7 @@ use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Symlink;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -75,8 +76,12 @@ class DefaultController extends \yii\web\Controller
 
     public function beforeAction($action)
     {
-        if (\Yii::$app->request->isGet)
-            Url::remember();
+        if (Yii::$app->request->isGet) {
+            $previous = Yii::$app->user->getReturnUrl();
+            $current = Url::to();
+            if (!$previous !== $current)
+                Yii::$app->user->setReturnUrl($current);
+        }
 
         return parent::beforeAction($action);
     }

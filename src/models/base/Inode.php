@@ -133,6 +133,7 @@ class Inode extends ActiveRecord
             'md5hash' => Yii::t('filescatalog', 'MD5 Checksum'),
             'realPath' => Yii::t('filescatalog', 'Real path'),
             'filesize' => Yii::t('filescatalog', 'File size'),
+            'humanName' => Yii::t('filescatalog', 'Human name'),
         ];
     }
 

@@ -93,6 +93,7 @@ class PropertiesAction extends Action
     private function getFileAttributes($inode): array
     {
         return [
+            'humanName:text',
             'created_at:datetime',
             'author_name',
             [
