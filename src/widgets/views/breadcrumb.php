@@ -72,18 +72,22 @@ FileTypeIconsAsset::register($this);
 
                         echo Html::a($newFolderIcon . " " . ($showLabels ? $newFolderLabel : ""), ['new-folder', 'uuid' => $model->uuid], [
                             'class' => 'btn btn-default',
-                            'title' => $newFolderLabel
+                            'title' => $newFolderLabel,
+                            'data-toggle'=>'tooltip'
                         ]);
                     if ($showPropertiesBtn)
                         echo Html::a($propertiesIcon . " " . ($showLabels ? $propertiesLabel : ""), ['properties', 'uuid' => $model->uuid], [
                             'class' => 'btn btn-default',
-                            'title' => $propertiesLabel
+                            'title' => $propertiesLabel,
+                            'data-toggle'=>'tooltip'
+
                         ])
                     ?>
                     <?php if (AclHelper::cantWrite($model)): ?>
                         <?= Uploader::widget([
                             'targetUuid' => $model->uuid,
                             'pjaxId' => $pjaxId,
+
                         ]) ?>
                     <?php endif; ?>
 

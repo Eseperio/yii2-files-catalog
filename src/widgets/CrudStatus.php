@@ -14,6 +14,7 @@ use eseperio\filescatalog\models\base\Inode;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\Widget;
+use yii\helpers\Html;
 
 class CrudStatus extends Widget
 {

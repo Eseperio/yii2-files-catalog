@@ -124,7 +124,7 @@ There is a default controller with the following actions.
 |`newFolderIconclass`|css classname for the new folder icon |'glyphicon glyphicon-folder-open';
 |`propertiesIconClass`|css classname for the properties icon |glyphicon glyphicon-list-alt
 |`addFilesIconClass`|css classname for the new add files icon |glyphicon glyphicon-cloud-upload|
-|`showBreadcrumbButtonLabels`|whether display labels in breadcrumb buttons|'glyphicon glyphicon-folder-open';
+|`showBreadcrumbButtonLabels`|whether display labels in breadcrumb buttons|false|
   
 
 

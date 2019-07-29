@@ -126,7 +126,7 @@ JS
             progress + '%'
         );
         if(progress>=100){
-            
+            console.log(progress);
             $('{$this->progressBarSelector}').hide();
                         {$pjaxSnippet}
 
@@ -137,7 +137,7 @@ JS
             'fileuploadstart' => new JsExpression(<<<JS
           function (e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
-        $('#{$this->id}-progress').show();
+        $('{$this->progressBarSelector}').show();
     }
 JS
             ),
