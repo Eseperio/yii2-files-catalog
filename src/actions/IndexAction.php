@@ -11,6 +11,7 @@ namespace eseperio\filescatalog\actions;
 
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
@@ -41,7 +42,8 @@ class IndexAction extends Action
             $model = Inode::find()
                 ->onlyRoot()
                 ->one();
-            AclHelper::canRead($model);
+            if (!AclHelper::canRead($model))
+                throw new FilexAccessDeniedException();
         }
 
         if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot())
