@@ -214,15 +214,15 @@ class FilesCatalogModule extends Module
     /**
      * @var string css classname for the new folder icon
      */
-    public $newFolderIconclass= '';
+    public $newFolderIconclass= 'glyphicon glyphicon-folder-open';
     /**
      * @var string css classname for the properties icon
      */
-    public $propertiesIconClass= '';
+    public $propertiesIconClass= 'glyphicon glyphicon-list-alt';
     /**
      * @var string css classname for the add files icon
      */
-    public $addFilesIconClass= '';
+    public $addFilesIconClass= 'glyphicon glyphicon-cloud-upload';
     /**
      * @var string whether display labels in breadcrumb buttons
      */

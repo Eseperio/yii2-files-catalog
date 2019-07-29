@@ -5,14 +5,19 @@
  *
  *
  */
+/* @var bool $showLabels */
 
-
+/* @var \eseperio\filescatalog\FilesCatalogModule $filexModule */
 /* @var $this \yii\web\View */
 /* @var $model \eseperio\filescatalog\models\base\Inode|\eseperio\filescatalog\models\Directory|\eseperio\filescatalog\models\File|\eseperio\filescatalog\models\Symlink */
 /* @var $pjaxId string */
 /* @var $showPropertiesBtn boolean */
-
+/* @var string $newFolderIcon */
+/* @var string $newFolderLabel */
 /* @var $parents array */
+/* @var $propertiesLabel string */
+
+/* @var string $propertiesIcon */
 
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
@@ -64,9 +69,16 @@ FileTypeIconsAsset::register($this);
                 <div class="btn-group">
                     <?php
                     if (AclHelper::cantWrite($model))
-                        echo Html::a(Yii::t('filescatalog', 'New folder'), ['new-folder', 'uuid' => $model->uuid], ['class' => 'btn btn-default']);
+
+                        echo Html::a($newFolderIcon . " " . ($showLabels ? $newFolderLabel : ""), ['new-folder', 'uuid' => $model->uuid], [
+                            'class' => 'btn btn-default',
+                            'title' => $newFolderLabel
+                        ]);
                     if ($showPropertiesBtn)
-                        echo Html::a(Yii::t('filescatalog', 'Properties'), ['properties', 'uuid' => $model->uuid], ['class' => 'btn btn-default'])
+                        echo Html::a($propertiesIcon . " " . ($showLabels ? $propertiesLabel : ""), ['properties', 'uuid' => $model->uuid], [
+                            'class' => 'btn btn-default',
+                            'title' => $propertiesLabel
+                        ])
                     ?>
                     <?php if (AclHelper::cantWrite($model)): ?>
                         <?= Uploader::widget([

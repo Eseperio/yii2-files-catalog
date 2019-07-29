@@ -160,7 +160,10 @@ JS
         echo $this->render($this->uploadButtonTemplateView, [
             'input' => $input,
             'id' => $this->id,
-            'isVersion' => isset($this->model->uuid) && $this->module->allowVersioning
+            'isVersion' => isset($this->model->uuid) && $this->module->allowVersioning,
+            'addFilesIconClass' => $this->module->addFilesIconClass,
+            'showLabels' => $this->module->showBreadcrumbButtonLabels,
+
         ]);
 
         $this->registerClientScript();

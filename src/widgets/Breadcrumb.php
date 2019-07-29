@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog\widgets;
 
 
+use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
@@ -37,12 +38,9 @@ class Breadcrumb extends Widget
     public function run()
     {
         $parents = $this->model->getParents()->all();
-        $newFolderLabel = Yii::t('xenon', 'New folder');
-        $propertiesLabel = Yii::t('xenon', 'Properties');
-        $addFilesLabel = Yii::t('xenon', 'Add files');
-
-
-        $showLabels = $this->module->showBreadcrumbButtonLabels;
+        $newFolderLabel = Yii::t('filescatalog', 'New folder');
+        $propertiesLabel = Yii::t('filescatalog', 'Properties');
+        $addFilesLabel = Yii::t('filescatalog', 'Add files');
 
 
         return $this->render('breadcrumb', [
@@ -50,6 +48,13 @@ class Breadcrumb extends Widget
             'parents' => $parents,
             'pjaxId' => $this->pjaxId,
             'showPropertiesBtn' => $this->showPropertiesBtn,
+            'showLabels' => $this->module->showBreadcrumbButtonLabels,
+            'newFolderLabel' => $newFolderLabel,
+            'propertiesLabel' => $propertiesLabel,
+            'addFilesLabel' => $addFilesLabel,
+            'newFolderIcon' => Html::tag('i', '', ['class' => $this->module->newFolderIconclass]),
+            'propertiesIcon' => Html::tag('i', '', ['class' => $this->module->propertiesIconClass]),
+
 
         ]);
     }
