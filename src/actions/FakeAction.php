@@ -405,14 +405,15 @@ class FakeAction extends Action
 
 
         $faker = Factory::create('es_ES');
-        foreach (range(0, 5) as $item) {
+        $firstModel= null;
+        foreach (range(0, 150) as $item) {
             $modelb = new Directory();
             $modelb->name = $faker->words(3, true);
             $modelb->parent_id = $model->id;
             if (!$modelb->appendTo($model)->save()) {
                 throw new InvalidArgumentException('Something went wrong ' . nl2br(print_r($model->errors, true)));
             } else {
-                if ($item > 25)
+                if ($item > 15)
                     $model = clone($modelb);
             }
 

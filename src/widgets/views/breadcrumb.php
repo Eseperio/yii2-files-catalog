@@ -42,16 +42,20 @@ FileTypeIconsAsset::register($this);
             endif;
             if ($model->type === InodeTypes::TYPE_VERSION): ?>
                 <small class=""
-                       title="<?= Yii::t('xenon', 'Original') . ": " . $model->original->humanName ?>"><?= $model->original->getHumanName(12) ?></small>
+                       title="<?= Yii::t('filescatalog', 'Original') . ": " . $model->original->humanName ?>"><?= $model->original->getHumanName(12) ?></small>
             <?php endif; ?>
             <?= IconDisplay::widget([
                 'model' => $model
             ]) ?>
             <span title="<?= $model->humanName ?>"><?= $model->getHumanName(23) ?></span>
         </h1>
-        <p class="text-muted"><?= join('/', ArrayHelper::map($parents, 'uuid', function ($item) {
+        <p class="text-muted">
+            <?php if (!empty($parents) && AclHelper::canRead(end($parents))): ?>
+            <?= join('/', ArrayHelper::map($parents, 'uuid', function ($item) {
                 return Html::a(Helper::humanize($item['name']), ['index', 'uuid' => $item['uuid']]);
             })) ?></p>
+        <?php endif; ?>
+
     </div>
     <div class="col-sm-5 text-right">
         <?php if ($model->type == InodeTypes::TYPE_DIR): ?>
@@ -59,15 +63,18 @@ FileTypeIconsAsset::register($this);
             <div class="h1">
                 <div class="btn-group">
                     <?php
-                    echo Html::a(Yii::t('filescatalog', 'New folder'), ['new-folder', 'uuid' => $model->uuid], ['class' => 'btn btn-default']);
+                    if (AclHelper::cantWrite($model))
+                        echo Html::a(Yii::t('filescatalog', 'New folder'), ['new-folder', 'uuid' => $model->uuid], ['class' => 'btn btn-default']);
                     if ($showPropertiesBtn)
                         echo Html::a(Yii::t('filescatalog', 'Properties'), ['properties', 'uuid' => $model->uuid], ['class' => 'btn btn-default'])
                     ?>
+                    <?php if (AclHelper::cantWrite($model)): ?>
+                        <?= Uploader::widget([
+                            'targetUuid' => $model->uuid,
+                            'pjaxId' => $pjaxId,
+                        ]) ?>
+                    <?php endif; ?>
 
-                    <?= Uploader::widget([
-                        'targetUuid' => $model->uuid,
-                        'pjaxId' => $pjaxId,
-                    ]) ?>
                 </div>
             </div>
         <?php endif; ?>

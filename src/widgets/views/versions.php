@@ -45,7 +45,12 @@ use yii\helpers\Html;
 
                 <?php else: ?>
                     <?= Html::tag('strong', $version->getHumanName(30)); ?>
-                    <?= Html::tag('span', "(" . Yii::$app->formatter->asDate($version->created_at) . ")", ['class' => 'text-muted']) ?>
+                    <?= Html::tag('span', "(" . Yii::$app->formatter->asDate($version->created_at)
+                        . " "
+                        . Yii::t('xenon', 'by')
+                        . " "
+                        . Html::encode($model->author_name)
+                        . ")", ['class' => 'text-muted']) ?>
                 <?php endif; ?>
             </li>
         <?php endforeach; ?>

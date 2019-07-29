@@ -10,6 +10,7 @@ namespace eseperio\filescatalog\actions;
 
 
 use eseperio\filescatalog\controllers\DefaultController;
+use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
@@ -25,7 +26,8 @@ class DownloadAction extends Action
 
     public function run()
     {
-        $model = $this->controller->findModel(Yii::$app->request->get('uuid', false));
+        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), File::class);
+
         $stream = $model->getStream();
         Yii::$app->response->sendStreamAsFile($stream, $model->name . "." . $model->extension);
     }

@@ -53,7 +53,7 @@ class UploadAction extends Action
 
         $targetNode = $this->controller->findModel($targetUuid, File::class);
 
-        AclHelper::canCreate($targetNode);
+        AclHelper::cantWrite($targetNode);
 
         if ($targetNode->type == InodeTypes::TYPE_FILE) {
             $realParent = $targetNode->getParent()->one();

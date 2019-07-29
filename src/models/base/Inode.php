@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\models\base;
 
 
-use app\components\StringHelper;
+use yii\helpers\StringHelper;
 use eseperio\filescatalog\behaviors\FilexBehavior;
 use eseperio\filescatalog\FilesCatalogModule;
 use eseperio\filescatalog\helpers\Helper;
@@ -19,7 +19,6 @@ use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListBehavior;
 use Ramsey\Uuid\Uuid;
 use Yii;
-use yii\base\UserException;
 use yii\behaviors\SluggableBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
@@ -56,14 +55,14 @@ use yii\helpers\FileHelper;
  * @method  getParentsOrdered($depth = null)
  * @method  InodeQuery getParent()
  * @method  InodeQuery getRoot()
- * @method  getDescendants($depth = null, $andSelf = false)
+ * @method  InodeQuery getDescendants($depth = null, $andSelf = false)
  * @method  getDescendantsOrdered($depth = null)
  * @method  InodeQuery getChildren()
  * @method  InodeQuery getLeaves($depth = null)
  * @method  getPrev()
  * @method  getNext()
  * @method  getParentsIds($depth = null, $cache = true)
- * @method  getDescendantsIds($depth = null, $flat = false, $cache = true)
+ * @method  array getDescendantsIds($depth = null, $flat = false, $cache = true)
  * @method  populateTree($depth = null)
  * @method  isRoot()
  * @method  isChildOf($node)
@@ -81,7 +80,6 @@ class Inode extends ActiveRecord
 {
 
     use ModuleAwareTrait;
-
 
     /**
      * {@inheritdoc}
@@ -144,6 +142,14 @@ class Inode extends ActiveRecord
         ];
     }
 
+    /**
+     * @return string used to confir deletion when removing non empty folders.
+     */
+    public function getDeletionConfirmText()
+    {
+        return trim(mb_substr($this->name, 0, 5));
+    }
+
     public function beforeSave($insert)
     {
         if ($insert)
@@ -179,10 +185,6 @@ class Inode extends ActiveRecord
 
     public function beforeDelete()
     {
-        $children = $this->getChildren()->count();
-        if ($children > 0)
-            throw new UserException(Yii::t('filescatalog', 'This item has nested items and cannot be deleted.'));
-
         return parent::beforeDelete();
     }
 

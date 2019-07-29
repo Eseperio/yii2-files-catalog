@@ -79,8 +79,10 @@ class DefaultController extends \yii\web\Controller
         if (Yii::$app->request->isGet) {
             $previous = Yii::$app->user->getReturnUrl();
             $current = Url::to();
-            if (!$previous !== $current)
+            if ($previous !== $current) {
                 Yii::$app->user->setReturnUrl($current);
+            }
+
         }
 
         return parent::beforeAction($action);

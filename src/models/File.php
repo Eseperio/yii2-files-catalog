@@ -155,6 +155,9 @@ class File extends Inode
             Yii::error($e->getMessage());
         }
 
+        if ($this->type == InodeTypes::TYPE_VERSION)
+            FileVersion::deleteAll(['version_id' => $this->id]);
+
         parent::delete();
     }
 

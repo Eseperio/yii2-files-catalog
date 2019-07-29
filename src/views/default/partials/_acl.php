@@ -72,9 +72,8 @@ use yii\helpers\Html;
         <div class="row">
             <div class="col-sm-12">
                 <?= $form->field($accessControlFormModel, 'crud')->checkboxList([
-                    AccessControl::ACTION_CREATE => Yii::t('filescatalog', 'Create'),
                     AccessControl::ACTION_READ => Yii::t('filescatalog', 'Read'),
-                    AccessControl::ACTION_UPDATE => Yii::t('filescatalog', 'Update'),
+                    AccessControl::ACTION_WRITE => Yii::t('filescatalog', 'Update'),
                     AccessControl::ACTION_DELETE => Yii::t('filescatalog', 'Delete')
                 ]); ?>
             </div>

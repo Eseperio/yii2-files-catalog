@@ -16,6 +16,7 @@ use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
+use yii\base\InvalidArgumentException;
 
 /**
  * Class AclHelper
@@ -44,13 +45,14 @@ class AclHelper
     private static function can($inode, $permission)
     {
         $module = self::getModule();
+        if (!in_array($inode['type'], [InodeTypes::TYPE_DIR, InodeTypes::TYPE_FILE]))
+            throw new InvalidArgumentException(__METHOD__ . " only accepts Files and directories");
 
         if ($module->enableACL && !$module->isAdmin()) {
             $user = Yii::$app->get($module->user);
             $userId = $module->getUserId();
             $grantAccess = false;
-            $refInode = ($inode->type === InodeTypes::TYPE_VERSION) ? $inode->original : $inode;
-            foreach ($refInode->accessControlList as $acl) {
+            foreach ($inode['accessControlList'] as $acl) {
 
                 if (($acl->crud_mask & $permission) !== $permission)
                     continue;
@@ -63,10 +65,10 @@ class AclHelper
                         $grantAccess = !Yii::$app->get($module->user)->getIsGuest();
                         break;
                     case AccessControl::DUMMY_ROLE:
-                        $grantAccess = $acl->user_id == $userId;
+                        $grantAccess = $acl['user_id'] == $userId;
                         break;
                     default:
-                        $grantAccess = $user->can($acl->role);
+                        $grantAccess = $user->can($acl['role']);
                         break;
                 }
 
@@ -81,23 +83,14 @@ class AclHelper
         return true;
 
     }
-
+    
     /**
      * @param $inode
      * @return bool
      */
-    public static function canCreate($inode)
+    public static function cantWrite($inode)
     {
-        return self::can($inode, AccessControl::ACTION_CREATE);
-    }
-
-    /**
-     * @param $inode
-     * @return bool
-     */
-    public static function canUpdate($inode)
-    {
-        return self::can($inode, AccessControl::ACTION_UPDATE);
+        return self::can($inode, AccessControl::ACTION_WRITE);
     }
 
     /**

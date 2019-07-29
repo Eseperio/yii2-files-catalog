@@ -59,31 +59,28 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 <?= Html::a(Yii::t('filescatalog', 'View contents'), [($model->type === InodeTypes::TYPE_DIR ? "index" : "view"), 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>
             </div>
         </div>
-        <?php if (AclHelper::canDelete($model)): ?>
-            <?php if ($model->type === InodeTypes::TYPE_VERSION): ?>
-
-                <?= Html::a(Yii::t('filescatalog', 'Delete only this version'), ['delete', 'uuid' => $model->uuid], [
-                    'class' => 'text-danger',
-                    'data' => [
-                        'method' => 'post',
-                        'params' => [
-                            $filexModule->secureHashParamName => $model->deleteHash
-                        ],
-                        'confirm' => Yii::t('filescatalog', 'Confirm deletion?')
-                    ]
-                ]) ?> |
-            <?php endif; ?>
-            <?= Html::a(Yii::t('filescatalog', 'Delete'), ['delete', 'uuid' => $model->uuid], [
+        <?php
+        $aclModel = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original : $model;
+        if (AclHelper::canDelete($aclModel)): ?>
+            <?php
+            $deleteButtonOptions = [
                 'class' => 'text-danger',
                 'data' => [
                     'method' => 'post',
                     'params' => [
-                        $filexModule->secureHashParamName => $model->deleteHash,
-                        'delall' => true
+                        $filexModule->secureHashParamName => $model->deleteHash
                     ],
                     'confirm' => Yii::t('filescatalog', 'Confirm deletion?')
                 ]
-            ]) ?>
+            ];
+            $deleteUrl = ['delete', 'uuid' => $model->uuid];
+            if ($model->type === InodeTypes::TYPE_VERSION):
+                echo Html::a(Yii::t('filescatalog', 'Delete only this version'), $deleteUrl, $deleteButtonOptions)
+                    . "  " . Yii::t('filescatalog', 'or')." ";
+            endif;
+            $deleteButtonOptions['data']['params']['dellall'] = true;
+            unset($deleteButtonOptions['data']['confirm']);
+            echo Html::a(Yii::t('filescatalog', 'Delete'), $deleteUrl, $deleteButtonOptions) ?>
         <?php endif; ?>
     </div>
     <?php /** @var \eseperio\filescatalog\FilesCatalogModule $filexModule */

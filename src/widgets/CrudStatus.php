@@ -8,7 +8,7 @@
 
 namespace eseperio\filescatalog\widgets;
 
-use app\helpers\Html;
+use yii\helpers\ArrayHelper;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\base\Inode;
 use Yii;
@@ -19,7 +19,7 @@ class CrudStatus extends Widget
 {
 
     /**
-     * @var Inode
+     * @var AccessControl
      */
     public $model;
 
@@ -32,23 +32,21 @@ class CrudStatus extends Widget
         parent::init();
     }
 
+    /**
+     * @return string
+     */
     public function run()
     {
         $mask = $this->model->getCrud();
-        $createLabel = Yii::t('filescatalog', 'Create');
-        $html = Html::tag('span', substr($createLabel, 0, 1), [
-            'class' => 'label label-' . (in_array(AccessControl::ACTION_CREATE, $mask) ? "danger" : "default"),
-            'title' => $createLabel, 'data-toggle' => 'tooltip'
-        ]);
 
         $readLabel = Yii::t('filescatalog', 'Read');
-        $html .= Html::tag('span', substr($readLabel, 0, 1), [
+        $html = Html::tag('span', substr($readLabel, 0, 1), [
             'class' => 'label label-' . (in_array(AccessControl::ACTION_READ, $mask) ? "danger" : "default"),
             'title' => $readLabel, 'data-toggle' => 'tooltip'
         ]);
-        $updateLabel = Yii::t('filescatalog', 'Update');
+        $updateLabel = Yii::t('filescatalog', 'Write');
         $html .= Html::tag('span', substr($updateLabel, 0, 1), [
-            'class' => 'label label-' . (in_array(AccessControl::ACTION_UPDATE, $mask) ? "danger" : "default"),
+            'class' => 'label label-' . (in_array(AccessControl::ACTION_WRITE, $mask) ? "danger" : "default"),
             'title' => $updateLabel, 'data-toggle' => 'tooltip'
         ]);
         $deleteLabel = Yii::t('filescatalog', 'Delete');

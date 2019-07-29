@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog;
 
 
+use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\File;
 use League\Flysystem\Filesystem;
 use Yii;
@@ -197,6 +198,12 @@ class FilesCatalogModule extends Module
      */
     public $salt;
     /**
+     * @var array list with default permissions for inodes
+     */
+    public $defaultInodePermissions = [
+        AccessControl::ACTION_READ
+    ];
+    /**
      * @var string name of the parameter to be used when sending and receiving secure hash
      */
     public $secureHashParamName = "fxsh";
@@ -204,11 +211,13 @@ class FilesCatalogModule extends Module
      * @var string which algorithm use for secure hash generation
      */
     public $secureHashAlgorithm = 'SHA3-256';
+
     /**
      * @inheritdoc
      */
     public function init()
     {
+
         if ($this->identityClass === null) {
             throw new InvalidConfigException(__CLASS__ . '::identityClass must be set.');
         }
@@ -216,6 +225,12 @@ class FilesCatalogModule extends Module
         if ($this->salt === null) {
             throw new InvalidConfigException(__CLASS__ . '::salt must be set.');
         }
+
+        if ($this->enableACL) {
+            if (!is_array($this->defaultInodePermissions))
+                throw new InvalidConfigException(__CLASS__ . "::defaultInodePermissions must be an array");
+        }
+
         $this->registerTranslations();
         parent::init();
     }

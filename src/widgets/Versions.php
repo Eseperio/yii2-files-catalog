@@ -8,8 +8,7 @@
 
 namespace eseperio\filescatalog\widgets;
 
-
-use app\helpers\ArrayHelper;
+use yii\helpers\ArrayHelper;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;

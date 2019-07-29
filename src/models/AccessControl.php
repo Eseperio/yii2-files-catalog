@@ -39,9 +39,9 @@ class AccessControl extends ActiveRecord
     const WILDCARD_ROLE = '*';
     const LOGGED_IN_USERS = '@';
 
-    const ACTION_CREATE = 8;
+
     const ACTION_READ = 4;
-    const ACTION_UPDATE = 2;
+    const ACTION_WRITE = 2;
     const ACTION_DELETE = 1;
 
     const SCENARIO_DELETE = 'delscen';
@@ -248,14 +248,13 @@ class AccessControl extends ActiveRecord
     public function getCrud()
     {
         $values = [
-            self::ACTION_CREATE,
             self::ACTION_READ,
-            self::ACTION_UPDATE,
+            self::ACTION_WRITE,
             self::ACTION_DELETE,
         ];
 
         if ($this->isNewRecord)
-            return $values;
+            return $this->module->defaultInodePermissions;
 
         $crud = [];
         foreach ($values as $value) {
