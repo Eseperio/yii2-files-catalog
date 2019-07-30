@@ -27,6 +27,7 @@ class CheckboxColumn extends \yii\grid\CheckboxColumn
      */
     public function init()
     {
+//        @todo: Hide those checkbox when user can not delete.
         if ($this->fitToContent)
             $this->registerAssets();
         parent::init();
