@@ -12,8 +12,6 @@ use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\base\Inode;
 use yii\grid\DataColumn;
-use yii\helpers\Inflector;
-use yii\helpers\StringHelper;
 
 /**
  * Class InodeNameColumn
@@ -21,6 +19,8 @@ use yii\helpers\StringHelper;
  */
 class InodeNameColumn extends DataColumn
 {
+    public $attribute = "name";
+
     /**
      * @param $model Inode
      * @param $key
@@ -31,7 +31,7 @@ class InodeNameColumn extends DataColumn
     {
         $humanized = $model->humanName;
         $nameTag = Html::tag('b', $humanized, []);
-        $displayExtension= ($model->type === InodeTypes::TYPE_FILE && !empty($model->extension));
+        $displayExtension = ($model->type === InodeTypes::TYPE_FILE && !empty($model->extension));
         $realName = Html::encode($model->name . ($displayExtension ? "." . $model->extension : ""));
         $realNameTag = Html::tag('div', $realName, ['class' => 'text-muted']);
 

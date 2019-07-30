@@ -51,8 +51,9 @@ class IndexAction extends Action
 
         Url::remember();
         $childrenQuery = $model->getChildren()
+            ->with(['accessControlList'])
             ->excludeVersions()
-        ->onlyAllowed();
+            ->onlyAllowed();
         $childrenQuery->orderBy([])->orderByType();
 
         if ($this->module->groupFilesByExt)
@@ -61,6 +62,7 @@ class IndexAction extends Action
         $childrenQuery->orderAZ();
         $dataProvider = new ActiveDataProvider([
             'query' => $childrenQuery,
+            'key' => 'uuid',
             'pagination' => [
                 'pageSize' => $this->module->itemsPerPage
             ]

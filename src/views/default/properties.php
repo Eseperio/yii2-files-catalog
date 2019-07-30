@@ -74,10 +74,12 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
             $deleteUrl = ['delete', 'uuid' => $model->uuid];
             if ($model->type === InodeTypes::TYPE_VERSION):
                 echo Html::a(Yii::t('filescatalog', 'Delete only this version'), $deleteUrl, $deleteButtonOptions)
-                    . "  " . Yii::t('filescatalog', 'or')." ";
+                    . "  " . Yii::t('filescatalog', 'or') . " ";
             endif;
+
             $deleteButtonOptions['data']['params']['dellall'] = true;
-            unset($deleteButtonOptions['data']['confirm']);
+            if ($model->type === InodeTypes::TYPE_DIR)
+                unset($deleteButtonOptions['data']['confirm']);
             echo Html::a(Yii::t('filescatalog', 'Delete'), $deleteUrl, $deleteButtonOptions) ?>
         <?php endif; ?>
     </div>

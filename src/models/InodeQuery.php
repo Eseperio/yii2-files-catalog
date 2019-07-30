@@ -40,14 +40,36 @@ class InodeQuery extends ActiveQuery
         return $this->andWhere(['!=', 'type', InodeTypes::TYPE_VERSION]);
     }
 
+    /**
+     * Filter results to only those which user have permission to read
+     * @return $this
+     * @throws \yii\base\InvalidConfigException
+     */
     public function onlyAllowed()
     {
-        $authManager = Yii::$app->authManager;
-        $userRoles = ArrayHelper::getColumn($authManager->getRolesByUser($this->module->getUserId()), 'name');
+        if (!$this->module->isAdmin()) {
+            $authManager = Yii::$app->authManager;
+            $userId = $this->module->getUserId();
+            $userRoles = ArrayHelper::getColumn($authManager->getRolesByUser($userId), 'name');
 
-        $allRoles = [];
-        foreach ($userRoles as $role) {
-            $allRoles = $allRoles + ArrayHelper::getColumn($authManager->getChildRoles($role), 'name');
+            $allRoles = [];
+            foreach ($userRoles as $role) {
+                $allRoles = $allRoles + ArrayHelper::getColumn($authManager->getChildRoles($role), 'name');
+            }
+            $allRoles[] = AccessControl::WILDCARD_ROLE;
+
+            $this->joinWith('accessControlList acl');
+            $condition = ['or',
+                ['acl.role' => $allRoles],
+                ['acl.user_id' => $userId],
+            ];
+
+            if (!$this->module->getUser()->getIsGuest())
+                $condition[] = ['acl.role' => AccessControl::LOGGED_IN_USERS];
+
+
+            $this->andWhere($condition);
+//        $this->groupBy('id');
         }
 
         return $this;

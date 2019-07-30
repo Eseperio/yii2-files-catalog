@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\columns;
 
 
@@ -56,15 +49,6 @@ class IconColumn extends DataColumn
      */
     private function registerAssets(): void
     {
-        $view = \Yii::$app->view;
-        $view->registerCss(<<<CSS
- td.ic-cl-fit, 
- th.ic-cl-fit {
-    white-space: nowrap;
-    width: 1%;
-}
-CSS
-        );
 
         Html::addCssClass($this->headerOptions, 'ic-cl-fit');
         Html::addCssClass($this->filterOptions, 'ic-cl-fit');

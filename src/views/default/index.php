@@ -37,3 +37,13 @@ echo GridView::widget(['dataProvider' => $dataProvider]);
 if ($usePjax)
     Pjax::end();
 ?>
+<div class="bulk-actions">
+    <?= Html::a(Yii::t('xenon', 'Add permission'), ['/filex/default/add-acl'], [
+        'class' => 'btn btn-default',
+        'id'=> 'filex-add-acl-btn'
+    ]) ?>
+    <?= Html::a(Yii::t('xenon', 'Delete'), ['/filex/default/add-acl'], [
+        'class' => 'btn btn-default',
+        'id'=> 'filex-add-acl-btn'
+    ]) ?>
+</div>

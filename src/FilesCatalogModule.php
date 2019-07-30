@@ -17,6 +17,8 @@ use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\ArrayHelper;
 use yii\validators\FileValidator;
+use yii\web\IdentityInterface;
+use yii\web\User;
 
 class FilesCatalogModule extends Module
 {
@@ -284,10 +286,21 @@ class FilesCatalogModule extends Module
      */
     public function getUsername()
     {
-        $user = Yii::$app->get($this->user);
+        $user = $this->getUser();
 
         return ArrayHelper::getValue($user, $this->userNameAttribute);
 
+    }
+
+    /**
+     * @return User|null
+     * @throws InvalidConfigException
+     */
+    public function getUser()
+    {
+        $user = Yii::$app->get($this->user);
+        /* @var $user User  */
+        return $user;
     }
 
     /**
@@ -296,7 +309,7 @@ class FilesCatalogModule extends Module
      */
     public function getUserId()
     {
-        $user = Yii::$app->get($this->user);
+        $user = $this->getUser();
 
         return ArrayHelper::getValue($user, $this->userIdAttribute);
     }
@@ -309,7 +322,7 @@ class FilesCatalogModule extends Module
      */
     public function isAdmin()
     {
-        $user = Yii::$app->get($this->user);
+        $user = $this->getUser();
         $username = ArrayHelper::getValue($user, $this->userNameAttribute);
         $hasAdministratorPermissionName = Yii::$app->getAuthManager() && $this->administratorPermissionName
             ? Yii::$app->getUser()->can($this->administratorPermissionName)

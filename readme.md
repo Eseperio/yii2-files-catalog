@@ -49,22 +49,7 @@ This module supports file versioning. You can set how much files must be kept. F
 Inodes access control is performed by ACLs. Any inode must have a rule associated in order to give access to it.
 Access can be granted to a user id or a role.
 
-### How access control crud mask works
-
-Access control is stored in a different table. Each inode must have its own records defining who or which role
-will be able to view, edit or append files.
-That permissions are managed via a crud_mask. It is a 4 bit binary mask, in its integer representation
-
-
-
-||C|R|U|D|
-|---|---|---|---|---|
-||Append subfolders|Read|Update|Delete|
-|Bit|0|0|0|0|
-|Value|8|4|2|1|
-
-So if we want to give only read access to a file, the crud mask must be 0100, or its integer representation, which is what we store in database: 4
-Otherwise, if we want all permissions, then all bits are on and the result is 15.
+To know more about access control, see [access control docs](docs/acl.md)
 
 ## Customization
 You can customize any element of the module by overriding the classes in container definitions.
