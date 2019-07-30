@@ -73,13 +73,22 @@ FileTypeIconsAsset::register($this);
                         echo Html::a($newFolderIcon . " " . ($showLabels ? $newFolderLabel : ""), ['new-folder', 'uuid' => $model->uuid], [
                             'class' => 'btn btn-default',
                             'title' => $newFolderLabel,
-                            'data-toggle'=>'tooltip'
+                            'data' => [
+                                'toggle' => 'tooltip',
+                                'pjax' => 0,
+                                'container' => 'body'
+                            ]
                         ]);
                     if ($showPropertiesBtn)
                         echo Html::a($propertiesIcon . " " . ($showLabels ? $propertiesLabel : ""), ['properties', 'uuid' => $model->uuid], [
                             'class' => 'btn btn-default',
                             'title' => $propertiesLabel,
-                            'data-toggle'=>'tooltip'
+                            'data' => [
+                                'toggle' => 'tooltip',
+                                'pjax' => 0,
+                                'container' => 'body'
+                            ],
+
 
                         ])
                     ?>

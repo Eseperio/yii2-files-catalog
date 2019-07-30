@@ -214,19 +214,24 @@ class FilesCatalogModule extends Module
     /**
      * @var string css classname for the new folder icon
      */
-    public $newFolderIconclass= 'glyphicon glyphicon-folder-open';
+    public $newFolderIconclass = 'glyphicon glyphicon-folder-open';
     /**
      * @var string css classname for the properties icon
      */
-    public $propertiesIconClass= 'glyphicon glyphicon-list-alt';
+    public $propertiesIconClass = 'glyphicon glyphicon-list-alt';
     /**
      * @var string css classname for the add files icon
      */
-    public $addFilesIconClass= 'glyphicon glyphicon-cloud-upload';
+    public $addFilesIconClass = 'glyphicon glyphicon-cloud-upload';
     /**
      * @var string whether display labels in breadcrumb buttons
      */
     public $showBreadcrumbButtonLabels = false;
+    /**
+     * @var int number of items per page
+     */
+    public $itemsPerPage = 40;
+
     /**
      * @inheritdoc
      */

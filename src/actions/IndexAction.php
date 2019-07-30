@@ -50,7 +50,9 @@ class IndexAction extends Action
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
 
         Url::remember();
-        $childrenQuery = $model->getChildren()->excludeVersions();
+        $childrenQuery = $model->getChildren()
+            ->excludeVersions()
+        ->onlyAllowed();
         $childrenQuery->orderBy([])->orderByType();
 
         if ($this->module->groupFilesByExt)
@@ -58,7 +60,10 @@ class IndexAction extends Action
 
         $childrenQuery->orderAZ();
         $dataProvider = new ActiveDataProvider([
-            'query' => $childrenQuery
+            'query' => $childrenQuery,
+            'pagination' => [
+                'pageSize' => $this->module->itemsPerPage
+            ]
         ]);
 
         return $this->controller->render('index', [

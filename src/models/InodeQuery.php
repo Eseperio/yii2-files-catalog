@@ -9,8 +9,11 @@
 namespace eseperio\filescatalog\models;
 
 
+use app\helpers\ArrayHelper;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListQueryTrait;
+use Yii;
 use yii\db\ActiveQuery;
 
 /**
@@ -20,7 +23,7 @@ use yii\db\ActiveQuery;
  */
 class InodeQuery extends ActiveQuery
 {
-
+    use ModuleAwareTrait;
     use AdjacencyListQueryTrait;
 
     /**
@@ -35,6 +38,19 @@ class InodeQuery extends ActiveQuery
     public function excludeVersions()
     {
         return $this->andWhere(['!=', 'type', InodeTypes::TYPE_VERSION]);
+    }
+
+    public function onlyAllowed()
+    {
+        $authManager = Yii::$app->authManager;
+        $userRoles = ArrayHelper::getColumn($authManager->getRolesByUser($this->module->getUserId()), 'name');
+
+        $allRoles = [];
+        foreach ($userRoles as $role) {
+            $allRoles = $allRoles + ArrayHelper::getColumn($authManager->getChildRoles($role), 'name');
+        }
+
+        return $this;
     }
 
     /**

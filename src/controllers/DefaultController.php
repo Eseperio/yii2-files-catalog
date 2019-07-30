@@ -80,7 +80,7 @@ class DefaultController extends \yii\web\Controller
             $previous = Yii::$app->user->getReturnUrl();
             $current = Url::to();
             if ($previous !== $current) {
-                Yii::$app->user->setReturnUrl($current);
+                Yii::$app->user->setReturnUrl($previous);
             }
 
         }

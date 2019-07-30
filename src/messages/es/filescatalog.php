@@ -91,10 +91,10 @@ return [
     'or' => 'ó',
     '{wildcard} allow everyone access to this item.' => '{wildcard} permitirá a cualquiera acceder a este item',
     '{wildcard} allow everyone logged in access to this item.' => '{wildcard} permitirá el acceso sólo a los que iniciaron sesión.',
-    'Cancel' => '',
-    'Delete directory' => '',
+    'Cancel' => 'Cancelar',
+    'Delete directory' => 'Eliminar directorio',
     'ID' => '',
     'MD5 Checksum' => '',
     'Mime' => '',
-    'This item has nested items and cannot be deleted.' => '@@Este objeto tiene hijos y no puede ser eliminado@@',
+    'by' => 'por',
 ];

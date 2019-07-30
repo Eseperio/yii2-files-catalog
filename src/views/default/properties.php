@@ -23,16 +23,14 @@ use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\InodePermissionsForm;
+use eseperio\filescatalog\widgets\Breadcrumb;
 use yii\helpers\Html;
 
 FileTypeIconsAsset::register($this);
-
 $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
-
 ?>
 
-
-<?= \eseperio\filescatalog\widgets\Breadcrumb::widget([
+<?= Breadcrumb::widget([
     'model' => $model,
     'showPropertiesBtn' => false
 ]) ?>

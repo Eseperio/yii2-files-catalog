@@ -47,7 +47,7 @@ use yii\helpers\Html;
                     <?= Html::tag('strong', $version->getHumanName(30)); ?>
                     <?= Html::tag('span', "(" . Yii::$app->formatter->asDate($version->created_at)
                         . " "
-                        . Yii::t('xenon', 'by')
+                        . Yii::t('filescatalog', 'by')
                         . " "
                         . Html::encode($model->author_name)
                         . ")", ['class' => 'text-muted']) ?>

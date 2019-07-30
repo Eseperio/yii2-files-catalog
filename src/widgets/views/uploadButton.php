@@ -14,7 +14,7 @@ $label = $isVersion ? Yii::t('filescatalog', 'Add version') : Yii::t('filescatal
 ?>
 
 
-<span class="btn btn-default fileinput-button" data-toggle="tooltip" title="<?= $label ?>">
+<span class="btn btn-default fileinput-button" data-toggle="tooltip" data-container="body" title="<?= $label ?>">
     <i class="<?= $addFilesIconClass ?>"></i>
    <span>
        <?php /** @var boolean $showLabels */
