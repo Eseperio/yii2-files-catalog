@@ -20,9 +20,8 @@ use yii\base\Action;
 use yii\base\InvalidArgumentException;
 use yii\web\Controller;
 
-class BulkDelete extends Action
+class BulkDelete extends Bulk
 {
-    use ModuleAwareTrait;
     /**
      * @var DefaultController|Controller|\yii\rest\Controller
      */
@@ -30,14 +29,10 @@ class BulkDelete extends Action
 
     public function run()
     {
-        $uuids = Yii::$app->request->post('uuids');
-        if (!is_array($uuids))
-            throw new InvalidArgumentException('Wrong data');
 
-        $models = $this->getModels($uuids);
-
-
-        $error = null;
+        $models = $this->getModels();
+        $error = null
+        ;
         if ($this->checkSecureHash($models)) {
             if ($this->deleteItems($models)) {
                 return $this->controller->goBack();
@@ -48,44 +43,12 @@ class BulkDelete extends Action
 
         return $this->controller->render('bulk-delete', [
             'models' => $models,
-            'hash' => $this->getSafeDeleteHash($models),
+            'hash' => $this->getSecureHash($models),
             'error' => $error
         ]);
 
     }
 
-    /**
-     * @param $uuids
-     * @return array|Inode[]|\yii\db\ActiveRecord[]
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function getModels($uuids)
-    {
-        return File::find()->where(['uuid' => $uuids])->onlyDeletable()->all();
-    }
-
-    /**
-     * @param array $models
-     * @return bool
-     */
-    private function checkSecureHash(array $models): bool
-    {
-        $hash = $this->getSafeDeleteHash($models);
-
-        return Yii::$app->request->post($this->module->secureHashParamName) == $hash
-            && Yii::$app->request->post('confirm_text') === mb_substr($hash, 0, 5);
-    }
-
-    /**
-     * @param $collection \eseperio\filescatalog\models\base\Inode[]
-     * @return string
-     */
-    public function getSafeDeleteHash($collection)
-    {
-        $ids = ArrayHelper::getColumn($collection, 'id');
-
-        return hash('SHA3-256', join($ids) . $this->module->salt);
-    }
 
     /**
      * @param Inode[]|File[] $models

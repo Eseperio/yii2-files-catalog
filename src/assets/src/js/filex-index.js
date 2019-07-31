@@ -22,7 +22,7 @@ class filexIndex {
             keys.forEach((e, i, a) => {
                 params['uuids[' + i + ']'] = e;
             });
-            $("#filex-bulk-delete").attr('data-params', JSON.stringify(params));
+            $("#filex-bulk-delete,#filex-bulk-acl").attr('data-params', JSON.stringify(params));
         })
     }
 

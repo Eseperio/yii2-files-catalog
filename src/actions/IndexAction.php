@@ -59,7 +59,20 @@ class IndexAction extends Action
             ],
         ];
         if ($this->module->isAdmin())
-            $bulkActions[] = ['label' => Yii::t('filescatalog', 'Add permission'), 'url' => '#', 'id' => 'filex-bulk-acl'];
+            $bulkActions[] = [
+                'label' => Yii::t('filescatalog', 'Add permission'),
+                'url' => ['/filex/default/bulk-acl'],
+                'linkOptions' => [
+                    'id' => 'filex-bulk-acl',
+                    'class' => 'text-danger',
+                    'data' => [
+                        'method' => 'post',
+                        'params' => json_encode([]),
+
+                    ]
+                ]
+
+            ];
 
         return $this->controller->render('index', [
             'dataProvider' => $dataProvider,
