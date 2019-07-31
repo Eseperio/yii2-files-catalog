@@ -35,7 +35,48 @@ class IndexAction extends Action
     public function run()
     {
 
-        $parentId = 0;
+        $model = $this->getModel();
+
+        if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot())
+            return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
+
+        Url::remember();
+        $dataProvider = $this->getChildrenDataProvider($model);
+
+        $bulkActions = [
+            [
+                'label' => Yii::t('filescatalog', 'Delete'),
+                'url' => ['/filex/default/bulk-delete'],
+                'linkOptions' => [
+                    'id' => 'filex-bulk-delete',
+                    'class' => 'text-danger',
+                    'data' => [
+                        'method' => 'post',
+                        'params' => json_encode([]),
+
+                    ]
+                ]
+            ],
+        ];
+        if ($this->module->isAdmin())
+            $bulkActions[] = ['label' => Yii::t('filescatalog', 'Add permission'), 'url' => '#', 'id' => 'filex-bulk-acl'];
+
+        return $this->controller->render('index', [
+            'dataProvider' => $dataProvider,
+            'model' => $model,
+            'usePjax' => $this->module->usePjax,
+            'parents' => $model->getParents()->asArray()->all(),
+            'bulkActions' => $bulkActions
+        ]);
+    }
+
+    /**
+     * @return array|Inode|\eseperio\filescatalog\models\Directory|\eseperio\filescatalog\models\File|\yii\db\ActiveRecord|null
+     * @throws FilexAccessDeniedException
+     * @throws \yii\web\NotFoundHttpException
+     */
+    private function getModel()
+    {
         if ($uuid = Yii::$app->request->get('uuid', false)) {
             $model = $this->controller->findModel($uuid);
         } else {
@@ -46,14 +87,19 @@ class IndexAction extends Action
                 throw new FilexAccessDeniedException();
         }
 
-        if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot())
-            return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
+        return $model;
+    }
 
-        Url::remember();
+    /**
+     * @param $model Inode
+     * @return ActiveDataProvider
+     */
+    private function getChildrenDataProvider($model): ActiveDataProvider
+    {
         $childrenQuery = $model->getChildren()
             ->with(['accessControlList'])
             ->excludeVersions()
-            ->onlyAllowed();
+            ->onlyReadable();
         $childrenQuery->orderBy([])->orderByType();
 
         if ($this->module->groupFilesByExt)
@@ -68,11 +114,6 @@ class IndexAction extends Action
             ]
         ]);
 
-        return $this->controller->render('index', [
-            'dataProvider' => $dataProvider,
-            'model' => $model,
-            'usePjax' => $this->module->usePjax,
-            'parents' => $model->getParents()->asArray()->all()
-        ]);
+        return $dataProvider;
     }
 }

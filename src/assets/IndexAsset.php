@@ -17,6 +17,6 @@ class IndexAsset extends AssetBundle
     public $sourcePath = __DIR__ . DIRECTORY_SEPARATOR . "dist";
 
     public $js = [
-        'filex-index.' . (YII_ENV_PROD ? "min" : "") . ".js"
+        'js/filex-index' . (YII_ENV_PROD ? ".min" : "") . ".js"
     ];
 }

@@ -10,7 +10,7 @@ namespace eseperio\filescatalog\columns;
 
 
 use eseperio\admintheme\helpers\Html;
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\helpers\AclHelper;
 
 class CheckboxColumn extends \yii\grid\CheckboxColumn
 {
@@ -30,6 +30,11 @@ class CheckboxColumn extends \yii\grid\CheckboxColumn
 //        @todo: Hide those checkbox when user can not delete.
         if ($this->fitToContent)
             $this->registerAssets();
+
+        $this->checkboxOptions = function ($model) {
+            if (!AclHelper::canDelete($model))
+                return ['disabled' => 1, 'class' => 'collapse'];
+        };
         parent::init();
     }
 

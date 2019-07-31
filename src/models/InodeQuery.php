@@ -45,9 +45,20 @@ class InodeQuery extends ActiveQuery
      * @return $this
      * @throws \yii\base\InvalidConfigException
      */
-    public function onlyAllowed()
+    public function onlyReadable()
+    {
+        return $this->onlyAllowed([7, 6, 5, 4]);
+    }
+
+    /**
+     * Joins results with acl table, so it can be filtered by crud_mask values
+     * @throws \yii\base\InvalidConfigException
+     * @internal
+     */
+    private function onlyAllowed($crudMaskValues): InodeQuery
     {
         if (!$this->module->isAdmin()) {
+
             $authManager = Yii::$app->authManager;
             $userId = $this->module->getUserId();
             $userRoles = ArrayHelper::getColumn($authManager->getRolesByUser($userId), 'name');
@@ -59,6 +70,7 @@ class InodeQuery extends ActiveQuery
             $allRoles[] = AccessControl::WILDCARD_ROLE;
 
             $this->joinWith('accessControlList acl');
+
             $condition = ['or',
                 ['acl.role' => $allRoles],
                 ['acl.user_id' => $userId],
@@ -67,12 +79,32 @@ class InodeQuery extends ActiveQuery
             if (!$this->module->getUser()->getIsGuest())
                 $condition[] = ['acl.role' => AccessControl::LOGGED_IN_USERS];
 
-
             $this->andWhere($condition);
-//        $this->groupBy('id');
-        }
+            $this->andWhere(['acl.crud_mask' => $crudMaskValues]);
+            $this->groupBy('id');
 
+        }
         return $this;
+    }
+
+    /**
+     * Filter results to only those which user have permission to write
+     * @return $this
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function onlyWriteable()
+    {
+        return $this->onlyAllowed([7, 6, 3, 2]);
+    }
+
+    /**
+     * Filter results to only those which user have permission to delete
+     * @return $this
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function onlyDeletable()
+    {
+        return $this->onlyAllowed([1, 3, 5, 7]);
     }
 
     /**
@@ -132,7 +164,6 @@ class InodeQuery extends ActiveQuery
             'type' => InodeTypes::TYPE_FILE
         ]);
     }
-
 
     /**
      * @return InodeQuery
