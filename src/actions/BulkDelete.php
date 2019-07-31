@@ -94,7 +94,6 @@ class BulkDelete extends Action
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            throw new \http\Exception\InvalidArgumentException();
 
             foreach ($models as $model) {
                 switch ($model->type) {
