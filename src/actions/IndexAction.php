@@ -84,7 +84,7 @@ class IndexAction extends Action
     }
 
     /**
-     * @return array|Inode|\eseperio\filescatalog\models\Directory|\eseperio\filescatalog\models\File|\yii\db\ActiveRecord|null
+     * @return array|Inode|\eseperio\filescatalog\models\Directory|\eseperio\filescatalog\models\File|\yii\db\ActiveRecord|\yii\web\Response|null
      * @throws FilexAccessDeniedException
      * @throws \yii\web\NotFoundHttpException
      */
@@ -96,6 +96,16 @@ class IndexAction extends Action
             $model = Inode::find()
                 ->onlyRoot()
                 ->one();
+
+            if (empty($model)) {
+//                Root not exists, we create it
+                $root = new Inode();
+                $root->name = 'root';
+                $root->makeRoot()->save(false);
+                return $this->controller->redirect(Url::current());
+
+            }
+
             if (!AclHelper::canRead($model))
                 throw new FilexAccessDeniedException();
         }
