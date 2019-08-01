@@ -102,7 +102,7 @@ class IndexAction extends Action
                 $root = new Inode();
                 $root->name = 'root';
                 $root->makeRoot()->save(false);
-                return $this->controller->redirect(Url::current());
+                return $root;
 
             }
 

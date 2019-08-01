@@ -31,7 +31,7 @@ class m190705_143724_add_filescatalog_table extends Migration
             'extension' => $this->string(16),
             'mime' => $this->string(128),
             'type' => $this->integer(1)->defaultValue(InodeTypes::TYPE_FILE)->notNull(),
-            'parent_id' => $this->integer()->defaultValue(0)->notNull(),
+            'parent_id' => $this->integer()->defaultValue(0),
             'md5hash' => $this->string(32),
             'depth' => $this->integer()->notNull(),
             'filesize' => $this->bigInteger(),
