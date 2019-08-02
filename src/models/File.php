@@ -10,6 +10,7 @@ namespace eseperio\filescatalog\models;
 
 use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Exception;
@@ -101,6 +102,18 @@ class File extends Inode
                     if ($this->module->checkFilesIntegrity)
                         $this->md5hash = hash_file('md5', $uploadedFile->tempName);
 
+
+                    $parent = $this->getParent()->one();
+                    $siblingsNames = $parent->getChildren()
+                        ->onlyFiles()
+                        ->asArray()
+                        ->select('name')
+                        ->column();
+
+                    if (in_array($this->name, $siblingsNames))
+                        $this->name = $this->getUniqueFilename($siblingsNames);
+
+
                     $this->update(false);
                     $this->validate();
 
@@ -114,12 +127,14 @@ class File extends Inode
                         $this->addError(Yii::t('filescatalog', 'Unable to move file to its destination'));
                     }
 
+
                 } else {
                     $this->delete();
                 }
             } catch (\Throwable $e) {
                 $this->addError('file', Yii::t('filescatalog', $e->getMessage()));
                 $this->delete();
+                throw $e;
             }
 
             if ($this->inodeType == InodeTypes::TYPE_VERSION && $insert) {
@@ -134,6 +149,33 @@ class File extends Inode
         }
 
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @param array $siblingsNames
+     * @return string
+     */
+    private function getUniqueFilename(array $siblingsNames)
+    {
+        $reclimit = 30;
+        $counter = 0;
+        $name = $this->name;
+        while (in_array($name, $siblingsNames)) {
+            if ($counter++ >= $reclimit)
+                break;
+            $lastDash = mb_strripos($name, '-');
+            if ($lastDash) {
+                $id = mb_substr($name, $lastDash + 1);
+                if (is_numeric($id)) {
+                    $name = mb_substr($name, 0, $lastDash + 1) . ++$id;
+                    var_dump($name);
+                }
+            } else {
+                $name = $name = $name . "-1";
+            }
+        }
+
+        return $name;
     }
 
     /**

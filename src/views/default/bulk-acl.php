@@ -10,6 +10,7 @@
 /* @var $filexModule \eseperio\filescatalog\FilesCatalogModule */
 
 /* @var $hash string */
+/* @var $formModel \yii\base\DynamicModel */
 
 /* @var $error string */
 
@@ -17,8 +18,8 @@ use eseperio\filescatalog\models\AccessControl;
 use yii\bootstrap\Html;
 
 ?>
-<h1><?= Yii::t('filescatalog', 'Bulk delete') ?></h1>
-<?= Html::beginForm() ?>
+<h1><?= Yii::t('filescatalog', 'Bulk access control') ?></h1>
+<?php $form = \yii\bootstrap\ActiveForm::begin([]) ?>
 
 <div class="row">
     <div class="col-sm-6">
@@ -36,10 +37,10 @@ use yii\bootstrap\Html;
                     </div>
                 <?php endif; ?>
                 <?= Html::ul($models, [
-                    'item' => function ($model) {
+                    'item' => function ($model) use($formModel) {
                         /* @var $model \eseperio\filescatalog\models\base\Inode */
                         $link = Html::a(Html::encode($model->name), ['/filex/default/view', 'uuid' => $model->uuid], ['target' => '_blank']);
-                        $input = Html::hiddenInput('uuids[]', $model->uuid);
+                        $input = Html::hiddenInput(Html::getInputName($formModel,'uuids[]'), $model->uuid);
                         $label = Html::tag('li', $link . $input, ['class' => 'list-group-item']);
 
                         return $label;
@@ -59,13 +60,13 @@ use yii\bootstrap\Html;
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <?= Html::dropDownList("type[$i]", '', [
+                                    <?= Html::dropDownList(Html::getInputName($formModel, "value[$i]"), $formModel->type[$i], [
                                         AccessControl::TYPE_ROLE => Yii::t('xenon', 'Role'),
                                         AccessControl::TYPE_USER => Yii::t('xenon', 'User')
                                     ], ['class' => 'form-control']) ?>
                                 </div>
                                 <div class="col-sm-8">
-                                    <?= Html::textInput("val[$i]", null, [
+                                    <?= Html::textInput(Html::getInputName($formModel, "value[$i]"), Html::encode($formModel->value[$i]), [
                                         'class' => 'form-control',
                                         'placeholder' => Yii::t('filescatalog', 'Role or user id')
                                     ]) ?>
@@ -87,6 +88,6 @@ use yii\bootstrap\Html;
     </div>
 </div>
 <?php
-Html::endForm();
+\yii\bootstrap\ActiveForm::end()
 ?>
 

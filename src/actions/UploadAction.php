@@ -64,8 +64,6 @@ class UploadAction extends Action
             $model->setAsVersion($targetNode->uuid);
             if ($model->appendTo($realParent)->save())
                 return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
-
-
         } else {
             $model->appendTo($targetNode)->save();
 

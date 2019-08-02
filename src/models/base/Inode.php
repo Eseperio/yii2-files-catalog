@@ -9,7 +9,6 @@
 namespace eseperio\filescatalog\models\base;
 
 
-use yii\helpers\StringHelper;
 use eseperio\filescatalog\behaviors\FilexBehavior;
 use eseperio\filescatalog\FilesCatalogModule;
 use eseperio\filescatalog\helpers\Helper;
@@ -22,6 +21,7 @@ use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 
 /**
  * Class Inode

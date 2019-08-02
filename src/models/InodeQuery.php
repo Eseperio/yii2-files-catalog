@@ -84,6 +84,7 @@ class InodeQuery extends ActiveQuery
             $this->groupBy('id');
 
         }
+
         return $this;
     }
 
@@ -153,6 +154,14 @@ class InodeQuery extends ActiveQuery
         return $this->andWhere([
             'type' => InodeTypes::TYPE_SYMLINK
         ]);
+    }
+
+    public function byName(string $name, $like = false)
+    {
+        if ($like)
+            return $this->andWhere(['like', '%name%' => $name]);
+
+        return $this->andWhere(['name' => $name]);
     }
 
     /**
