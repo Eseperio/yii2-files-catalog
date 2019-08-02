@@ -232,7 +232,7 @@ class FilesCatalogModule extends Module
     /**
      * @var int number of items per page
      */
-    public $itemsPerPage = 40;
+    public $itemsPerPage = 10;
 
     /**
      * @inheritdoc

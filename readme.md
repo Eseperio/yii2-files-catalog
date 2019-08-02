@@ -110,7 +110,7 @@ There is a default controller with the following actions.
 |`propertiesIconClass`|css classname for the properties icon |glyphicon glyphicon-list-alt
 |`addFilesIconClass`|css classname for the new add files icon |glyphicon glyphicon-cloud-upload|
 |`showBreadcrumbButtonLabels`|whether display labels in breadcrumb buttons|false|
-|`itemsPerPage`|number of items per page|40|
+|`itemsPerPage`|number of items per page|10|
   
 
 
