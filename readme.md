@@ -1,8 +1,6 @@
 
-**UNDER DEVELOPMENT**
-This extension is not yet stable
-
-# yii2-files-catalog
+# Yii2 files catalog
+## yii2-files-catalog
 
 It is a virtual file system with access control lists.
 
@@ -12,6 +10,8 @@ What you get is a virtual file system that can rely on any existing file system,
 [FlySystem](https://flysystem.thephpleague.com/docs/usage/filesystem-api/) in a deep layer,
 
 
+## License
+Free for NonCommercial use. Otherwise contact us for a commercial license.
 ## Installation
 
 This extension is distributed as a composer library. Run

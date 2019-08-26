@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\models;
 
 
@@ -60,22 +53,6 @@ class Directory extends Inode
 
     public function afterSave($insert, $changedAttributes)
     {
-//        We dont need to save directorys into filesystem
-//        try {
-//            $filesystem = $this->module
-//                ->getStorageComponent();
-//            $inodeRealPath = $this->getInodeRealPath();
-//
-//            if (!$filesystem->has($inodeRealPath) && !$filesystem->createDir($inodeRealPath)) {
-//                $this->addError('name', Yii::t('filescatalog', 'Unable to create folder'));
-//                $this->delete();
-//
-//                return false;
-//            }
-//        } catch (\Throwable $e) {
-//
-//        }
-
 
         return parent::afterSave($insert, $changedAttributes);
     }
