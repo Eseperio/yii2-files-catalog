@@ -32,7 +32,7 @@ class InodeActionColumn extends Column
 
         $label = Yii::t('filescatalog', 'View');
         $action = 'view';
-        if ($model->type == InodeTypes::TYPE_DIR) {
+        if ($model->type == InodeTypes::TYPE_DIR || ($model->type== InodeTypes::TYPE_SYMLINK && $model->symlink_type== InodeTypes::TYPE_DIR)) {
             $action = 'index';
             $label = Yii::t('filescatalog', 'Open');
         }

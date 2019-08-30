@@ -55,10 +55,9 @@ class IconDisplay extends Widget
 
         $isSymlink = $type == InodeTypes::TYPE_SYMLINK;
         if ($isSymlink)
-            $type = $this->model['symlink_type'];
-
-
+            $type = (int)$this->model['symlink_type'];
         if ($type === InodeTypes::TYPE_DIR) {
+
             $icon = "folder";
         } else {
             $extension = ($isSymlink ? $this->model['symlink_extension'] : $this->model['extension']);
