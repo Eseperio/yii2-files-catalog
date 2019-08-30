@@ -123,6 +123,7 @@ class IndexAction extends Action
         $childrenQuery = $model->getChildren()
             ->with(['accessControlList'])
             ->excludeVersions()
+            ->withSymlinksReferences()
             ->onlyReadable();
         $childrenQuery->orderBy([])->orderByType();
 

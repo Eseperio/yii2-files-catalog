@@ -10,6 +10,7 @@ namespace eseperio\filescatalog\models\base;
 
 
 use eseperio\filescatalog\behaviors\FilexBehavior;
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\FilesCatalogModule;
 use eseperio\filescatalog\helpers\Helper;
 use eseperio\filescatalog\models\AccessControl;
@@ -80,6 +81,13 @@ class Inode extends ActiveRecord
 {
 
     use ModuleAwareTrait;
+    /**
+     * Used to automatically populate symlink remote
+     * @var int
+     */
+    public $symlink_type;
+    public $symlink_name;
+    public $symlink_extension;
 
     /**
      * {@inheritdoc}
@@ -107,7 +115,7 @@ class Inode extends ActiveRecord
             [['name'], 'default', 'value' => Yii::t('filescatalog', 'New inode')],
             ['extension', 'match', 'pattern' => '/[\w\d]+/'],
             [['extension'], 'string', 'max' => 10],
-            [['name'], 'string', 'max' => 255],
+            [['name'], 'string', 'max' => 255, 'min' => 3],
             [['mime'], 'string', 'max' => 128],
         ];
     }
@@ -152,7 +160,7 @@ class Inode extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        if ($insert)
+        if ($insert && $this->type != InodeTypes::TYPE_SYMLINK)
             $this->uuid = (string)Uuid::uuid4();
 
         return parent::beforeSave($insert);

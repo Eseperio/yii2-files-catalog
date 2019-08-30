@@ -9,12 +9,13 @@
 namespace eseperio\filescatalog\models;
 
 
-use app\helpers\ArrayHelper;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListQueryTrait;
 use Yii;
 use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class InodeQuery
@@ -35,9 +36,45 @@ class InodeQuery extends ActiveQuery
         return $this->roots()->limit(1);
     }
 
+    /**
+     * @return InodeQuery
+     */
     public function excludeVersions()
     {
-        return $this->andWhere(['!=', 'type', InodeTypes::TYPE_VERSION]);
+        return $this->andWhere(['!=', $this->prefix('type'), InodeTypes::TYPE_VERSION]);
+    }
+
+    /**
+     * @param $column
+     * @return string
+     */
+    public function prefix($column, $prefix = null)
+    {
+        if (empty($prefix))
+            $prefix = Inode::tableName() . ".";
+
+        return $prefix . $column;
+    }
+
+    public function withSymlinksReferences()
+    {
+
+        $selectColumns = [
+            Inode::tableName() . ".*",
+        ];
+        foreach (['name', 'type', 'extension'] as $columnName) {
+            $selectColumns[] = $this->prefix($columnName, 'symlink.') . " " . $this->prefix($columnName, 'symlink_');
+        }
+        $this->select($selectColumns);
+
+        $this->join('LEFT OUTER JOIN', ['symlink' => Inode::tableName()], Inode::tableName() . '.uuid=symlink.uuid AND ' . $this->prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK);
+
+        return $this;
+    }
+
+    public function byType(array $types)
+    {
+        return $this->andWhere([$this->prefix('type') => $types]);
     }
 
     /**
@@ -58,7 +95,6 @@ class InodeQuery extends ActiveQuery
     private function onlyAllowed($crudMaskValues): InodeQuery
     {
         if (!$this->module->isAdmin()) {
-
             $authManager = Yii::$app->authManager;
             $userId = $this->module->getUserId();
             $userRoles = ArrayHelper::getColumn($authManager->getRolesByUser($userId), 'name');
@@ -81,7 +117,7 @@ class InodeQuery extends ActiveQuery
 
             $this->andWhere($condition);
             $this->andWhere(['acl.crud_mask' => $crudMaskValues]);
-            $this->groupBy('id');
+            $this->groupBy($this->prefix('id'));
 
         }
 
@@ -114,13 +150,17 @@ class InodeQuery extends ActiveQuery
      */
     public function uuid($uuid)
     {
-        return $this->andWhere(['uuid' => $uuid]);
+        return $this->andWhere([$this->prefix('uuid') => $uuid]);
     }
 
+    /**
+     * @param int $order
+     * @return InodeQuery
+     */
     public function orderByExtension($order = SORT_DESC)
     {
         return $this->addOrderBy([
-            'extension' => $order
+            $this->prefix('extension') => $order
         ]);
     }
 
@@ -131,7 +171,7 @@ class InodeQuery extends ActiveQuery
     public function orderByType($order = SORT_DESC)
     {
         return $this->addOrderBy([
-            'type' => $order,
+            $this->prefix('type') => $order,
         ]);
     }
 
@@ -142,7 +182,7 @@ class InodeQuery extends ActiveQuery
     public function orderAZ($order = SORT_ASC)
     {
         return $this->addOrderBy([
-            'name' => $order
+            $this->prefix('name') => $order
         ]);
     }
 
@@ -152,17 +192,23 @@ class InodeQuery extends ActiveQuery
     public function onlySymlinks()
     {
         return $this->andWhere([
-            'type' => InodeTypes::TYPE_SYMLINK
+            $this->prefix('type') => InodeTypes::TYPE_SYMLINK
         ]);
     }
 
+    /**
+     * @param string $name
+     * @param bool $like
+     * @return InodeQuery
+     */
     public function byName(string $name, $like = false)
     {
         if ($like)
-            return $this->andWhere(['like', '%name%' => $name]);
+            return $this->andWhere(['like', 'name', $name]);
 
         return $this->andWhere(['name' => $name]);
     }
+
 
     /**
      * @return InodeQuery
@@ -170,7 +216,7 @@ class InodeQuery extends ActiveQuery
     public function onlyFiles()
     {
         return $this->andWhere([
-            'type' => InodeTypes::TYPE_FILE
+            $this->prefix('type') => InodeTypes::TYPE_FILE
         ]);
     }
 
@@ -180,7 +226,7 @@ class InodeQuery extends ActiveQuery
     public function onlyDirs()
     {
         return $this->andWhere([
-            'type' => InodeTypes::TYPE_DIR
+            $this->prefix('type') => InodeTypes::TYPE_DIR
         ]);
     }
 }

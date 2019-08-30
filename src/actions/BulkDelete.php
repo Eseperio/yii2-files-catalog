@@ -9,15 +9,11 @@
 namespace eseperio\filescatalog\actions;
 
 
-use app\helpers\ArrayHelper;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\base\Inode;
 use eseperio\filescatalog\models\File;
-use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
-use yii\base\Action;
-use yii\base\InvalidArgumentException;
 use yii\web\Controller;
 
 class BulkDelete extends Bulk
@@ -31,13 +27,12 @@ class BulkDelete extends Bulk
     {
 
         $models = $this->getModels();
-        $error = null
-        ;
+        $error = null;
         if ($this->checkSecureHash($models)) {
             if ($this->deleteItems($models)) {
                 return $this->controller->goBack();
             } else {
-                $error = Yii::t('xenon', 'An error ocurred when trying to delete');
+                $error = Yii::t('filescatalog', 'An error ocurred when trying to delete');
             }
         }
 
@@ -62,7 +57,7 @@ class BulkDelete extends Bulk
                 switch ($model->type) {
                     case InodeTypes::TYPE_DIR:
                         $descendantFiles = $model->getDescendants()->andWhere([
-                            'type' => [InodeTypes::TYPE_VERSION, InodeTypes::TYPE_FILE]
+                            'type' => [InodeTypes::TYPE_VERSION, InodeTypes::TYPE_FILE, InodeTypes::TYPE_SYMLINK]
                         ]);
                         foreach ($descendantFiles->batch(50) as $rows) {
                             foreach ($rows as $row) {
@@ -76,6 +71,7 @@ class BulkDelete extends Bulk
                         $model->delete();
                         break;
                     case InodeTypes::TYPE_SYMLINK:
+                        $model->delete();
                         break;
                 }
             }

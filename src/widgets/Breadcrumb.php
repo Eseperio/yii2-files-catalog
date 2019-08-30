@@ -41,6 +41,7 @@ class Breadcrumb extends Widget
         $newFolderLabel = Yii::t('filescatalog', 'New folder');
         $propertiesLabel = Yii::t('filescatalog', 'Properties');
         $addFilesLabel = Yii::t('filescatalog', 'Add files');
+        $linkLabel = Yii::t('filescatalog', 'Add link');
 
 
         return $this->render('breadcrumb', [
@@ -51,9 +52,11 @@ class Breadcrumb extends Widget
             'showLabels' => $this->module->showBreadcrumbButtonLabels,
             'newFolderLabel' => $newFolderLabel,
             'propertiesLabel' => $propertiesLabel,
+            'linkLabel' => $linkLabel,
             'addFilesLabel' => $addFilesLabel,
             'newFolderIcon' => Html::tag('i', '', ['class' => $this->module->newFolderIconclass]),
             'propertiesIcon' => Html::tag('i', '', ['class' => $this->module->propertiesIconClass]),
+            'linkIcon' => Html::tag('i', '', ['class' => $this->module->linkIconClass]),
 
 
         ]);

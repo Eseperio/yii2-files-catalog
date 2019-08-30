@@ -48,11 +48,13 @@ class InodePermissionsForm extends AccessControl
 
     public function beforeValidate()
     {
-        if ($this->type == self::TYPE_USER && !empty($this->user_id))
-            $this->role = self::DUMMY_ROLE;
+        if (!$this->scenario == self::SCENARIO_DELETE) {
+            if ($this->type == self::TYPE_USER && !empty($this->user_id))
+                $this->role = self::DUMMY_ROLE;
 
-        if ($this->type == self::TYPE_ROLE && !empty($this->role))
-            $this->user_id = self::DUMMY_USER;
+            if ($this->type == self::TYPE_ROLE && !empty($this->role))
+                $this->user_id = self::DUMMY_USER;
+        }
 
         return parent::beforeValidate();
     }
@@ -69,8 +71,6 @@ class InodePermissionsForm extends AccessControl
     {
         $typeInputFormName = Html::getInputName($this, 'type');
         $userIdInputFormId = Html::getInputId($this, 'user_id');
-        $roleInputFormId = Html::getInputId($this, 'role');
-        $typeUser = self::TYPE_USER;
         $typeRole = self::TYPE_ROLE;
         $js = <<<JS
         document.getElementsByName('{$typeInputFormName}').forEach((e,i,a)=>{

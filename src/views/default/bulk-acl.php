@@ -61,8 +61,8 @@ use yii\bootstrap\Html;
                             <div class="row">
                                 <div class="col-sm-4">
                                     <?= Html::dropDownList(Html::getInputName($formModel, "value[$i]"), $formModel->type[$i], [
-                                        AccessControl::TYPE_ROLE => Yii::t('xenon', 'Role'),
-                                        AccessControl::TYPE_USER => Yii::t('xenon', 'User')
+                                        AccessControl::TYPE_ROLE => Yii::t('filescatalog', 'Role'),
+                                        AccessControl::TYPE_USER => Yii::t('filescatalog', 'User')
                                     ], ['class' => 'form-control']) ?>
                                 </div>
                                 <div class="col-sm-8">

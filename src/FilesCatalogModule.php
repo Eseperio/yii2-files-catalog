@@ -220,7 +220,10 @@ class FilesCatalogModule extends Module
     /**
      * @var string css classname for the properties icon
      */
-    public $propertiesIconClass = 'glyphicon glyphicon-list-alt';
+    public $propertiesIconClass = 'glyphicon glyphicon-list-alt';/**
+     * @var string css classname for the properties icon
+     */
+    public $linkIconClass = 'glyphicon glyphicon-link';
     /**
      * @var string css classname for the add files icon
      */

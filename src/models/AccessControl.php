@@ -213,6 +213,9 @@ class AccessControl extends ActiveRecord
         return self::setInodesAccessRules($files, $roles, $mask);
     }
 
+    /**
+     * @return array
+     */
     public function scenarios()
     {
         return [

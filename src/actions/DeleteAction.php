@@ -36,6 +36,8 @@ class DeleteAction extends Action
 
         if ($model->isRoot())
             throw new ForbiddenHttpException(Yii::t('filescatalog', 'Root node can not be deleted'));
+
+
         $parentUuid = $model->getParent()->select('uuid')->scalar();
 
         $rcvdHash = Yii::$app->request->post($this->module->secureHashParamName);

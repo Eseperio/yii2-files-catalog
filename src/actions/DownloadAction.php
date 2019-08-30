@@ -10,6 +10,7 @@ namespace eseperio\filescatalog\actions;
 
 
 use eseperio\filescatalog\controllers\DefaultController;
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;

@@ -16,6 +16,7 @@ use eseperio\filescatalog\actions\DownloadAction;
 use eseperio\filescatalog\actions\FakeAction;
 use eseperio\filescatalog\actions\IndexAction;
 use eseperio\filescatalog\actions\NewFolderAction;
+use eseperio\filescatalog\actions\NewLinkAction;
 use eseperio\filescatalog\actions\PropertiesAction;
 use eseperio\filescatalog\actions\RemoveACL;
 use eseperio\filescatalog\actions\UploadAction;
@@ -55,7 +56,7 @@ class DefaultController extends \yii\web\Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['upload', 'new-folder', 'remove-acl', 'delete', 'bulk-delete', 'bulk-acl'],
+                        'actions' => ['upload', 'new-folder', 'remove-acl', 'delete', 'bulk-delete', 'bulk-acl','new-link'],
                         'roles' => ['@'],
                     ],
                     [
@@ -101,6 +102,7 @@ class DefaultController extends \yii\web\Controller
             'index' => ['class' => IndexAction::class],
             'upload' => ['class' => UploadAction::class],
             'new-folder' => ['class' => NewFolderAction::class],
+            'new-link' => ['class' => NewLinkAction::class],
             'properties' => ['class' => PropertiesAction::class],
             'view' => ['class' => ViewAction::class],
             'download' => ['class' => DownloadAction::class],
@@ -135,7 +137,7 @@ class DefaultController extends \yii\web\Controller
     {
         $query = call_user_func([$entity, 'find']);
         if (strlen($id) === 36) {
-            $query->uuid($id)->one();
+            $query->uuid($id);
         } else {
             $query->where(['id' => $id]);
         }

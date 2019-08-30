@@ -45,8 +45,12 @@ class AclHelper
     private static function can($inode, $permission)
     {
         $module = self::getModule();
-        if (!in_array($inode['type'], [InodeTypes::TYPE_DIR, InodeTypes::TYPE_FILE]))
-            throw new InvalidArgumentException(__METHOD__ . " only accepts Files and directories");
+
+        if (!self::getModule()->enableACL)
+            return true;
+
+        if (!in_array($inode['type'], [InodeTypes::TYPE_DIR, InodeTypes::TYPE_FILE, InodeTypes::TYPE_SYMLINK]))
+            throw new InvalidArgumentException(__METHOD__ . " only accepts Files and directories".$inode['type']);
 
         if ($module->enableACL && !$module->isAdmin()) {
             $user = Yii::$app->get($module->user);
@@ -68,27 +72,29 @@ class AclHelper
                         $grantAccess = $acl['user_id'] == $userId;
                         break;
                     default:
-                        $grantAccess = $user->can($acl['role']);
+                        if (!empty(trim($acl['role'])))
+                            $grantAccess = $user->can($acl['role']);
                         break;
                 }
+
 
                 if ($grantAccess)
                     break;
             }
-            if (!$grantAccess) {
-                return false;
-            }
+
+            return $grantAccess;
+
         }
 
         return true;
 
     }
-    
+
     /**
      * @param $inode
      * @return bool
      */
-    public static function cantWrite($inode)
+    public static function canWrite($inode)
     {
         return self::can($inode, AccessControl::ACTION_WRITE);
     }

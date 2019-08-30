@@ -1,0 +1,24 @@
+/*
+ *
+ * Developed by Waizabú <code@waizabu.com>
+ *
+ *
+ */
+
+@charset "UTF-8";
+.fc-icon.symlink {
+  position: relative; }
+  .fc-icon.symlink:after {
+    content: "⇢";
+    position: absolute;
+    display: block;
+    font-size: 16px;
+    right: -6px;
+    bottom: -6px;
+    line-height: 12px;
+    background-color: rgba(73, 73, 73, 0.81);
+    vertical-align: middle;
+    padding: 2px 4px 1px;
+    border-radius: 2px;
+    color: white;
+    font-weight: bold; }

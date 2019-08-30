@@ -51,17 +51,28 @@ class IconDisplay extends Widget
         if (empty($this->iconStyle))
             $this->iconStyle = self::ICON_STYLE_SQUARED_O;
 
-        if ($this->model['type'] === InodeTypes::TYPE_DIR) {
+        $type = $this->model['type'];
+
+        $isSymlink = $type == InodeTypes::TYPE_SYMLINK;
+        if ($isSymlink)
+            $type = $this->model['symlink_type'];
+
+
+        if ($type === InodeTypes::TYPE_DIR) {
             $icon = "folder";
         } else {
-            $icon = empty($this->model['extension']) ? "blank" : $this->model['extension'];
+            $extension = ($isSymlink ? $this->model['symlink_extension'] : $this->model['extension']);
+            $icon = empty($extension) ? "blank" : $extension;
         }
 
         $classes = [
             "fiv-" . $this->iconStyle,
-            "fiv-icon-" . Html::encode($icon)
+            "fiv-icon-" . Html::encode($icon),
+            "fc-icon"
         ];
 
+        if ($this->model->type == InodeTypes::TYPE_SYMLINK)
+            $classes[] = "symlink";
         if (!empty($this->iconSize))
             $classes[] = 'fiv-size-' . $this->iconSize;
 

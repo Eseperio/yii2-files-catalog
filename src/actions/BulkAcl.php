@@ -50,7 +50,7 @@ class BulkAcl extends Bulk
 
                 return $this->controller->goBack();
             } else {
-                $error = Yii::t('xenon', 'An error ocurred when trying to delete');
+                $error = Yii::t('filescatalog', 'An error ocurred when trying to delete');
             }
         }
 

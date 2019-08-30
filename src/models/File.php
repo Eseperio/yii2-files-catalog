@@ -168,7 +168,6 @@ class File extends Inode
                 $id = mb_substr($name, $lastDash + 1);
                 if (is_numeric($id)) {
                     $name = mb_substr($name, 0, $lastDash + 1) . ++$id;
-                    var_dump($name);
                 }
             } else {
                 $name = $name = $name . "-1";

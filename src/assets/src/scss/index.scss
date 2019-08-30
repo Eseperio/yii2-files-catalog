@@ -1,0 +1,23 @@
+$fontSize: 16px;
+.fc-icon {
+  &.symlink {
+    position: relative;
+    &:after {
+      content:"⇢";
+      position: absolute;
+      display: block;
+      font-size: $fontSize;
+      right:-6px;
+      bottom:-6px;
+      line-height: $fontSize * .75;
+      background-color: rgba(73, 73, 73, 0.81);
+      vertical-align: middle;
+      padding: 2px 4px 1px;
+      border-radius: 2px;
+      color:white;
+      font-weight: bold;
+
+    }
+  }
+}
+

@@ -19,4 +19,8 @@ class IndexAsset extends AssetBundle
     public $js = [
         'js/filex-index' . (YII_ENV_PROD ? ".min" : "") . ".js"
     ];
+
+    public $css=[
+      'css/index.css'
+    ];
 }

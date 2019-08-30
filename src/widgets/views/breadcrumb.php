@@ -16,6 +16,8 @@
 /* @var string $newFolderLabel */
 /* @var $parents array */
 /* @var $propertiesLabel string */
+/* @var $linkLabel string */
+/* @var $linkIcon string */
 
 /* @var string $propertiesIcon */
 
@@ -60,15 +62,13 @@ FileTypeIconsAsset::register($this);
                 return Html::a(Helper::humanize($item['name']), ['index', 'uuid' => $item['uuid']]);
             })) ?></p>
         <?php endif; ?>
-
     </div>
     <div class="col-sm-5 text-right">
         <?php if ($model->type == InodeTypes::TYPE_DIR): ?>
-
             <div class="h1">
                 <div class="btn-group">
                     <?php
-                    if (AclHelper::cantWrite($model))
+                    if (AclHelper::canWrite($model)){
 
                         echo Html::a($newFolderIcon . " " . ($showLabels ? $newFolderLabel : ""), ['new-folder', 'uuid' => $model->uuid], [
                             'class' => 'btn btn-default',
@@ -79,6 +79,16 @@ FileTypeIconsAsset::register($this);
                                 'container' => 'body'
                             ]
                         ]);
+                    echo Html::a($linkIcon . " " . ($showLabels ? $linkLabel : ""), ['new-link', 'uuid' => $model->uuid], [
+                        'class' => 'btn btn-default',
+                        'title' => $linkLabel,
+                        'data' => [
+                            'toggle' => 'tooltip',
+                            'pjax' => 0,
+                            'container' => 'body'
+                        ]
+                    ]);
+                    }
                     if ($showPropertiesBtn)
                         echo Html::a($propertiesIcon . " " . ($showLabels ? $propertiesLabel : ""), ['properties', 'uuid' => $model->uuid], [
                             'class' => 'btn btn-default',
@@ -92,7 +102,7 @@ FileTypeIconsAsset::register($this);
 
                         ])
                     ?>
-                    <?php if (AclHelper::cantWrite($model)): ?>
+                    <?php if (AclHelper::canWrite($model)): ?>
                         <?= Uploader::widget([
                             'targetUuid' => $model->uuid,
                             'pjaxId' => $pjaxId,
