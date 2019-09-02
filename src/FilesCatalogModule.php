@@ -62,10 +62,6 @@ class FilesCatalogModule extends Module
      */
     public $storage = 'storage';
     /**
-     * @var string The model to be used fot files
-     */
-    public $fileModel = File::class;
-    /**
      * @var string The user component. This is used on blameable behavior
      */
     public $user = 'user';

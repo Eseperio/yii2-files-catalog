@@ -69,6 +69,9 @@ There is a default controller with the following actions.
 |Properties| Displays properties of the file or directory selected|
 |Upload| Action to handle file uploads|
 |NewFolder| Displays the "create directory" form|
+|Rename| Allows renaming an inode|
+|BulkDelete| Bulk deletion|
+|RemoveAcl|Remove permissions from an Inode|
 
 ### Configuration
 
@@ -77,8 +80,7 @@ There is a default controller with the following actions.
 |`maxFileSize`|  int the maximum number of bytes required for the uploaded file. Defaults to null, meaning no limit. Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting and the 'MAX_FILE_SIZE' hidden field value. See [[FileValidator::getSizeLimit()]] for details. @see https://secure.php.net/manual/en/ini.core.php#ini.upload-max-filesize @see https://secure.php.net/post-max-size @see FileValidator::getSizeLimit|null|
 |`directory`|  string This will be used as default directory where all files will be created. Set to false to use your  default storage component|'filex'|
 |`maxVersions`|  int number of maximun versions of a files that can be kept.|4|
-|`storage`|  string name of the component responsible of handling files. Requires flysystem.|'storage'|
-|`fileModel`|  string The model to be used fot files|File::class|
+|`storage`|  string name of the component responsible of handling files. Must comply with flysystem.|'storage'|
 |`user`|  string The user component. This is used on blameable behavior|'user'|
 |`userIdAttribute`|  string attribute of the user component|'id'|
 |`userNameAttribute`|  string user attribute that returns the name. Can be a anything valid for [[ArrayHelper::getValue()]]|'username'|
