@@ -13,7 +13,7 @@ use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
 use eseperio\filescatalog\helpers\AclHelper;
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
@@ -101,8 +101,9 @@ class IndexAction extends Action
 //                Root not exists, we create it
                 $root = new Inode();
                 $root->name = 'root';
-                $root->type=InodeTypes::TYPE_DIR;
+                $root->type  =  InodeTypes::TYPE_DIR;
                 $root->makeRoot()->save(false);
+
                 return $root;
 
             }

@@ -6,7 +6,7 @@
  *
  */
 
-/* @var $models \eseperio\filescatalog\models\base\Inode[] */
+/* @var $models \eseperio\filescatalog\models\Inode[] */
 /* @var $filexModule \eseperio\filescatalog\FilesCatalogModule */
 
 /* @var $hash string */
@@ -38,7 +38,7 @@ use yii\bootstrap\Html;
                 <?php endif; ?>
                 <?= Html::ul($models, [
                     'item' => function ($model) use($formModel) {
-                        /* @var $model \eseperio\filescatalog\models\base\Inode */
+                        /* @var $model \eseperio\filescatalog\models\Inode */
                         $link = Html::a(Html::encode($model->name), ['/filex/default/view', 'uuid' => $model->uuid], ['target' => '_blank']);
                         $input = Html::hiddenInput(Html::getInputName($formModel,'uuids[]'), $model->uuid);
                         $label = Html::tag('li', $link . $input, ['class' => 'list-group-item']);

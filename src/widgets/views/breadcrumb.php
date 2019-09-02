@@ -9,7 +9,7 @@
 
 /* @var \eseperio\filescatalog\FilesCatalogModule $filexModule */
 /* @var $this \yii\web\View */
-/* @var $model \eseperio\filescatalog\models\base\Inode|\eseperio\filescatalog\models\Directory|\eseperio\filescatalog\models\File|\eseperio\filescatalog\models\Symlink */
+/* @var $model \eseperio\filescatalog\models\Inode|\eseperio\filescatalog\models\Directory|\eseperio\filescatalog\models\File|\eseperio\filescatalog\models\Symlink */
 /* @var $pjaxId string */
 /* @var $showPropertiesBtn boolean */
 /* @var string $newFolderIcon */

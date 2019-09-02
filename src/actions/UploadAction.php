@@ -13,6 +13,7 @@ use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\File;
+use eseperio\filescatalog\models\Inode;
 use Yii;
 use yii\base\Action;
 use yii\base\InvalidArgumentException;
@@ -35,7 +36,9 @@ class UploadAction extends Action
     {
 
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $model = Yii::createObject(File::class);
+        $model = Yii::createObject(Inode::class);
+        $model->type = InodeTypes::TYPE_FILE;
+
         /* @var $model File */
         $model->file = UploadedFile::getInstance($model, 'file');
         if ($model->validate(['file'])) {

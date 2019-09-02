@@ -160,7 +160,7 @@ class Inode extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        if ($insert && $this->type != InodeTypes::TYPE_SYMLINK)
+        if ($insert && !in_array($this->type,[InodeTypes::TYPE_SYMLINK]))
             $this->uuid = (string)Uuid::uuid4();
 
         return parent::beforeSave($insert);

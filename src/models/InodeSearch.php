@@ -6,19 +6,12 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\models;
 
 
 use yii\data\ActiveDataProvider;
 
-class InodeSearch extends \eseperio\filescatalog\models\base\Inode
+class InodeSearch extends \eseperio\filescatalog\models\Inode
 {
 
     public function search($params = [])

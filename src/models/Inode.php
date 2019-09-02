@@ -9,7 +9,14 @@
 namespace eseperio\filescatalog\models;
 
 
-use Ramsey\Uuid\Uuid;
+use eseperio\filescatalog\dictionaries\InodeTypes;
+use Yii;
+use yii\base\Exception;
+use yii\base\UserException;
+use yii\helpers\FileHelper;
+use yii\helpers\Html;
+use yii\helpers\Inflector;
+use yii\web\UploadedFile;
 
 /**
  * Class Inode
@@ -25,17 +32,275 @@ use Ramsey\Uuid\Uuid;
  * @property int $updated_at
  * @property int $created_by
  */
-abstract class Inode extends \eseperio\filescatalog\models\base\Inode
+class Inode extends \eseperio\filescatalog\models\base\Inode
 {
+
+    /**
+     * @var UploadedFile
+     */
+    public $file;
+    /**
+     * @var bool whether file instance is a version
+     */
+    private $inodeType = InodeTypes::TYPE_DIR;
+    /**
+     * @var integer id of the original file. Used when creating a version
+     */
+    private $originalId;
+
+    public function rules()
+    {
+        $rules = parent::rules();
+
+        switch ($this->type) {
+            case InodeTypes::TYPE_FILE:
+            case InodeTypes::TYPE_VERSION:
+                $rules = array_replace_recursive($rules, [
+                    ['file', 'file', 'skipOnEmpty' => false]
+                ]);
+                break;
+        }
+
+        return $rules;
+    }
+
+    public function setAsVersion($originalUuid)
+    {
+        $this->uuid = $originalUuid;
+        $this->type = InodeTypes::TYPE_VERSION;
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function fileExists()
+    {
+        return $this->module->getStorageComponent()->has($this->getInodeRealPath());
+    }
+
     public function beforeSave($insert)
     {
-        $this->type = $this->getInodeType();
+
+        switch ($this->type) {
+            case InodeTypes::TYPE_FILE:
+            case InodeTypes::TYPE_VERSION:
+                $this->beforeSaveFileInternal($insert);
+
+                break;
+        }
 
         return parent::beforeSave($insert);
     }
 
     /**
-     * @return int The type of inode
+     * @param $insert
+     * @throws UserException
      */
-    abstract function getInodeType();
+    private function beforeSaveFileInternal($insert): void
+    {
+        if (!empty($this->uuid) && $insert) {
+            $id = File::find()->where(['uuid' => $this->uuid])->select('id')->scalar();
+            if (empty($id))
+                throw new UserException(Yii::t('filescatalog', 'File not found'));
+            $this->originalId = $id;
+        }
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOriginal()
+    {
+        if ($this->type == InodeTypes::TYPE_DIR)
+            throw new UserException(Yii::t('xenon', 'Directories does not accept versioning'));
+
+        return $this->hasOne(Inode::class, ['id' => 'file_id'])
+            ->viaTable('fcatalog_inodes_version', ['version_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVersions()
+    {
+        return $this->hasMany(File::class, ['id' => 'version_id'])
+            ->viaTable('fcatalog_inodes_version', ['file_id' => 'id'])
+            ->andWhere(['type' => InodeTypes::TYPE_VERSION]);
+    }
+
+    public function getFileVersions()
+    {
+        return $this->hasMany(FileVersion::class, ['file_id' => 'id']);
+    }
+
+    /**
+     * @return string the content of the file as base64 ready to be embedded.
+     * @throws \League\Flysystem\FileNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getContentAsBase64()
+    {
+        $data = $this->getFile();
+
+        return 'data:' . $this->mime . ';base64,' . base64_encode($data);
+    }
+
+    /**
+     * @return bool|false|resource
+     * @throws \League\Flysystem\FileNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getFile()
+    {
+        return $this->module->getStorageComponent()->read($this->getInodeRealPath());
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        switch ($this->type) {
+            case InodeTypes::TYPE_FILE:
+            case InodeTypes::TYPE_VERSION:
+                $this->insertFileInternal($insert);
+                break;
+        }
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @param $insert
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    private function insertFileInternal($insert): void
+    {
+        if ($insert) {
+            try {
+                $uploadedFile = $this->file;
+                if ($uploadedFile instanceof UploadedFile && $this->validate(['file'])) {
+                    $this->name = Inflector::slug($uploadedFile->baseName);
+                    $this->mime = FileHelper::getMimeType($uploadedFile->tempName);
+                    $this->extension = mb_strtolower(Html::encode($uploadedFile->extension));
+                    $this->filesize = $uploadedFile->size;
+                    $filesystem = $this->module->getStorageComponent();
+                    $tmpFile = fopen($uploadedFile->tempName, 'r+');
+                    $inodeRealPath = $this->getInodeRealPath();
+                    if ($this->module->checkFilesIntegrity)
+                        $this->md5hash = hash_file('md5', $uploadedFile->tempName);
+
+
+                    $parent = $this->getParent()->one();
+                    $siblingsNames = $parent->getChildren()
+                        ->onlyFiles()
+                        ->asArray()
+                        ->select('name')
+                        ->column();
+
+                    if (in_array($this->name, $siblingsNames))
+                        $this->name = $this->getUniqueFilename($siblingsNames);
+
+
+                    $this->update(false);
+                    $this->validate();
+
+
+                    $method = "writeStream";
+
+                    if ($this->module->allowOverwrite && $filesystem->has($inodeRealPath))
+                        $method = "updateStream";
+
+
+                    if (!$filesystem->{$method}($inodeRealPath, $tmpFile)) {
+                        $this->addError(Yii::t('filescatalog', 'Unable to move file to its destination'));
+                    }
+
+
+                } else {
+                    $this->delete();
+                }
+            } catch (\Throwable $e) {
+                $this->addError('file', Yii::t('filescatalog', $e->getMessage()));
+                $this->delete();
+                throw $e;
+            }
+
+            if ($this->inodeType == InodeTypes::TYPE_VERSION && $insert) {
+                $version = new FileVersion();
+                $version->file_id = $this->originalId;
+                $version->version_id = $this->id;
+                if (!$version->save()) {
+                    throw new Exception('Unable to save version.');
+                }
+            }
+
+            if ($insert) {
+                $acl = new AccessControl();
+                $acl->inode_id = $this->id;
+                $acl->user_id = Yii::$app->user->id;
+                $acl->role = AccessControl::DUMMY_ROLE;
+                $acl->crud_mask = AccessControl::ACTION_WRITE | AccessControl::ACTION_READ | AccessControl::ACTION_DELETE;
+                $acl->save();
+            }
+
+        }
+    }
+
+    /**
+     * @param array $siblingsNames
+     * @return string
+     */
+    private function getUniqueFilename(array $siblingsNames)
+    {
+        $reclimit = 30;
+        $counter = 0;
+        $name = $this->name;
+        while (in_array($name, $siblingsNames)) {
+            if ($counter++ >= $reclimit)
+                break;
+            $lastDash = mb_strripos($name, '-');
+            if ($lastDash) {
+                $id = mb_substr($name, $lastDash + 1);
+                if (is_numeric($id)) {
+                    $name = mb_substr($name, 0, $lastDash + 1) . ++$id;
+                }
+            } else {
+                $name = $name = $name . "-1";
+            }
+        }
+
+        return $name;
+    }
+
+    public function delete()
+    {
+        switch ($this->type) {
+            case InodeTypes::TYPE_FILE:
+            case InodeTypes::TYPE_VERSION:
+                $this->deleteFileInternal();
+
+                break;
+        }
+
+        return parent::delete();
+    }
+
+    /**
+     * Deletes a file
+     */
+    private function deleteFileInternal(): void
+    {
+        try {
+            $filesystem = $this->module->getStorageComponent();
+            $realPath = $this->getInodeRealPath();
+
+            if ($filesystem->has($realPath)) {
+                $filesystem->delete($realPath);
+            }
+        } catch (\Throwable $e) {
+            Yii::error($e->getMessage());
+        }
+
+        if ($this->type == InodeTypes::TYPE_VERSION)
+            FileVersion::deleteAll(['version_id' => $this->id]);
+    }
 }

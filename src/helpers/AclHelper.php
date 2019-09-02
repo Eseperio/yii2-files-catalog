@@ -11,9 +11,10 @@ namespace eseperio\filescatalog\helpers;
 
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\AccessControl;
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
+use eseperio\filescatalog\models\FileVersion;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -49,8 +50,14 @@ class AclHelper
         if (!self::getModule()->enableACL)
             return true;
 
+        if ($inode['type'] === InodeTypes::TYPE_VERSION) {
+            $version = FileVersion::findOne(['version_id' => $inode['id']]);
+            $inode = $version->original;
+
+        }
+
         if (!in_array($inode['type'], [InodeTypes::TYPE_DIR, InodeTypes::TYPE_FILE, InodeTypes::TYPE_SYMLINK]))
-            throw new InvalidArgumentException(__METHOD__ . " only accepts Files and directories".$inode['type']);
+            throw new InvalidArgumentException(__METHOD__ . " only accepts Files and directories");
 
         if ($module->enableACL && !$module->isAdmin()) {
             $user = Yii::$app->get($module->user);

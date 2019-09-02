@@ -6,13 +6,13 @@
  *
  */
 
-/* @var $model \eseperio\filescatalog\models\base\Inode|\eseperio\filescatalog\models\File */
+/* @var $model \eseperio\filescatalog\models\Inode|\eseperio\filescatalog\models\File */
 
-/* @var $parent \eseperio\filescatalog\models\base\Inode */
-/* @var $parentTreeNodes \eseperio\filescatalog\models\base\Inode[] */
+/* @var $parent \eseperio\filescatalog\models\Inode */
+/* @var $parentTreeNodes \eseperio\filescatalog\models\Inode[] */
 /* @var $maxTreeDepth int */
 
-/* @var $childrenTreeNodes \eseperio\filescatalog\models\base\Inode[] */
+/* @var $childrenTreeNodes \eseperio\filescatalog\models\Inode[] */
 
 /* @var $accessControlFormModel InodePermissionsForm */
 

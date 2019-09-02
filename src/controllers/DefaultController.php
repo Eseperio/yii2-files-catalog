@@ -19,12 +19,13 @@ use eseperio\filescatalog\actions\NewFolderAction;
 use eseperio\filescatalog\actions\NewLinkAction;
 use eseperio\filescatalog\actions\PropertiesAction;
 use eseperio\filescatalog\actions\RemoveACL;
+use eseperio\filescatalog\actions\RenameAction;
 use eseperio\filescatalog\actions\UploadAction;
 use eseperio\filescatalog\actions\ViewAction;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
 use eseperio\filescatalog\helpers\AclHelper;
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Symlink;
@@ -56,7 +57,7 @@ class DefaultController extends \yii\web\Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['upload', 'new-folder', 'remove-acl', 'delete', 'bulk-delete', 'bulk-acl','new-link'],
+                        'actions' => ['upload', 'new-folder', 'remove-acl', 'delete', 'bulk-delete', 'bulk-acl', 'new-link', 'rename'],
                         'roles' => ['@'],
                     ],
                     [
@@ -101,6 +102,7 @@ class DefaultController extends \yii\web\Controller
         return [
             'index' => ['class' => IndexAction::class],
             'upload' => ['class' => UploadAction::class],
+            'rename' => ['class' => RenameAction::class],
             'new-folder' => ['class' => NewFolderAction::class],
             'new-link' => ['class' => NewLinkAction::class],
             'properties' => ['class' => PropertiesAction::class],

@@ -10,7 +10,7 @@ namespace eseperio\filescatalog\widgets;
 
 
 use eseperio\filescatalog\dictionaries\InodeTypes;
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Inode;
 use yii\base\InvalidArgumentException;
 use yii\base\Widget;
 use yii\helpers\Html;

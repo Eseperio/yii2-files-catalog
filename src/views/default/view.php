@@ -12,6 +12,7 @@
 
 /* @var $checkFilesIntegrity boolean */
 
+use eseperio\filescatalog\widgets\Versions;
 use yii\helpers\Html;
 
 ?>
@@ -59,7 +60,7 @@ use yii\helpers\Html;
             <?php if ($filexModule->allowVersioning): ?>
 
                 <div class="panel-body ">
-                    <?= \eseperio\filescatalog\widgets\Versions::widget([
+                    <?= Versions::widget([
                         'model' => $model
                     ]) ?>
                 </div>
@@ -67,7 +68,7 @@ use yii\helpers\Html;
             <?php endif; ?>
 
             <div class="panel-body">
-                <?= Html::a(Yii::t('filescatalog', 'View file properties'), ['properties', 'uuid' => $model->uuid, 'original' => true], ['class' => '']) ?>
+                <?= Html::a(Yii::t('filescatalog', 'View file properties'), ['properties', 'uuid' => $model->uuid, 'original' => true], ['class' => 'btn btn-primary']) ?>
             </div>
         </div>
 

@@ -10,7 +10,7 @@ namespace eseperio\filescatalog\widgets;
 
 use yii\helpers\ArrayHelper;
 use eseperio\filescatalog\models\AccessControl;
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Inode;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\Widget;

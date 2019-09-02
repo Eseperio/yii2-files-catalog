@@ -6,13 +6,13 @@
  *
  */
 
-/* @var $model \eseperio\filescatalog\models\base\Inode */
+/* @var $model \eseperio\filescatalog\models\Inode */
 
-/* @var $parent \eseperio\filescatalog\models\base\Inode */
-/* @var $parentTreeNodes \eseperio\filescatalog\models\base\Inode[] */
+/* @var $parent \eseperio\filescatalog\models\Inode */
+/* @var $parentTreeNodes \eseperio\filescatalog\models\Inode[] */
 /* @var $maxTreeDepth int */
 /* @var $this \yii\web\View */
-/* @var $childrenTreeNodes \eseperio\filescatalog\models\base\Inode[] */
+/* @var $childrenTreeNodes \eseperio\filescatalog\models\Inode[] */
 /* @var $filexModule \eseperio\filescatalog\FilesCatalogModule */
 /* @var $attributes array */
 
@@ -54,34 +54,38 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 <?php if (!empty($parent)): ?>
                     <?= Html::a(Yii::t('filescatalog', 'Open parent'), ['index', 'uuid' => $parent->uuid], ['class' => 'btn btn-default']) ?>
                 <?php endif; ?>
+                <?= Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->uuid], ['class' => 'btn btn-info ']) ?>
                 <?= Html::a(Yii::t('filescatalog', 'View contents'), [($model->type === InodeTypes::TYPE_DIR ? "index" : "view"), 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>
             </div>
         </div>
-        <?php
-        $aclModel = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original : $model;
-        if (AclHelper::canDelete($aclModel)): ?>
+        <div class="panel">
             <?php
-            $deleteButtonOptions = [
-                'class' => 'text-danger',
-                'data' => [
-                    'method' => 'post',
-                    'params' => [
-                        $filexModule->secureHashParamName => $model->deleteHash
-                    ],
-                    'confirm' => Yii::t('filescatalog', 'Confirm deletion?')
-                ]
-            ];
-            $deleteUrl = ['delete', 'uuid' => $model->uuid];
-            if ($model->type === InodeTypes::TYPE_VERSION):
-                echo Html::a(Yii::t('filescatalog', 'Delete only this version'), $deleteUrl, $deleteButtonOptions)
-                    . "  " . Yii::t('filescatalog', 'or') . " ";
-            endif;
+            $aclModel = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original : $model;
+            if (AclHelper::canDelete($aclModel)): ?>
+                <?php
+                $deleteButtonOptions = [
+                    'class' => 'btn btn-danger',
+                    'data' => [
+                        'method' => 'post',
+                        'params' => [
+                            $filexModule->secureHashParamName => $model->deleteHash
+                        ],
+                        'confirm' => Yii::t('filescatalog', 'Confirm deletion?')
+                    ]
+                ];
+                $deleteUrl = ['delete', 'uuid' => $model->uuid];
+                if ($model->type === InodeTypes::TYPE_VERSION):
+                    echo Html::a(Yii::t('filescatalog', 'Delete only this version'), $deleteUrl, $deleteButtonOptions)
+                        . " - " . Yii::t('filescatalog', 'or') . " - ";
+                endif;
 
-            $deleteButtonOptions['data']['params']['dellall'] = true;
-            if ($model->type === InodeTypes::TYPE_DIR)
-                unset($deleteButtonOptions['data']['confirm']);
-            echo Html::a(Yii::t('filescatalog', 'Delete'), $deleteUrl, $deleteButtonOptions) ?>
-        <?php endif; ?>
+                $deleteButtonOptions['data']['params']['dellall'] = true;
+                if ($model->type === InodeTypes::TYPE_DIR)
+                    unset($deleteButtonOptions['data']['confirm']);
+                echo Html::a(Yii::t('filescatalog', 'Delete'), $deleteUrl, $deleteButtonOptions) ?>
+            <?php endif; ?>
+        </div>
+
     </div>
     <?php /** @var \eseperio\filescatalog\FilesCatalogModule $filexModule */
     if ($canManageAcl): ?>

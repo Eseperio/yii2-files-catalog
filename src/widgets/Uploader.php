@@ -10,7 +10,7 @@ namespace eseperio\filescatalog\widgets;
 
 
 use dosamigos\fileupload\FileUpload;
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use yii\base\InvalidConfigException;
@@ -61,7 +61,7 @@ class Uploader extends FileUpload
         $this->initTargetDir();
 
         if (empty($this->model))
-            $this->model = new File();
+            $this->model = new Inode();
 
         $this->attribute = 'file';
         $this->url = ['/filex/default/upload'];

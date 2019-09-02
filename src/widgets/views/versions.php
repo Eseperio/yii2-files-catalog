@@ -35,7 +35,7 @@ use yii\helpers\Html;
         <?= Html::tag('strong', $model->getHumanName(30)); ?>
     <?php endif; ?>
 
-    <ol class="filex-versions ">
+    <ol class="filex-versions" style="max-height: 300px; overflow: auto">
         <?php foreach ($versions as $version): ?>
             <li>
                 <?php if ($model->id !== $version->id): ?>
@@ -62,6 +62,6 @@ use yii\helpers\Html;
 <?php endif; ?>
 <hr>
 <?= Uploader::widget([
-    'model' => $isVersion ? $model->original : $model,
+    'model' => !$isVersion ? $model : $model->original,
 ]) ?>
 

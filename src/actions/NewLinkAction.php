@@ -12,8 +12,9 @@ namespace eseperio\filescatalog\actions;
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Directory;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Symlink;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
@@ -56,8 +57,17 @@ class NewLinkAction extends Action
             $symLink = new Symlink();
             $symLink->uuid = $remote->uuid;
             $symLink->name = $remote->name;
-            if ($symLink->appendTo($parent)->save())
+            if ($symLink->appendTo($parent)->save()) {
+
+                $acl = new AccessControl();
+                $acl->inode_id = $symLink->id;
+                $acl->user_id = Yii::$app->user->id;
+                $acl->role = AccessControl::DUMMY_ROLE;
+                $acl->crud_mask = AccessControl::ACTION_WRITE | AccessControl::ACTION_READ | AccessControl::ACTION_DELETE;
+                $acl->save();
+
                 return $this->controller->goBack();
+            }
         }
         $model = new DynamicModel([
             'query',

@@ -10,7 +10,7 @@ namespace eseperio\filescatalog\columns;
 
 use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\dictionaries\InodeTypes;
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Inode;
 use yii\grid\DataColumn;
 
 /**

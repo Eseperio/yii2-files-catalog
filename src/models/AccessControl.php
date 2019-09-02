@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\models;
 
 
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\db\ActiveRecord;

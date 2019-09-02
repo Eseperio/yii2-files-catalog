@@ -6,7 +6,7 @@
  *
  */
 
-/* @var $model \eseperio\filescatalog\models\base\Inode */
+/* @var $model \eseperio\filescatalog\models\Inode */
 
 /* @var $parent \eseperio\filescatalog\models\Directory */
 

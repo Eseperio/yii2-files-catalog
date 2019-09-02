@@ -10,9 +10,11 @@ namespace eseperio\filescatalog\actions;
 
 
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Directory;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
@@ -27,7 +29,7 @@ class NewFolderAction extends Action
     public function run()
     {
 
-        $trans= Yii::$app->db->beginTransaction();
+        $trans = Yii::$app->db->beginTransaction();
 
         FileTypeIconsAsset::register($this->controller->view);
         $uuid = Yii::$app->request->get('uuid', false);
@@ -36,23 +38,24 @@ class NewFolderAction extends Action
         if (empty($parent))
             throw new NotFoundHttpException('Page not found');
 
-        if(!AclHelper::canWrite($parent))
-            throw new ForbiddenHttpException(Yii::t('filescatalog','You can not create items in this folder'));
+        if (!AclHelper::canWrite($parent))
+            throw new ForbiddenHttpException(Yii::t('filescatalog', 'You can not create items in this folder'));
 
         try {
 
 
-            $model = new Directory();
-
+            $model = new Inode();
+            $model->type = InodeTypes::TYPE_DIR;
             if ($model->load(Yii::$app->request->post()) && $model->appendTo($parent)->save()) {
                 $acl = new AccessControl();
                 $acl->inode_id = $model->id;
                 $acl->user_id = Yii::$app->user->id;
-                $acl->role= AccessControl::DUMMY_ROLE;
+                $acl->role = AccessControl::DUMMY_ROLE;
                 $acl->crud_mask = AccessControl::ACTION_WRITE | AccessControl::ACTION_READ | AccessControl::ACTION_DELETE;
                 $acl->save();
 
                 $trans->commit();
+
                 return $this->controller->redirect(['index', 'uuid' => $model->uuid]);
             }
         } catch (\Throwable $e) {

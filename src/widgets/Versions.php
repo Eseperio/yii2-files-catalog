@@ -48,6 +48,7 @@ class Versions extends Widget
         if (end($dates) === $this->model->created_at)
             $isLast = true;
 
+
         return $this->render('versions', [
             'versions' => $versions,
             'model' => $this->model,

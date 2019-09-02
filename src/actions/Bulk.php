@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\actions;
 
 
-use eseperio\filescatalog\models\base\Inode;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
@@ -54,7 +54,7 @@ abstract class Bulk extends Action
     }
 
     /**
-     * @param $collection \eseperio\filescatalog\models\base\Inode[]
+     * @param $collection \eseperio\filescatalog\models\Inode[]
      * @return string
      */
     protected function getSecureHash($collection)
