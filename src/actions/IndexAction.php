@@ -42,37 +42,7 @@ class IndexAction extends Action
 
         Url::remember();
         $dataProvider = $this->getChildrenDataProvider($model);
-
-        $bulkActions = [
-            [
-                'label' => Yii::t('filescatalog', 'Delete'),
-                'url' => ['/filex/default/bulk-delete'],
-                'linkOptions' => [
-                    'id' => 'filex-bulk-delete',
-                    'class' => 'text-danger',
-                    'data' => [
-                        'method' => 'post',
-                        'params' => json_encode([]),
-
-                    ]
-                ]
-            ],
-        ];
-        if ($this->module->isAdmin())
-            $bulkActions[] = [
-                'label' => Yii::t('filescatalog', 'Add permission'),
-                'url' => ['/filex/default/bulk-acl'],
-                'linkOptions' => [
-                    'id' => 'filex-bulk-acl',
-                    'class' => 'text-danger',
-                    'data' => [
-                        'method' => 'post',
-                        'params' => json_encode([]),
-
-                    ]
-                ]
-
-            ];
+        $bulkActions = $this->getBulkActions();
 
         return $this->controller->render('index', [
             'dataProvider' => $dataProvider,
@@ -88,7 +58,7 @@ class IndexAction extends Action
      * @throws FilexAccessDeniedException
      * @throws \yii\web\NotFoundHttpException
      */
-    private function getModel()
+    protected function getModel()
     {
         if ($uuid = Yii::$app->request->get('uuid', false)) {
             $model = $this->controller->findModel($uuid);
@@ -119,7 +89,7 @@ class IndexAction extends Action
      * @param $model Inode
      * @return ActiveDataProvider
      */
-    private function getChildrenDataProvider($model): ActiveDataProvider
+    protected function getChildrenDataProvider($model): ActiveDataProvider
     {
         $childrenQuery = $model->getChildren()
             ->with(['accessControlList'])
@@ -141,5 +111,45 @@ class IndexAction extends Action
         ]);
 
         return $dataProvider;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getBulkActions(): array
+    {
+        $bulkActions = [
+            [
+                'label' => Yii::t('filescatalog', 'Delete'),
+                'url' => ['/filex/default/bulk-delete'],
+                'linkOptions' => [
+                    'id' => 'filex-bulk-delete',
+                    'class' => 'text-danger',
+                    'data' => [
+                        'method' => 'post',
+                        'params' => json_encode([]),
+
+                    ]
+                ]
+            ],
+        ];
+
+        if ($this->module->isAdmin())
+            $bulkActions[] = [
+                'label' => Yii::t('filescatalog', 'Add permission'),
+                'url' => ['/filex/default/bulk-acl'],
+                'linkOptions' => [
+                    'id' => 'filex-bulk-acl',
+                    'class' => 'text-danger',
+                    'data' => [
+                        'method' => 'post',
+                        'params' => json_encode([]),
+
+                    ]
+                ]
+
+            ];
+
+        return $bulkActions;
     }
 }

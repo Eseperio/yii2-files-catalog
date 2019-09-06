@@ -113,7 +113,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     public function getOriginal()
     {
         if ($this->type == InodeTypes::TYPE_DIR)
-            throw new UserException(Yii::t('xenon', 'Directories does not accept versioning'));
+            throw new UserException(Yii::t('filescatalog', 'Directories does not accept versioning'));
 
         return $this->hasOne(Inode::class, ['id' => 'file_id'])
             ->viaTable('fcatalog_inodes_version', ['version_id' => 'id']);

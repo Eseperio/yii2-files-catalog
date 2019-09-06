@@ -9,7 +9,8 @@
 /* @var $dataProvider \yii\data\ActiveDataProvider */
 /* @var $model \eseperio\filescatalog\models\Inode */
 /* @var $usePjax boolean */
-/* @var $bulkActions array  */
+/* @var $bulkActions array */
+
 /* @var $parents array with the parents inodes */
 
 use eseperio\filescatalog\assets\IndexAsset;
