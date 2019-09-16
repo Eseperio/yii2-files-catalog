@@ -82,6 +82,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     public function beforeSave($insert)
     {
 
+
         switch ($this->type) {
             case InodeTypes::TYPE_FILE:
             case InodeTypes::TYPE_VERSION:

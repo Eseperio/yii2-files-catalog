@@ -60,6 +60,7 @@ class InodePermissionsForm extends AccessControl
     }
 
 
+
     public function init()
     {
         $this->type = self::TYPE_ROLE;

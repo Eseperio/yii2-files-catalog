@@ -91,7 +91,7 @@ return [
     'This operation can not be undone' => 'Esta operación no se puede deshacer',
     'This permission is already assigned' => 'Este permiso ya está asignado',
     'To confirm deletion write the next string in the text input and click confirm' => 'Para confirmar el borrado escriba la siguiente cadena en el campo de texto y haga click en confirmar',
-    'To delete this folder and all its contents, write the first {nchar} characters of directory name' => 'Para eliminar este directorio y todos sus contenidos, escriba los {nchar} primeros caracteres del nombre del directorio',
+    'To delete this folder and all its contents, write the first {nchar} characters of directory name' => 'Para eliminar este directorio y todo su contenido, escriba los {nchar} primeros caracteres del nombre del directorio',
     'Type' => 'Tipo',
     'Unable to get parent' => 'Imposible obtener el padre',
     'Unable to move file to its destination' => 'Imposible mover el archivo a su destino',

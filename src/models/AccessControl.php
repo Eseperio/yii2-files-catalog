@@ -9,7 +9,6 @@
 namespace eseperio\filescatalog\models;
 
 
-use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\db\ActiveRecord;
@@ -92,6 +91,7 @@ class AccessControl extends ActiveRecord
         ];
         $rows = [];
         foreach ($usersList as $user) {
+
             if (is_object($user)) {
                 $userId = ArrayHelper::getValue($user, $filesCatalogModule->userIdAttribute);
             } else {
@@ -103,13 +103,13 @@ class AccessControl extends ActiveRecord
                     $rows[] = [
                         $id,
                         $userId,
-                        null,
+                        AccessControl::DUMMY_ROLE,
                         $mask
                     ];
                 } else {
                     $rows[] = [
                         $id,
-                        null,
+                        AccessControl::DUMMY_USER,
                         $userId,
                         $mask
                     ];
@@ -118,10 +118,12 @@ class AccessControl extends ActiveRecord
             }
         }
         try {
-            return $command = \Yii::$app->db->createCommand()
-                ->batchInsert($filesCatalogModule->inodeAccessControlTableName, $columns, $rows)->execute();
+
+            $command = Yii::$app->db->createCommand()->batchInsert($filesCatalogModule->inodeAccessControlTableName, $columns, $rows);
+            return $command->execute();
         } catch (\Throwable $e) {
             \Yii::debug($e->getMessage(), 'error');
+            throw $e;
         }
 
         return false;
@@ -135,7 +137,7 @@ class AccessControl extends ActiveRecord
      */
     private static function getInodeRealId($item)
     {
-        if (is_object($item) && is_subclass_of($item, Inode::class))
+        if (is_object($item) && is_subclass_of($item, \eseperio\filescatalog\models\base\Inode::class))
             return $item->id;
 
         return $item;

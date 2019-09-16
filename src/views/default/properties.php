@@ -54,14 +54,17 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 <?php if (!empty($parent)): ?>
                     <?= Html::a(Yii::t('filescatalog', 'Open parent'), ['index', 'uuid' => $parent->uuid], ['class' => 'btn btn-default']) ?>
                 <?php endif; ?>
-                <?= Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->uuid], ['class' => 'btn btn-info ']) ?>
+                <?php if(AclHelper::canWrite($model)): ?>
+                    <?= Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->uuid], ['class' => 'btn btn-info ']) ?>
+                <?php endif; ?>
                 <?= Html::a(Yii::t('filescatalog', 'View contents'), [($model->type === InodeTypes::TYPE_DIR ? "index" : "view"), 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>
             </div>
         </div>
-        <div class="panel">
-            <?php
-            $aclModel = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original : $model;
-            if (AclHelper::canDelete($aclModel)): ?>
+        <?php
+        $aclModel = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original : $model;
+        if (AclHelper::canDelete($aclModel)): ?>
+            <div class="panel">
+
                 <?php
                 $deleteButtonOptions = [
                     'class' => 'btn btn-danger',
@@ -83,8 +86,9 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 if ($model->type === InodeTypes::TYPE_DIR)
                     unset($deleteButtonOptions['data']['confirm']);
                 echo Html::a(Yii::t('filescatalog', 'Delete'), $deleteUrl, $deleteButtonOptions) ?>
-            <?php endif; ?>
-        </div>
+            </div>
+
+        <?php endif; ?>
 
     </div>
     <?php /** @var \eseperio\filescatalog\FilesCatalogModule $filexModule */

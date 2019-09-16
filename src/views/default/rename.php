@@ -10,6 +10,7 @@
 
 /* @var $renameFormModel \yii\base\DynamicModel */
 
+use eseperio\filescatalog\helpers\AclHelper;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 

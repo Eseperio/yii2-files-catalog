@@ -68,7 +68,7 @@ class IndexAction extends Action
                 ->one();
 
             if (empty($model)) {
-//                Root not exists, we create it
+//                Root does not exists, create it
                 $root = new Inode();
                 $root->name = 'root';
                 $root->type  =  InodeTypes::TYPE_DIR;
@@ -81,7 +81,6 @@ class IndexAction extends Action
             if (!AclHelper::canRead($model))
                 throw new FilexAccessDeniedException();
         }
-
         return $model;
     }
 

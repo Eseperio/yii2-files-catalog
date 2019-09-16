@@ -47,12 +47,7 @@ class NewFolderAction extends Action
             $model = new Inode();
             $model->type = InodeTypes::TYPE_DIR;
             if ($model->load(Yii::$app->request->post()) && $model->appendTo($parent)->save()) {
-                $acl = new AccessControl();
-                $acl->inode_id = $model->id;
-                $acl->user_id = Yii::$app->user->id;
-                $acl->role = AccessControl::DUMMY_ROLE;
-                $acl->crud_mask = AccessControl::ACTION_WRITE | AccessControl::ACTION_READ | AccessControl::ACTION_DELETE;
-                $acl->save();
+                AccessControl::grantAccessToUsers($model, Yii::$app->user, AccessControl::ACTION_WRITE | AccessControl::ACTION_READ | AccessControl::ACTION_DELETE);
 
                 $trans->commit();
 
