@@ -12,12 +12,11 @@ namespace eseperio\filescatalog\actions;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
-use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
+use eseperio\filescatalog\services\InodeHelper;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
-use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 use yii\web\Controller;
 
@@ -41,7 +40,7 @@ class IndexAction extends Action
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
 
         Url::remember();
-        $dataProvider = $this->getChildrenDataProvider($model);
+        $dataProvider = InodeHelper::getChildrenDataProvider($model);
         $bulkActions = $this->getBulkActions();
 
         return $this->controller->render('index', [
@@ -60,57 +59,9 @@ class IndexAction extends Action
      */
     protected function getModel()
     {
-        if ($uuid = Yii::$app->request->get('uuid', false)) {
-            $model = $this->controller->findModel($uuid);
-        } else {
-            $model = Inode::find()
-                ->onlyRoot()
-                ->one();
-
-            if (empty($model)) {
-//                Root does not exists, create it
-                $root = new Inode();
-                $root->name = 'root';
-                $root->type  =  InodeTypes::TYPE_DIR;
-                $root->makeRoot()->save(false);
-
-                return $root;
-
-            }
-
-            if (!AclHelper::canRead($model))
-                throw new FilexAccessDeniedException();
-        }
-        return $model;
+        return InodeHelper::getModel(Yii::$app->request->get('uuid', false));
     }
 
-    /**
-     * @param $model Inode
-     * @return ActiveDataProvider
-     */
-    protected function getChildrenDataProvider($model): ActiveDataProvider
-    {
-        $childrenQuery = $model->getChildren()
-            ->with(['accessControlList'])
-            ->excludeVersions()
-            ->withSymlinksReferences()
-            ->onlyReadable();
-        $childrenQuery->orderBy([])->orderByType();
-
-        if ($this->module->groupFilesByExt)
-            $childrenQuery->orderByExtension();
-
-        $childrenQuery->orderAZ();
-        $dataProvider = new ActiveDataProvider([
-            'query' => $childrenQuery,
-            'key' => 'uuid',
-            'pagination' => [
-                'pageSize' => $this->module->itemsPerPage
-            ]
-        ]);
-
-        return $dataProvider;
-    }
 
     /**
      * @return array

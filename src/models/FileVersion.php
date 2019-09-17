@@ -8,6 +8,7 @@
 
 namespace eseperio\filescatalog\models;
 
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -63,7 +64,7 @@ class FileVersion extends \yii\db\ActiveRecord
      */
     public function getOriginal()
     {
-        return $this->hasOne(File::class, ['id' => 'file_id']);
+        return $this->hasOne(Inode::class, ['id' => 'file_id'])->andWhere(['type'=> InodeTypes::TYPE_FILE]);
     }
 
     public function behaviors()

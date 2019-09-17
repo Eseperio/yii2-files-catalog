@@ -22,13 +22,9 @@ use eseperio\filescatalog\actions\RemoveACL;
 use eseperio\filescatalog\actions\RenameAction;
 use eseperio\filescatalog\actions\UploadAction;
 use eseperio\filescatalog\actions\ViewAction;
-use eseperio\filescatalog\dictionaries\InodeTypes;
-use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
-use eseperio\filescatalog\helpers\AclHelper;
-use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Directory;
-use eseperio\filescatalog\models\File;
-use eseperio\filescatalog\models\Symlink;
+use eseperio\filescatalog\models\Inode;
+use eseperio\filescatalog\services\InodeHelper;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\filters\AccessControl;
@@ -132,32 +128,11 @@ class DefaultController extends \yii\web\Controller
     /**
      * @param $id
      * @param string $entity
-     * @return Inode|File|Directory
+     * @return Inode|Directory
      * @throws NotFoundHttpException
      */
     public function findModel($id, $entity = Inode::class)
     {
-        $query = call_user_func([$entity, 'find']);
-        if (strlen($id) === 36) {
-            $query->uuid($id);
-        } else {
-            $query->where(['id' => $id]);
-        }
-
-        $module = $this->module;
-        if ($module->enableACL)
-            $query->with(['accessControlList']);
-        /* @var $model Inode|File|Symlink */
-        if (($model = $query->one()) == null)
-            throw new NotFoundHttpException();
-
-        if ($module->enableACL) {
-            $aclModel = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original : $model;
-            if (!AclHelper::canRead($aclModel))
-                throw new FilexAccessDeniedException();
-        }
-
-
-        return $model;
+        return InodeHelper::findModel($id, $entity);
     }
 }

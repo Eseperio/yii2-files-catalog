@@ -101,7 +101,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     private function beforeSaveFileInternal($insert): void
     {
         if (!empty($this->uuid) && $insert) {
-            $id = File::find()->where(['uuid' => $this->uuid])->select('id')->scalar();
+            $id = Inode::find()->where(['uuid' => $this->uuid])->select('id')->scalar();
             if (empty($id))
                 throw new UserException(Yii::t('filescatalog', 'File not found'));
             $this->originalId = $id;
@@ -125,7 +125,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
      */
     public function getVersions()
     {
-        return $this->hasMany(File::class, ['id' => 'version_id'])
+        return $this->hasMany(Inode::class, ['id' => 'version_id'])
             ->viaTable('fcatalog_inodes_version', ['file_id' => 'id'])
             ->andWhere(['type' => InodeTypes::TYPE_VERSION]);
     }
@@ -225,7 +225,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                 throw $e;
             }
 
-            if ($this->inodeType == InodeTypes::TYPE_VERSION && $insert) {
+            if ($this->type == InodeTypes::TYPE_VERSION && $insert) {
                 $version = new FileVersion();
                 $version->file_id = $this->originalId;
                 $version->version_id = $this->id;

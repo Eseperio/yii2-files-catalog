@@ -8,6 +8,7 @@
 
 namespace eseperio\filescatalog\widgets;
 
+use eseperio\filescatalog\models\Inode;
 use yii\helpers\ArrayHelper;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\File;
@@ -19,7 +20,7 @@ class Versions extends Widget
 {
     use ModuleAwareTrait;
     /**
-     * @var File
+     * @var Inode
      */
     public $model;
 
@@ -30,8 +31,8 @@ class Versions extends Widget
     {
         if (!$this->module->allowVersioning)
             return "";
-        if (empty($this->model) || !$this->model instanceof File)
-            throw new InvalidArgumentException(__CLASS__ . "::model must be defined and be instance of " . File::class);
+        if (empty($this->model) || !$this->model instanceof Inode)
+            throw new InvalidArgumentException(__CLASS__ . "::model must be defined and be instance of " . Inode::class);
 
         if ($this->model->type === InodeTypes::TYPE_VERSION) {
             $original = $this->model->original;

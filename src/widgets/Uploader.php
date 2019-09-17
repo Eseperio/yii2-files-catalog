@@ -10,8 +10,8 @@ namespace eseperio\filescatalog\widgets;
 
 
 use dosamigos\fileupload\FileUpload;
-use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\File;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
@@ -98,7 +98,12 @@ class Uploader extends FileUpload
 
         $pjaxSnippet = '';
         if (!empty($this->pjaxId) && $this->module->usePjax) {
-            $pjaxSnippet = "$.pjax.reload('#{$this->pjaxId}');";
+            $url = \Yii::$app->request->url;
+            $pjaxSnippet = "$.pjax.reload({
+            container: '#{$this->pjaxId}',
+            url: '$url'
+            }
+            );";
         }
 
         $this->clientEvents = [

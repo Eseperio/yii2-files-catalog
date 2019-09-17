@@ -9,9 +9,9 @@
 use eseperio\filescatalog\widgets\Uploader;
 use yii\helpers\Html;
 
-/* @var \eseperio\filescatalog\models\File[] $versions */
-/* @var \eseperio\filescatalog\models\File $model */
-/* @var \eseperio\filescatalog\models\File $lastVersion */
+/* @var \eseperio\filescatalog\models\Inode[] $versions */
+/* @var \eseperio\filescatalog\models\Inode $model */
+/* @var \eseperio\filescatalog\models\Inode $lastVersion */
 /* @var boolean $isLast whether current model is last version */
 /* @var boolean $isVersion whether current model version */
 

@@ -12,7 +12,6 @@ namespace eseperio\filescatalog\actions;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
-use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Inode;
 use Yii;
 use yii\base\Action;
@@ -39,22 +38,19 @@ class UploadAction extends Action
         $model = Yii::createObject(Inode::class);
         $model->type = InodeTypes::TYPE_FILE;
 
-        /* @var $model File */
+        /* @var $model Inode */
         $model->file = UploadedFile::getInstance($model, 'file');
         if ($model->validate(['file'])) {
             $response = [
                 'name' => $model->file->name,
             ];
         }
-
-        /* @todo: Check ACL */
-
         $targetUuid = Yii::$app->request->post('target');
 
         if (empty($targetUuid))
             throw new UserException(Yii::t('filescatalog', 'Target not defined'));
 
-        $targetNode = $this->controller->findModel($targetUuid, File::class);
+        $targetNode = $this->controller->findModel($targetUuid, Inode::class);
 
         AclHelper::canWrite($targetNode);
 
@@ -82,4 +78,6 @@ class UploadAction extends Action
             ],
         ];
     }
+
+
 }

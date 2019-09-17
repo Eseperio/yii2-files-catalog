@@ -11,10 +11,10 @@ namespace eseperio\filescatalog\helpers;
 
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\AccessControl;
-use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\FileVersion;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -38,13 +38,16 @@ class AclHelper
     }
 
     /**
-     * @param $inode Inode|File|Directory
+     * @param $inode Inode|Directory
      * @param $permission
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */
     private static function can($inode, $permission)
     {
+        if(empty($inode))
+            throw new InvalidArgumentException('Inode cannot be empty');
+
         $module = self::getModule();
 
         if (!self::getModule()->enableACL)

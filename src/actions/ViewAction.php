@@ -13,6 +13,7 @@ use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\File;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
@@ -28,7 +29,7 @@ class ViewAction extends Action
 
     public function run()
     {
-        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), File::class);
+        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), Inode::class);
         if ($model->type == InodeTypes::TYPE_DIR)
             return $this->controller->redirect(['index', 'uuid' => $model->uuid]);
         $versions = $model->versions;

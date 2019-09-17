@@ -59,7 +59,9 @@ FileTypeIconsAsset::register($this);
         <p class="text-muted">
             <?php if (!empty($parents) && AclHelper::canRead(end($parents))): ?>
             <?= join('/', ArrayHelper::map($parents, 'uuid', function ($item) {
-                return Html::a(Helper::humanize($item['name']), ['index', 'uuid' => $item['uuid']]);
+                if (AclHelper::canRead($item))
+                    return Html::a(Helper::humanize($item['name']), ['index', 'uuid' => $item['uuid']]);
+                return false;
             })) ?></p>
         <?php endif; ?>
     </div>
@@ -68,7 +70,7 @@ FileTypeIconsAsset::register($this);
             <div class="h1">
                 <div class="btn-group">
                     <?php
-                    if (AclHelper::canWrite($model)){
+                    if (AclHelper::canWrite($model)) {
 
                         echo Html::a($newFolderIcon . " " . ($showLabels ? $newFolderLabel : ""), ['new-folder', 'uuid' => $model->uuid], [
                             'class' => 'btn btn-default',
@@ -79,15 +81,15 @@ FileTypeIconsAsset::register($this);
                                 'container' => 'body'
                             ]
                         ]);
-                    echo Html::a($linkIcon . " " . ($showLabels ? $linkLabel : ""), ['new-link', 'uuid' => $model->uuid], [
-                        'class' => 'btn btn-default',
-                        'title' => $linkLabel,
-                        'data' => [
-                            'toggle' => 'tooltip',
-                            'pjax' => 0,
-                            'container' => 'body'
-                        ]
-                    ]);
+                        echo Html::a($linkIcon . " " . ($showLabels ? $linkLabel : ""), ['new-link', 'uuid' => $model->uuid], [
+                            'class' => 'btn btn-default',
+                            'title' => $linkLabel,
+                            'data' => [
+                                'toggle' => 'tooltip',
+                                'pjax' => 0,
+                                'container' => 'body'
+                            ]
+                        ]);
                     }
                     if ($showPropertiesBtn)
                         echo Html::a($propertiesIcon . " " . ($showLabels ? $propertiesLabel : ""), ['properties', 'uuid' => $model->uuid], [

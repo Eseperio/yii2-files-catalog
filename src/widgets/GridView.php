@@ -34,9 +34,10 @@ class GridView extends \yii\grid\GridView
      */
     public function init()
     {
-        $this->id= 'filex-grid';
+        $this->id = 'filex-grid';
         $this->registerAssets();
-        $this->setColumns();
+        if (empty($this->columns))
+            $this->setColumns();
         parent::init();
     }
 
