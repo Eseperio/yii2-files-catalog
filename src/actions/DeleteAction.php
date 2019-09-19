@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog\actions;
 
 
+use eseperio\filescatalog\models\Inode;
 use yii\helpers\ArrayHelper;
 use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\controllers\DefaultController;
@@ -32,7 +33,7 @@ class DeleteAction extends Action
 
     public function run()
     {
-        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), File::class);
+        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), Inode::class);
 
         if ($model->isRoot())
             throw new ForbiddenHttpException(Yii::t('filescatalog', 'Root node can not be deleted'));
@@ -66,7 +67,7 @@ class DeleteAction extends Action
             } else {
                 if (Yii::$app->request->post('delall')) {
                     if ($model->type === InodeTypes::TYPE_VERSION) {
-                        File::deleteAll([
+                        Inode::deleteAll([
                             'id' => ArrayHelper::getColumn($model->original->versions, 'id')
                         ]);
                         $model->original->delete();

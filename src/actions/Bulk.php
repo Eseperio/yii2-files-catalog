@@ -36,7 +36,7 @@ abstract class Bulk extends Action
         if (!is_array($uuids))
             throw new ForbiddenHttpException();
 
-        return File::find()->where(['uuid' => $uuids])->onlyDeletable()->all();
+        return Inode::find()->where(['uuid' => $uuids])->onlyDeletable()->all();
     }
 
     abstract public function run();

@@ -54,7 +54,8 @@ class NewLinkAction extends Action
             ->limit(20);
 
         if (Yii::$app->request->isPost && !empty($parent) && !empty($remote)) {
-            $symLink = new Symlink();
+            $symLink = new Inode();
+            $symLink->type= InodeTypes::TYPE_SYMLINK;
             $symLink->uuid = $remote->uuid;
             $symLink->name = $remote->name;
             if ($symLink->appendTo($parent)->save()) {
@@ -73,9 +74,13 @@ class NewLinkAction extends Action
             'query',
         ]);
         $model->addRule('query', RequiredValidator::class);
-        $model->addRule('query', StringValidator::class, ['max' => 10]);
+        $model->addRule('query', StringValidator::class, ['min' => 3]);
         if ($model->load(Yii::$app->request->queryParams) && $model->validate()) {
-            $query->byName($model->query, true);
+            if(mb_strlen($model->query)==36){
+                $query->uuid($model->query);
+            }else{
+                $query->byName($model->query, true);
+            }
         } else {
             $query->where('0=1');
         }
