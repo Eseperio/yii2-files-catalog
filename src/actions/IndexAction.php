@@ -53,7 +53,7 @@ class IndexAction extends Action
     }
 
     /**
-     * @return array|Inode|\eseperio\filescatalog\models\Directory|\eseperio\filescatalog\models\File|\yii\db\ActiveRecord|\yii\web\Response|null
+     * @return array|Inode|\eseperio\filescatalog\models\Directory|\yii\db\ActiveRecord|\yii\web\Response|null
      * @throws FilexAccessDeniedException
      * @throws \yii\web\NotFoundHttpException
      */

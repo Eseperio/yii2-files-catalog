@@ -41,14 +41,14 @@ class InodeQuery extends ActiveQuery
      */
     public function excludeVersions()
     {
-        return $this->andWhere(['!=', $this->prefix('type'), InodeTypes::TYPE_VERSION]);
+        return $this->andWhere(['!=', self::prefix('type'), InodeTypes::TYPE_VERSION]);
     }
 
     /**
      * @param $column
      * @return string
      */
-    public function prefix($column, $prefix = null)
+    public static function prefix($column, $prefix = null)
     {
         if (empty($prefix))
             $prefix = Inode::tableName() . ".";
@@ -63,20 +63,20 @@ class InodeQuery extends ActiveQuery
             Inode::tableName() . ".*",
         ];
         foreach (['name', 'type', 'extension'] as $columnName) {
-            $selectColumns[] = $this->prefix($columnName, 'symlink.') . " " . $this->prefix($columnName, 'symlink_');
+            $selectColumns[] = self::prefix($columnName, 'symlink.') . " " . self::prefix($columnName, 'symlink_');
         }
         $this->select($selectColumns);
 
         $this->join('LEFT OUTER JOIN', ['symlink' => Inode::tableName()], Inode::tableName()
-            . '.uuid=symlink.uuid AND ' . $this->prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK
-            .' AND '.  $this->prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK) ;
+            . '.uuid=symlink.uuid AND ' . self::prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK
+            .' AND '.  self::prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK) ;
 
         return $this;
     }
 
     public function byType(array $types)
     {
-        return $this->andWhere([$this->prefix('type') => $types]);
+        return $this->andWhere([self::prefix('type') => $types]);
     }
 
     /**
@@ -119,7 +119,7 @@ class InodeQuery extends ActiveQuery
 
             $this->andWhere($condition);
             $this->andWhere(['acl.crud_mask' => $crudMaskValues]);
-            $this->groupBy($this->prefix('id'));
+            $this->groupBy(self::prefix('id'));
 
         }
 
@@ -152,7 +152,7 @@ class InodeQuery extends ActiveQuery
      */
     public function uuid($uuid)
     {
-        return $this->andWhere([$this->prefix('uuid') => $uuid]);
+        return $this->andWhere([self::prefix('uuid') => $uuid]);
     }
 
     /**
@@ -162,7 +162,7 @@ class InodeQuery extends ActiveQuery
     public function orderByExtension($order = SORT_DESC)
     {
         return $this->addOrderBy([
-            $this->prefix('extension') => $order
+            self::prefix('extension') => $order
         ]);
     }
 
@@ -173,7 +173,7 @@ class InodeQuery extends ActiveQuery
     public function orderByType($order = SORT_DESC)
     {
         return $this->addOrderBy([
-            $this->prefix('type') => $order,
+            self::prefix('type') => $order,
         ]);
     }
 
@@ -184,7 +184,7 @@ class InodeQuery extends ActiveQuery
     public function orderAZ($order = SORT_ASC)
     {
         return $this->addOrderBy([
-            $this->prefix('name') => $order
+            self::prefix('name') => $order
         ]);
     }
 
@@ -194,7 +194,7 @@ class InodeQuery extends ActiveQuery
     public function onlySymlinks()
     {
         return $this->andWhere([
-            $this->prefix('type') => InodeTypes::TYPE_SYMLINK
+            self::prefix('type') => InodeTypes::TYPE_SYMLINK
         ]);
     }
 
@@ -218,7 +218,7 @@ class InodeQuery extends ActiveQuery
     public function onlyFiles()
     {
         return $this->andWhere([
-            $this->prefix('type') => InodeTypes::TYPE_FILE
+            self::prefix('type') => InodeTypes::TYPE_FILE
         ]);
     }
 
@@ -228,7 +228,7 @@ class InodeQuery extends ActiveQuery
     public function onlyDirs()
     {
         return $this->andWhere([
-            $this->prefix('type') => InodeTypes::TYPE_DIR
+            self::prefix('type') => InodeTypes::TYPE_DIR
         ]);
     }
 }
