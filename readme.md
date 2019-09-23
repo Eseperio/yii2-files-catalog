@@ -2,6 +2,8 @@
 # Yii2 files catalog
 ## yii2-files-catalog
 
+# Developer: Waizabú
+
 It is a virtual file system with access control lists.
 
 I have replicated the main principles of *nix filesystem where any object is represented
@@ -118,8 +120,9 @@ There is a default controller with the following actions.
 
 
 
-### Other
 
+### Other
+In order to improve privacy inodes use the uuid as public pk, but an integer as internal pk. Keep simple id private. When using data providers, remember use the one included within this module.
 This module use adjacency models concept to manage nesting. That requires extra queries to get parents or childrens, but is way more efficient than nested-set pattern on system that require a lot of nodes and writes
 
 

@@ -32,8 +32,14 @@ class CheckboxColumn extends \yii\grid\CheckboxColumn
             $this->registerAssets();
 
         $this->checkboxOptions = function ($model) {
-            if (!AclHelper::canDelete($model))
-                return ['disabled' => 1, 'class' => 'collapse'];
+            $options = [
+                'value' => $model->uuid
+            ];
+            if (!AclHelper::canDelete($model)) {
+                $options['disabled'] = 1;
+                $options['class'] = 'collapse';
+            }
+            return $options;
         };
         parent::init();
     }

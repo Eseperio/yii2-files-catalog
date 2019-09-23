@@ -120,10 +120,10 @@ class AccessControl extends ActiveRecord
         try {
 
             $command = Yii::$app->db->createCommand()->batchInsert($filesCatalogModule->inodeAccessControlTableName, $columns, $rows);
+
             return $command->execute();
         } catch (\Throwable $e) {
             \Yii::debug($e->getMessage(), 'error');
-            throw $e;
         }
 
         return false;
@@ -212,7 +212,7 @@ class AccessControl extends ActiveRecord
      */
     public static function grantAccessToRoles($files, $roles, $mask = null)
     {
-        return self::setInodesAccessRules($files, $roles, $mask);
+        return self::setInodesAccessRules($files, $roles, $mask, self::TYPE_ROLE);
     }
 
     /**

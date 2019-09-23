@@ -12,10 +12,9 @@ namespace eseperio\filescatalog\actions;
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
-use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\Inode;
-use eseperio\filescatalog\models\Symlink;
+use eseperio\filescatalog\services\InodeHelper;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
@@ -54,19 +53,7 @@ class NewLinkAction extends Action
             ->limit(20);
 
         if (Yii::$app->request->isPost && !empty($parent) && !empty($remote)) {
-            $symLink = new Inode();
-            $symLink->type= InodeTypes::TYPE_SYMLINK;
-            $symLink->uuid = $remote->uuid;
-            $symLink->name = $remote->name;
-            if ($symLink->appendTo($parent)->save()) {
-
-                $acl = new AccessControl();
-                $acl->inode_id = $symLink->id;
-                $acl->user_id = Yii::$app->user->id;
-                $acl->role = AccessControl::DUMMY_ROLE;
-                $acl->crud_mask = AccessControl::ACTION_WRITE | AccessControl::ACTION_READ | AccessControl::ACTION_DELETE;
-                $acl->save();
-
+            if (InodeHelper::linkToInode($remote, $parent)) {
                 return $this->controller->goBack();
             }
         }
@@ -76,9 +63,9 @@ class NewLinkAction extends Action
         $model->addRule('query', RequiredValidator::class);
         $model->addRule('query', StringValidator::class, ['min' => 3]);
         if ($model->load(Yii::$app->request->queryParams) && $model->validate()) {
-            if(mb_strlen($model->query)==36){
+            if (mb_strlen($model->query) == 36) {
                 $query->uuid($model->query);
-            }else{
+            } else {
                 $query->byName($model->query, true);
             }
         } else {

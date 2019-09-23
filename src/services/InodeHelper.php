@@ -9,21 +9,24 @@
 namespace eseperio\filescatalog\services;
 
 
+use eseperio\filescatalog\data\ActiveDataProvider;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
 use eseperio\filescatalog\helpers\AclHelper;
+use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Directory;
-use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Symlink;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use Yii;
 use yii\base\Component;
-use yii\data\ActiveDataProvider;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 class InodeHelper extends Component
 {
     use ModuleAwareTrait;
+
     /**
      * @param $model Inode
      * @return ActiveDataProvider
@@ -43,7 +46,6 @@ class InodeHelper extends Component
         $childrenQuery->orderAZ();
         $dataProvider = new ActiveDataProvider([
             'query' => $childrenQuery,
-            'key' => 'uuid',
             'pagination' => [
                 'pageSize' => self::getModule()->itemsPerPage
             ]
@@ -71,7 +73,7 @@ class InodeHelper extends Component
 //                Root does not exists, create it
                 $root = new Inode();
                 $root->name = 'root';
-                $root->type  =  InodeTypes::TYPE_DIR;
+                $root->type = InodeTypes::TYPE_DIR;
                 $root->makeRoot()->save(false);
 
                 return $root;
@@ -81,18 +83,19 @@ class InodeHelper extends Component
             if (!AclHelper::canRead($model))
                 throw new FilexAccessDeniedException();
         }
+
         return $model;
     }
 
     /**
      * @param $id
      * @param string $entity
-     * @return Inode|File|Directory
+     * @return Inode|Directory
      * @throws NotFoundHttpException
      */
-    public  static function findModel($id, $entity = Inode::class)
+    public static function findModel($id)
     {
-        $query = call_user_func([$entity, 'find']);
+        $query = Inode::find();
         if (strlen($id) === 36) {
             $query->uuid($id);
         } else {
@@ -102,7 +105,7 @@ class InodeHelper extends Component
         $module = self::getModule();
         if ($module->enableACL)
             $query->with(['accessControlList']);
-        /* @var $model Inode|File|Symlink */
+        /* @var $model Inode|Symlink */
         if (($model = $query->one()) == null)
             throw new NotFoundHttpException();
 
@@ -113,5 +116,28 @@ class InodeHelper extends Component
         }
 
         return $model;
+    }
+
+    /**
+     * Creates a link for the specified inode within the specified folder.
+     * User must have writing permissions on target folder
+     * @param Inode $inode
+     * @param Inode $folder
+     */
+    public static function linkToInode(Inode $inode, Inode $folder, $permissions = null)
+    {
+        if (!AclHelper::canWrite($folder))
+            throw new ForbiddenHttpException(Yii::t('filescatalog', 'You can not create items in this folder'));
+
+        $symLink = new Inode();
+        $symLink->type = InodeTypes::TYPE_SYMLINK;
+        $symLink->uuid = $inode->uuid;
+        $symLink->name = $inode->name;
+        if ($symLink->appendTo($folder)->save()) {
+            AccessControl::grantAccessToUsers($symLink, Yii::$app->user, $permissions);
+            return true;
+        }
+
+        return false;
     }
 }

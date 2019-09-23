@@ -9,8 +9,8 @@
 namespace eseperio\filescatalog\models;
 
 
+use eseperio\filescatalog\data\ActiveDataProvider;
 use eseperio\filescatalog\services\InodeHelper;
-use yii\data\ActiveDataProvider;
 
 class InodeSearch extends \eseperio\filescatalog\models\Inode
 {
@@ -24,12 +24,22 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
         ];
     }
 
-    public function search($params = [])
+    /**
+     * @param array $params
+     * @param null $model Override model to be used when searching
+     * @return ActiveDataProvider
+     * @throws \eseperio\filescatalog\exceptions\FilexAccessDeniedException
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function search($params = [], $model = null)
     {
 
         $this->load($params);
 
-        $model = InodeHelper::getModel($this->uuid);
+        if (empty($model))
+            $model = InodeHelper::getModel($this->uuid);
+
         $query = $model->getChildren();
 
 
@@ -44,6 +54,7 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'key' => 'uuid',
             'sort' => [
                 'defaultOrder' => [
                     'name' => SORT_ASC

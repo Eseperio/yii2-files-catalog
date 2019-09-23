@@ -46,7 +46,7 @@ class BulkDelete extends Bulk
 
 
     /**
-     * @param Inode[]|File[] $models
+     * @param Inode[]| $models
      */
     private function deleteItems(array $models): bool
     {
@@ -61,7 +61,7 @@ class BulkDelete extends Bulk
                         ]);
                         foreach ($descendantFiles->batch(50) as $rows) {
                             foreach ($rows as $row) {
-                                /* @var $row File */
+                                /* @var $row Inode */
                                 $row->delete();
                             }
                         }

@@ -10,9 +10,9 @@ namespace eseperio\filescatalog\widgets;
 
 
 use eseperio\admintheme\helpers\Html;
-use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Symlink;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
@@ -26,7 +26,7 @@ class Breadcrumb extends Widget
      */
     public $pjaxId;
     /**
-     * @var Inode|Directory|File|Symlink
+     * @var Inode|Directory|Symlink
      */
     public $model;
 
@@ -37,7 +37,11 @@ class Breadcrumb extends Widget
 
     public function run()
     {
-        $parents = $this->model->getParents()->all();
+        $parentsQuery = $this->model->getParents();
+        if ($this->module->enableACL)
+            $parentsQuery->with('accessControlList');
+
+        $parents = $parentsQuery->all();
         $newFolderLabel = Yii::t('filescatalog', 'New folder');
         $propertiesLabel = Yii::t('filescatalog', 'Properties');
         $addFilesLabel = Yii::t('filescatalog', 'Add files');
