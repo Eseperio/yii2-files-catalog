@@ -121,13 +121,12 @@ class InodeHelper extends Component
     /**
      * Creates a link for the specified inode within the specified folder.
      * User must have writing permissions on target folder
+     * ATTENTION: This method will not check access control.
      * @param Inode $inode
      * @param Inode $folder
      */
     public static function linkToInode(Inode $inode, Inode $folder, $permissions = null)
     {
-        if (!AclHelper::canWrite($folder))
-            throw new ForbiddenHttpException(Yii::t('filescatalog', 'You can not create items in this folder'));
 
         $symLink = new Inode();
         $symLink->type = InodeTypes::TYPE_SYMLINK;

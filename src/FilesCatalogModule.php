@@ -95,6 +95,10 @@ class FilesCatalogModule extends Module
      */
     public $allowOverwrite = false;
     /**
+     * @var bool whether allow users rename the items. If acl is enabled this will require write permissions.
+     */
+    public $allowRenaming = true;
+    /**
      * @var string the prefix to be used on urlGroup
      */
     public $prefix = 'filex';

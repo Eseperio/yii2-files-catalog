@@ -58,11 +58,14 @@ FileTypeIconsAsset::register($this);
         </h1>
         <p class="text-muted">
             <?php if (!empty($parents) && AclHelper::canRead(end($parents))): ?>
-            <?= join('/', ArrayHelper::map($parents, 'uuid', function ($item) {
+            <?php  $pieces = ArrayHelper::map($parents, 'uuid', function ($item) {
                 if (AclHelper::canRead($item))
                     return Html::a(Helper::humanize($item['name']), ['index', 'uuid' => $item['uuid']]);
-                return false;
-            })) ?></p>
+
+                return null;
+            });
+            $pieces = array_filter($pieces);
+            echo join('/', $pieces) ?></p>
         <?php endif; ?>
     </div>
     <div class="col-sm-5 text-right">

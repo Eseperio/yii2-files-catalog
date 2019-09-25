@@ -282,6 +282,10 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                 break;
         }
 
+        if ($this->module->enableACL) {
+            AccessControl::deleteAll(['inode_id' => $this->id]);
+        }
+
         return parent::delete();
     }
 

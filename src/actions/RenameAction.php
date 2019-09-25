@@ -29,7 +29,8 @@ class RenameAction extends Action
 
     public function run()
     {
-
+        if (!$this->module->allowRenaming)
+            throw new NotFoundHttpException();
 
         FileTypeIconsAsset::register($this->controller->view);
         $uuid = Yii::$app->request->getQueryParam('uuid', false);

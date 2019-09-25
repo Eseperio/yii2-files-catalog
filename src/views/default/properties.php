@@ -54,7 +54,7 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 <?php if (!empty($parent)): ?>
                     <?= Html::a(Yii::t('filescatalog', 'Open parent'), ['index', 'uuid' => $parent->uuid], ['class' => 'btn btn-default']) ?>
                 <?php endif; ?>
-                <?php if(AclHelper::canWrite($model)): ?>
+                <?php if ($filexModule->allowRenaming && AclHelper::canWrite($model)): ?>
                     <?= Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->uuid], ['class' => 'btn btn-info ']) ?>
                 <?php endif; ?>
                 <?= Html::a(Yii::t('filescatalog', 'View contents'), [($model->type === InodeTypes::TYPE_DIR ? "index" : "view"), 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>

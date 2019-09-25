@@ -12,12 +12,15 @@ namespace eseperio\filescatalog\columns;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
+use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\grid\Column;
 use yii\helpers\Html;
 
 class InodeActionColumn extends Column
 {
+    use ModuleAwareTrait;
+
     /**
      * @param Inode $model
      * @param mixed $key
@@ -60,7 +63,7 @@ class InodeActionColumn extends Column
                 ]
             )
         )];
-        if (AclHelper::canWrite($model)) {
+        if ($this->module->allowRenaming && AclHelper::canWrite($model)) {
             $items[] = Html::tag(
                 'li',
                 Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->uuid],
