@@ -10,10 +10,10 @@ namespace eseperio\filescatalog\models;
 
 
 use eseperio\filescatalog\dictionaries\InodeTypes;
-use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListQueryTrait;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 
@@ -26,6 +26,15 @@ class InodeQuery extends ActiveQuery
 {
     use ModuleAwareTrait;
     use AdjacencyListQueryTrait;
+
+    private $formatLimited = false;
+
+    public function limitedByFormat()
+    {
+        if ($this->formatLimited)
+            throw new InvalidArgumentException(__CLASS__ . ' has two type filters that collides');
+        $this->formatLimited = true;
+    }
 
     /**
      * Filters only root files
@@ -69,7 +78,7 @@ class InodeQuery extends ActiveQuery
 
         $this->join('LEFT OUTER JOIN', ['symlink' => Inode::tableName()], Inode::tableName()
             . '.uuid=symlink.uuid AND ' . self::prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK
-            .' AND '.  self::prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK) ;
+            . ' AND ' . self::prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK);
 
         return $this;
     }
@@ -193,6 +202,8 @@ class InodeQuery extends ActiveQuery
      */
     public function onlySymlinks()
     {
+        $this->limitedByFormat();
+
         return $this->andWhere([
             self::prefix('type') => InodeTypes::TYPE_SYMLINK
         ]);
@@ -217,6 +228,7 @@ class InodeQuery extends ActiveQuery
      */
     public function onlyFiles()
     {
+        $this->limitedByFormat();
         return $this->andWhere([
             self::prefix('type') => InodeTypes::TYPE_FILE
         ]);
@@ -227,6 +239,8 @@ class InodeQuery extends ActiveQuery
      */
     public function onlyDirs()
     {
+        $this->limitedByFormat();
+
         return $this->andWhere([
             self::prefix('type') => InodeTypes::TYPE_DIR
         ]);

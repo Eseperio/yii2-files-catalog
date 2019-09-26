@@ -20,7 +20,6 @@ use eseperio\filescatalog\models\Symlink;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Component;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 class InodeHelper extends Component
@@ -28,16 +27,23 @@ class InodeHelper extends Component
     use ModuleAwareTrait;
 
     /**
-     * @param $model Inode
+     * @param $model     Inode
+     * @param $onlyFiles bool whether filter only files and symlinks
      * @return ActiveDataProvider
+     * @throws \yii\base\InvalidConfigException
      */
-    public static function getChildrenDataProvider($model): ActiveDataProvider
+    public static function getChildrenDataProvider($model, $onlyFiles = false): ActiveDataProvider
     {
         $childrenQuery = $model->getChildren()
             ->with(['accessControlList'])
             ->excludeVersions()
             ->withSymlinksReferences()
             ->onlyReadable();
+
+        if ($onlyFiles)
+            $childrenQuery
+                ->byType([InodeTypes::TYPE_SYMLINK,InodeTypes::TYPE_FILE]);
+
         $childrenQuery->orderBy([])->orderByType();
 
         if (self::getModule()->groupFilesByExt)
@@ -56,7 +62,7 @@ class InodeHelper extends Component
 
     /**
      * Returns the model with the uuid specified. It uuid is null then root node is return.
-     * @return array|Inode|\eseperio\filescatalog\models\Directory|\eseperio\filescatalog\models\File|\yii\db\ActiveRecord|\yii\web\Response|null
+     * @return array|Inode|\eseperio\filescatalog\models\Directory|\yii\db\ActiveRecord|\yii\web\Response|null
      * @throws FilexAccessDeniedException
      * @throws \yii\web\NotFoundHttpException
      */
@@ -71,7 +77,9 @@ class InodeHelper extends Component
 
             if (empty($model)) {
 //                Root does not exists, create it
-                $root = new Inode();
+                $root = \Yii::createObject([
+                    'class' => Inode::class
+                ]);
                 $root->name = 'root';
                 $root->type = InodeTypes::TYPE_DIR;
                 $root->makeRoot()->save(false);
@@ -128,12 +136,15 @@ class InodeHelper extends Component
     public static function linkToInode(Inode $inode, Inode $folder, $permissions = null)
     {
 
-        $symLink = new Inode();
+        $symLink = \Yii::createObject([
+            'class' => Inode::class
+        ]);
         $symLink->type = InodeTypes::TYPE_SYMLINK;
         $symLink->uuid = $inode->uuid;
         $symLink->name = $inode->name;
         if ($symLink->appendTo($folder)->save()) {
             AccessControl::grantAccessToUsers($symLink, Yii::$app->user, $permissions);
+
             return true;
         }
 

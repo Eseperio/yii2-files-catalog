@@ -44,7 +44,9 @@ class NewFolderAction extends Action
         try {
 
 
-            $model = new Inode();
+            $model = \Yii::createObject([
+                'class'=> Inode::class
+            ]);
             $model->type = InodeTypes::TYPE_DIR;
             if ($model->load(Yii::$app->request->post()) && $model->appendTo($parent)->save()) {
                 AccessControl::grantAccessToUsers($model, Yii::$app->user, AccessControl::ACTION_WRITE | AccessControl::ACTION_READ | AccessControl::ACTION_DELETE);

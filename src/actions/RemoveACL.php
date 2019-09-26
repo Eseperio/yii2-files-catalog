@@ -20,12 +20,11 @@ class RemoveACL extends Action
 {
     public function run()
     {
-        $permModel = new InodePermissionsForm();
+        $permModel = Yii::createObject(InodePermissionsForm::class);
         $permModel->scenario = AccessControl::SCENARIO_DELETE;
         $permModel->setAttributes(Yii::$app->request->post(), false);
         if ($permModel->validate()) {
             try {
-
                 $realModel = AccessControl::find()->where([
                     'user_id' => $permModel->user_id,
                     'role' => $permModel->role,

@@ -71,7 +71,5 @@ use yii\helpers\Html;
                 <?= Html::a(Yii::t('filescatalog', 'View file properties'), ['properties', 'uuid' => $model->uuid, 'original' => true], ['class' => 'btn btn-primary']) ?>
             </div>
         </div>
-
-
     </div>
 </div>

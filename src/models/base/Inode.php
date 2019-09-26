@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog\models\base;
 
 
+use app\helpers\ArrayHelper;
 use eseperio\filescatalog\behaviors\FilexBehavior;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\FilesCatalogModule;
@@ -102,7 +103,13 @@ class Inode extends ActiveRecord
      */
     public static function find()
     {
-        return new InodeQuery(get_called_class());
+        $defs = Yii::$container->definitions;
+        $class = get_called_class();
+        if (array_key_exists($class, $defs)) {
+            $class = ArrayHelper::getValue($defs, $class . ".class", $defs[$class]);
+        }
+
+        return Yii::createObject(InodeQuery::class, [$class]);
     }
 
     /**
@@ -160,7 +167,7 @@ class Inode extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        if ($insert && !in_array($this->type,[InodeTypes::TYPE_SYMLINK]))
+        if ($insert && !in_array($this->type, [InodeTypes::TYPE_SYMLINK]))
             $this->uuid = (string)Uuid::uuid4();
 
         return parent::beforeSave($insert);

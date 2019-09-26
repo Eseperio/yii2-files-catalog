@@ -101,7 +101,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     private function beforeSaveFileInternal($insert): void
     {
         if (!empty($this->uuid) && $insert) {
-            $id = Inode::find()->where(['uuid' => $this->uuid])->select('id')->scalar();
+            $id = static::find()->where(['uuid' => $this->uuid])->select('id')->scalar();
             if (empty($id))
                 throw new UserException(Yii::t('filescatalog', 'File not found'));
             $this->originalId = $id;
@@ -155,6 +155,16 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     public function getFile()
     {
         return $this->module->getStorageComponent()->read($this->getInodeRealPath());
+    }
+
+    public function afterDelete()
+    {
+        if ($this->module->enableACL) {
+            $ids = $this->getDescendantsIds(null, true);
+            $ids[] = $this->id;
+            AccessControl::deleteAll(['inode_id' => $ids]);
+        }
+        parent::afterDelete();
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -235,7 +245,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
             }
 
             if ($insert) {
-                $acl = new AccessControl();
+                $acl = Yii::createObject(AccessControl::class);
                 $acl->inode_id = $this->id;
                 $acl->user_id = Yii::$app->user->id;
                 $acl->role = AccessControl::DUMMY_ROLE;
@@ -282,12 +292,9 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                 break;
         }
 
-        if ($this->module->enableACL) {
-            AccessControl::deleteAll(['inode_id' => $this->id]);
-        }
-
         return parent::delete();
     }
+
 
     /**
      * Deletes a file

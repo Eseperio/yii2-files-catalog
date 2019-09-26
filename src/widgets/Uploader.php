@@ -61,7 +61,9 @@ class Uploader extends FileUpload
         $this->initTargetDir();
 
         if (empty($this->model))
-            $this->model = new Inode();
+            $this->model = \Yii::createObject([
+                'class'=> Inode::class
+            ]);
 
         $this->attribute = 'file';
         $this->url = ['/filex/default/upload'];
@@ -101,7 +103,9 @@ class Uploader extends FileUpload
             $url = \Yii::$app->request->url;
             $pjaxSnippet = "$.pjax.reload({
             container: '#{$this->pjaxId}',
-            url: '$url'
+            url: '$url',
+            push: false,
+            replace: false
             }
             );";
         }

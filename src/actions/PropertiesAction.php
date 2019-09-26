@@ -42,7 +42,7 @@ class PropertiesAction extends Action
 
         $referenceId = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original->id : $model->id;
 
-        $permModel = new InodePermissionsForm();
+        $permModel = Yii::createObject(InodePermissionsForm::class);
         $permModel->inode_id = $referenceId;
 
         if ($permModel->load(Yii::$app->request->post())) {
@@ -53,7 +53,7 @@ class PropertiesAction extends Action
             }
 
             if ($permModel->save()) {
-                $permModel = new InodePermissionsForm();
+                $permModel = Yii::createObject(InodePermissionsForm::class);
                 $permModel->inode_id = $referenceId;
                 $model->refresh();
             }
