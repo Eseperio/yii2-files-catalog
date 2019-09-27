@@ -100,14 +100,14 @@ class AccessControl extends ActiveRecord
             foreach ($filesList as $file) {
                 $id = self::getInodeRealId($file);
                 if ($type === self::TYPE_USER) {
-                    $rows[] = [
+                    $rows[$userId] = [
                         $id,
                         $userId,
                         AccessControl::DUMMY_ROLE,
                         $mask
                     ];
                 } else {
-                    $rows[] = [
+                    $rows[$userId] = [
                         $id,
                         AccessControl::DUMMY_USER,
                         $userId,
