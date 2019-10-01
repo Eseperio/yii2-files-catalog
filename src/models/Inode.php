@@ -9,9 +9,11 @@
 namespace eseperio\filescatalog\models;
 
 
+use app\dictionaries\ObjectTypes;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use Yii;
 use yii\base\Exception;
+use yii\base\InvalidArgumentException;
 use yii\base\UserException;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
@@ -48,15 +50,36 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
      */
     private $originalId;
 
+    /**
+     * @var resource to be saved manually. Only used when calling setStream()
+     */
+    private $_stream;
+
+    /**
+     * @param $stream resource defines the stream to be used when saving
+     */
+    public function setStream($stream)
+    {
+        if (in_array($this->type, [ObjectTypes::FILE_VERSION, ObjectTypes::FILE])) {
+            $this->_stream = $stream;
+
+            return $this;
+        }
+
+        throw new InvalidArgumentException(__METHOD__ . ' can only be used when type is file or version');
+
+    }
+
     public function rules()
     {
         $rules = parent::rules();
+        $skipEmptyFile = false;
 
         switch ($this->type) {
             case InodeTypes::TYPE_FILE:
             case InodeTypes::TYPE_VERSION:
                 $rules = array_replace_recursive($rules, [
-                    ['file', 'file', 'skipOnEmpty' => false]
+                    ['file', 'file', 'skipOnEmpty' => $skipEmptyFile]
                 ]);
                 break;
         }
@@ -187,43 +210,23 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     {
         if ($insert) {
             try {
-                $uploadedFile = $this->file;
-                if ($uploadedFile instanceof UploadedFile && $this->validate(['file'])) {
-                    $this->name = Inflector::slug($uploadedFile->baseName);
-                    $this->mime = FileHelper::getMimeType($uploadedFile->tempName);
-                    $this->extension = mb_strtolower(Html::encode($uploadedFile->extension));
-                    $this->filesize = $uploadedFile->size;
-                    $filesystem = $this->module->getStorageComponent();
-                    $tmpFile = fopen($uploadedFile->tempName, 'r+');
-                    $inodeRealPath = $this->getInodeRealPath();
+
+                $file = $this->file;
+
+                if (is_resource($this->_stream)) {
+                    $this->internalSaveStreamAsFile($this->_stream);
+
+                } else if ($file instanceof UploadedFile && $this->validate(['file'])) {
+                    $this->name = Inflector::slug($file->baseName);
+                    $this->mime = FileHelper::getMimeType($file->tempName);
+                    $this->extension = mb_strtolower(Html::encode($file->extension));
+                    $this->filesize = $file->size;
+                    $fileStream = fopen($file->tempName, 'r+');
                     if ($this->module->checkFilesIntegrity)
-                        $this->md5hash = hash_file('md5', $uploadedFile->tempName);
+                        $this->md5hash = hash_file('md5', $file->tempName);
 
 
-                    $parent = $this->getParent()->one();
-                    $siblingsNames = $parent->getChildren()
-                        ->onlyFiles()
-                        ->asArray()
-                        ->select('name')
-                        ->column();
-
-                    if (in_array($this->name, $siblingsNames))
-                        $this->name = $this->getUniqueFilename($siblingsNames);
-
-
-                    $this->update(false);
-                    $this->validate();
-
-
-                    $method = "writeStream";
-
-                    if ($this->module->allowOverwrite && $filesystem->has($inodeRealPath))
-                        $method = "updateStream";
-
-
-                    if (!$filesystem->{$method}($inodeRealPath, $tmpFile)) {
-                        $this->addError(Yii::t('filescatalog', 'Unable to move file to its destination'));
-                    }
+                    $this->internalSaveStreamAsFile($fileStream);
 
 
                 } else {
@@ -253,6 +256,43 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                 $acl->save();
             }
 
+        }
+    }
+
+    /**
+     * @param $fileStream
+     * @throws \Throwable
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\StaleObjectException
+     */
+    private function internalSaveStreamAsFile($fileStream): void
+    {
+        $filesystem = $this->module->getStorageComponent();
+        $inodeRealPath = $this->getInodeRealPath();
+
+        $parent = $this->getParent()->one();
+        $siblingsNames = $parent->getChildren()
+            ->onlyFiles()
+            ->asArray()
+            ->select('name')
+            ->column();
+
+        if (in_array($this->name, $siblingsNames))
+            $this->name = $this->getUniqueFilename($siblingsNames);
+
+
+        $this->update(false);
+        $this->validate();
+
+
+        $method = "writeStream";
+
+        if ($this->module->allowOverwrite && $filesystem->has($inodeRealPath))
+            $method = "updateStream";
+
+
+        if (!$filesystem->{$method}($inodeRealPath, $fileStream)) {
+            $this->addError(Yii::t('filescatalog', 'Unable to move file to its destination'));
         }
     }
 
@@ -294,7 +334,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
         return parent::delete();
     }
-
 
     /**
      * Deletes a file
