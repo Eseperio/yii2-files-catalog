@@ -9,7 +9,6 @@
 namespace eseperio\filescatalog\models;
 
 
-use app\dictionaries\ObjectTypes;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use Yii;
 use yii\base\Exception;
@@ -60,7 +59,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
      */
     public function setStream($stream)
     {
-        if (in_array($this->type, [ObjectTypes::FILE_VERSION, ObjectTypes::FILE])) {
+        if (in_array($this->type, [InodeTypes::TYPE_FILE, InodeTypes::TYPE_VERSION])) {
             $this->_stream = $stream;
 
             return $this;
