@@ -245,14 +245,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                 }
             }
 
-            if ($insert) {
-                $acl = Yii::createObject(AccessControl::class);
-                $acl->inode_id = $this->id;
-                $acl->user_id = Yii::$app->user->id;
-                $acl->role = AccessControl::DUMMY_ROLE;
-                $acl->crud_mask = AccessControl::ACTION_WRITE | AccessControl::ACTION_READ | AccessControl::ACTION_DELETE;
-                $acl->save();
-            }
 
         }
     }
