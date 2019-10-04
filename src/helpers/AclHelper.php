@@ -15,18 +15,32 @@ use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\FileVersion;
 use eseperio\filescatalog\models\Inode;
+use eseperio\filescatalog\traits\ContainerStaticHelper;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
+use yii\base\Component;
 use yii\base\InvalidArgumentException;
 
 /**
  * Class AclHelper
  * @package eseperio\filescatalog\helpers
  */
-class AclHelper
+class AclHelper extends Component
 {
 
     use ModuleAwareTrait;
+    use ContainerStaticHelper;
+
+    /**
+     * @var
+     */
+    private $inode;
+
+    public function __construct($inode, array $config = [])
+    {
+        $this->inode = $inode;
+        parent::__construct($config);
+    }
 
     /**
      * @param $inode
@@ -43,9 +57,23 @@ class AclHelper
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */
-    private static function can($inode, $permission)
+    public static function can($inode, $permission)
     {
-        if(empty($inode))
+        /** @var AclHelper $helper */
+        $helper = Yii::createObject(__CLASS__, [$inode]);
+        return $helper->checkAccess($permission);
+    }
+
+    /**
+     * @param $permission
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function checkAccess($permission)
+    {
+        $inode = $this->inode;
+
+        if (empty($inode))
             throw new InvalidArgumentException('Inode cannot be empty');
 
         $module = self::getModule();
@@ -117,4 +145,5 @@ class AclHelper
     {
         return self::can($inode, AccessControl::ACTION_DELETE);
     }
+
 }

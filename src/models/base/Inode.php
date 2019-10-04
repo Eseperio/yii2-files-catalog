@@ -9,13 +9,13 @@
 namespace eseperio\filescatalog\models\base;
 
 
-use app\helpers\ArrayHelper;
 use eseperio\filescatalog\behaviors\FilexBehavior;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\FilesCatalogModule;
 use eseperio\filescatalog\helpers\Helper;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\InodeQuery;
+use eseperio\filescatalog\traits\ContainerStaticHelper;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListBehavior;
 use Ramsey\Uuid\Uuid;
@@ -82,6 +82,8 @@ class Inode extends ActiveRecord
 {
 
     use ModuleAwareTrait;
+    use ContainerStaticHelper;
+
     /**
      * Used to automatically populate symlink remote
      * @var int
@@ -98,17 +100,13 @@ class Inode extends ActiveRecord
         return static::getModule()->inodeTableName;
     }
 
+
     /**
      * @return InodeQuery|\yii\db\ActiveQuery
      */
     public static function find()
     {
-        $defs = Yii::$container->definitions;
-        $class = get_called_class();
-        if (array_key_exists($class, $defs)) {
-            $class = ArrayHelper::getValue($defs, $class . ".class", $defs[$class]);
-        }
-
+        $class = self::getContainerClass(get_called_class());
         return Yii::createObject(InodeQuery::class, [$class]);
     }
 
