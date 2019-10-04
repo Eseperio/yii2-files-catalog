@@ -12,6 +12,7 @@ namespace eseperio\filescatalog\actions;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
+use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Inode;
 use Yii;
 use yii\base\Action;
@@ -70,6 +71,14 @@ class UploadAction extends Action
 
         if ($model->hasErrors())
             $response['errors'] = $model->errors;
+        elseif (Yii::$app->user->id) {
+            $acl = Yii::createObject(AccessControl::class);
+            $acl->inode_id = $this->id;
+            $acl->user_id = Yii::$app->user->id;
+            $acl->role = AccessControl::DUMMY_ROLE;
+            $acl->crud_mask = AccessControl::ACTION_WRITE | AccessControl::ACTION_READ | AccessControl::ACTION_DELETE;
+            $acl->save();
+        }
 
 
         return [
