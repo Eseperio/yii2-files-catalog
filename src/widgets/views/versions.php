@@ -6,6 +6,7 @@
  *
  */
 
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\widgets\Uploader;
 use yii\helpers\Html;
 
@@ -60,8 +61,10 @@ use yii\helpers\Html;
         <?= Yii::t('filescatalog', 'This document has not versions') ?>
     </p>
 <?php endif; ?>
-<hr>
-<?= Uploader::widget([
-    'model' => !$isVersion ? $model : $model->original,
-]) ?>
+<?php if (AclHelper::canWrite($model)): ?>
+    <hr>
+    <?= Uploader::widget([
+        'model' => !$isVersion ? $model : $model->original,
+    ]) ?>
 
+<?php endif; ?>
