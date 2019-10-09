@@ -3,7 +3,8 @@
 ## yii2-files-catalog
 
 Disclaimer: This library is under development. It can suffer important changes.
-# Developer: Waizabú
+
+**Developer: waizabu.com**
 
 It is a virtual file system with access control lists.
 
