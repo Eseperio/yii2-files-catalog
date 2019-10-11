@@ -263,6 +263,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         $parent = $this->getParent()->one();
         $siblingsNames = $parent->getChildren()
             ->onlyFiles()
+            ->andWhere(['not',['id' => $this->id]])
             ->asArray()
             ->select('name')
             ->column();
