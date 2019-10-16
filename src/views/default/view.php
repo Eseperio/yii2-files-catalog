@@ -33,7 +33,7 @@ use yii\helpers\Html;
                     <?php if (!empty($tag)): ?>
                         <?= $tag ?>
                     <?php else: ?>
-                        <div class="alert alert-default text-center">
+                        <div class=" text-center">
                             <p><?= Yii::t('filescatalog', 'This file cannot be displayed online.') ?></p>
                         </div>
                     <?php endif; ?>
