@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog;
 
 
@@ -32,7 +25,11 @@ class Bootstrap implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        if($app instanceof \yii\web\Application) {
+
+        if (!Yii::$app->hasModule('filex'))
+            return;
+
+        if ($app instanceof \yii\web\Application) {
             $module = self::getModule();
             $config = [
                 'class' => 'yii\web\GroupUrlRule',
