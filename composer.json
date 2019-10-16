@@ -7,7 +7,8 @@
     "creocoder/yii2-flysystem": "0.9.*",
     "dmhendricks/file-icon-vectors": "@dev",
     "paulzi/yii2-adjacency-list": "2.1.*",
-    "2amigos/yii2-file-upload-widget": "~1.0"
+    "2amigos/yii2-file-upload-widget": "~1.0",
+    "ramsey/uuid": "3.8.*"
   },
   "license": "GPL-3.0-or-later",
   "authors": [
