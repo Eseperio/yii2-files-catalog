@@ -17,7 +17,6 @@ use eseperio\filescatalog\assets\IndexAsset;
 use eseperio\filescatalog\widgets\Breadcrumb;
 use eseperio\filescatalog\widgets\GridView;
 use yii\bootstrap\Dropdown;
-use yii\helpers\Html;
 use yii\widgets\Pjax;
 
 IndexAsset::register($this);
@@ -30,13 +29,21 @@ if ($usePjax)
     Pjax::begin([
         'id' => $pjaxId
     ]);
-echo Breadcrumb::widget([
-    'model' => $model,
-    'pjaxId' => $pjaxId
-]) ?>
-<hr>
+?>
+<div class="panel panel-body">
+
+    <?= Breadcrumb::widget([
+        'model' => $model,
+        'pjaxId' => $pjaxId
+    ]) ?>
+
+    <hr>
+    <?php
+    echo GridView::widget(['dataProvider' => $dataProvider]);
+    ?>
+</div>
+
 <?php
-echo GridView::widget(['dataProvider' => $dataProvider]);
 if ($usePjax)
     Pjax::end();
 ?>
