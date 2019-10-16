@@ -18,7 +18,7 @@ use yii\bootstrap\Html;
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
             <div class="panel">
-                <div class="panel-header">
+                <div class="panel-heading">
 
                     <h3><span class="fiv-icon-folder fiv-sqo"></span>
                         <?= Html::a($parent->name, ['index', 'uuid' => $parent->uuid]) ?>/...
