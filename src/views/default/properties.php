@@ -63,7 +63,7 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
         <?php
         $aclModel = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original : $model;
         if (AclHelper::canDelete($aclModel)): ?>
-            <div class="panel">
+            <div class="panel panel-body">
 
                 <?php
                 $deleteButtonOptions = [
