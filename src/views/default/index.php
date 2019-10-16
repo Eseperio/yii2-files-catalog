@@ -25,7 +25,6 @@ IndexAsset::register($this);
 $this->title = Yii::t('filescatalog', 'Files catalog');
 $pjaxId = 'filex-pjax-idx';
 ?>
-<?= Html::a('Fake', ['fake']) ?>
 <?php
 if ($usePjax)
     Pjax::begin([
