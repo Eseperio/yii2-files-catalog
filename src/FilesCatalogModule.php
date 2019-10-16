@@ -256,6 +256,11 @@ class FilesCatalogModule extends Module
                 throw new InvalidConfigException(__CLASS__ . "::defaultInodePermissions must be an array");
         }
 
+        if (empty($this->getStorageComponent())) {
+                throw new InvalidConfigException(__CLASS__ . "::storage must be a flySystemComponent");
+        }
+
+
         $this->registerTranslations();
         parent::init();
     }
