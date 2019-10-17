@@ -11,8 +11,8 @@ namespace eseperio\filescatalog\actions;
 
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
-use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
-use eseperio\filescatalog\models\Inode;
+use eseperio\filescatalog\helpers\AclHelper;
+use eseperio\filescatalog\models\InodeSearch;
 use eseperio\filescatalog\services\InodeHelper;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
@@ -43,8 +43,14 @@ class IndexAction extends Action
         $dataProvider = InodeHelper::getChildrenDataProvider($model);
         $bulkActions = $this->getBulkActions();
 
+
+        $searchModel = Yii::createObject(InodeSearch::class);
+        $searchModel->uuid = Yii::$app->request->get('uuid');
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->getModel());
+
         return $this->controller->render('index', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
             'model' => $model,
             'usePjax' => $this->module->usePjax,
             'parents' => $model->getParents()->asArray()->all(),

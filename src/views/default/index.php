@@ -10,6 +10,7 @@
 /* @var $model \eseperio\filescatalog\models\Inode */
 /* @var $usePjax boolean */
 /* @var $bulkActions array */
+/* @var $searchModel \eseperio\filescatalog\models\InodeSearch */
 
 /* @var $parents array with the parents inodes */
 
@@ -39,7 +40,11 @@ if ($usePjax)
 
     <hr>
     <?php
-    echo GridView::widget(['dataProvider' => $dataProvider]);
+    echo GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+
+    ]);
     ?>
 </div>
 
