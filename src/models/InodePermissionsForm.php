@@ -74,7 +74,7 @@ class InodePermissionsForm extends AccessControl
         $userIdInputFormId = Html::getInputId($this, 'user_id');
         $typeRole = self::TYPE_ROLE;
         $js = <<<JS
-        document.getElementsByName('{$typeInputFormName}').forEach((e,i,a)=>{
+        document.getElementsByName('{$typeInputFormName}').forEach(function(e,i,a){
         e.addEventListener('click',filexCheckType);
         });
         function filexCheckType(){
