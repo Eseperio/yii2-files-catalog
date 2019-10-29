@@ -33,6 +33,7 @@ class PropertiesAction extends Action
 
     public function run()
     {
+        $filexModule = self::getModule();
         $model = $this->controller->findModel(Yii::$app->request->get('uuid'), Inode::class);
         $versions = $model->versions;
 
@@ -45,7 +46,7 @@ class PropertiesAction extends Action
         $permModel = Yii::createObject(InodePermissionsForm::class);
         $permModel->inode_id = $referenceId;
 
-        if ($permModel->load(Yii::$app->request->post())) {
+        if ($permModel->load(Yii::$app->request->post()) && $filexModule->enableACL && $filexModule->isAdmin()) {
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
