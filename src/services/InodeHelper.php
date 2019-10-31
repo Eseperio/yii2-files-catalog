@@ -42,7 +42,7 @@ class InodeHelper extends Component
 
         if ($onlyFiles)
             $childrenQuery
-                ->byType([InodeTypes::TYPE_SYMLINK,InodeTypes::TYPE_FILE]);
+                ->byType([InodeTypes::TYPE_SYMLINK, InodeTypes::TYPE_FILE]);
 
         $childrenQuery->orderBy([])->orderByType();
 
@@ -66,7 +66,7 @@ class InodeHelper extends Component
      * @throws FilexAccessDeniedException
      * @throws \yii\web\NotFoundHttpException
      */
-    public static function getModel($uuid)
+    public static function getModel($uuid = null)
     {
         if (!empty($uuid)) {
             $model = self::findModel($uuid);

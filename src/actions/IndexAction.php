@@ -11,7 +11,9 @@ namespace eseperio\filescatalog\actions;
 
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
 use eseperio\filescatalog\helpers\AclHelper;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\InodeSearch;
 use eseperio\filescatalog\services\InodeHelper;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
@@ -40,7 +42,6 @@ class IndexAction extends Action
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
 
         Url::remember();
-        $dataProvider = InodeHelper::getChildrenDataProvider($model);
         $bulkActions = $this->getBulkActions();
 
 
