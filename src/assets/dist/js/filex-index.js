@@ -25,6 +25,7 @@ function () {
   function filexIndex(settings) {
     _classCallCheck(this, filexIndex);
 
+    this.GRID_ID = "#filex-grid";
     this.settings = settings;
     this.attachEvents();
   }
@@ -32,8 +33,11 @@ function () {
   _createClass(filexIndex, [{
     key: "attachEvents",
     value: function attachEvents() {
+      var _this = this;
+
       $(document).on('change', '[name="filex-bulk-action[]"]', function (e) {
-        var keys = $('#filex-grid').yiiGridView('getSelectedRows');
+        var keys = _this.getSelectedRows();
+
         $('#filex-bulk-actions').toggleClass('collapse', !keys.length > 0);
         var params = {};
         keys.forEach(function (e, i, a) {
@@ -41,6 +45,16 @@ function () {
         });
         $("#filex-bulk-delete,#filex-bulk-acl").attr('data-params', JSON.stringify(params));
       });
+    }
+  }, {
+    key: "getSelectedRows",
+    value: function getSelectedRows() {
+      var $grid = $(this.GRID_ID);
+      var keys = [];
+      $grid.find('[name="filex-bulk-action[]"]:checked').each(function () {
+        keys.push($(this).val());
+      });
+      return keys;
     }
   }]);
 

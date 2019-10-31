@@ -82,7 +82,7 @@ return [
     'Root node can not be deleted' => 'El nodo principal no puede ser eliminado',
     'Search' => 'Buscar',
     'Search the item you want to link' => 'Busque el item que quiere enlazar',
-    'Symlink' => 'Enlace simbólico',
+    'Symlink' => 'Acceso directo',
     'Target not defined' => 'Destino no definido',
     'This are the properties of this file version.' => 'Estas son las propiedades de esta versión',
     'This document has not versions' => 'Este documento no tiene versiones',

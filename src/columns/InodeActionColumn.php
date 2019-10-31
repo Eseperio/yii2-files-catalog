@@ -54,9 +54,12 @@ class InodeActionColumn extends Column
             ]
         );
 
+        $propertiesUrl = ['properties', 'uuid' => $model->uuid];
+        if ($model->type == InodeTypes::TYPE_SYMLINK)
+            $propertiesUrl['created_at'] = $model->created_at;
         $items = [Html::tag(
             'li',
-            Html::a(Yii::t('filescatalog', 'Properties'), ['properties', 'uuid' => $model->uuid],
+            Html::a(Yii::t('filescatalog', 'Properties'), $propertiesUrl,
                 [
                     'class' => 'dropdown-item',
                     'data-pjax' => 0

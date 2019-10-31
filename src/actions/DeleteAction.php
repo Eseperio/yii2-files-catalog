@@ -9,19 +9,19 @@
 namespace eseperio\filescatalog\actions;
 
 
-use eseperio\filescatalog\models\Inode;
-use yii\helpers\ArrayHelper;
-use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\File;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
+use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 
 class DeleteAction extends Action
 {
@@ -33,16 +33,27 @@ class DeleteAction extends Action
 
     public function run()
     {
-        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), Inode::class);
+        $uuid = Yii::$app->request->get('uuid');
+        $model = $this->controller->findModel($uuid);
 
         if ($model->isRoot())
             throw new ForbiddenHttpException(Yii::t('filescatalog', 'Root node can not be deleted'));
-
 
         $parentUuid = $model->getParent()->select('uuid')->scalar();
 
         $rcvdHash = Yii::$app->request->post($this->module->secureHashParamName);
 
+        $createdAt = Yii::$app->request->post('created_at', false);
+
+        if (!empty($createdAt) && strlen((string)$createdAt) == 10) {
+            $model = Inode::find()->where([
+                'created_at' => $createdAt,
+                'uuid' => $uuid
+            ])->one();
+
+            if (empty($model))
+                throw new NotFoundHttpException();
+        }
 
         if (!empty($rcvdHash) && $rcvdHash === $model->deleteHash && AclHelper::canDelete($model)) {
             if ($model->type === InodeTypes::TYPE_DIR) {
@@ -65,16 +76,15 @@ class DeleteAction extends Action
                     ]);
                 }
             } else {
-                if (Yii::$app->request->post('delall')) {
+                if (Yii::$app->request->post('delall', false)) {
                     if ($model->type === InodeTypes::TYPE_VERSION) {
                         Inode::deleteAll([
                             'id' => ArrayHelper::getColumn($model->original->versions, 'id')
                         ]);
-                        $model->original->delete();
+                        $model = $model->original;
                     }
-                } else {
-                    $model->delete();
                 }
+                $model->delete();
             }
 
 

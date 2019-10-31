@@ -131,8 +131,8 @@ class DefaultController extends \yii\web\Controller
      * @return Inode|Directory
      * @throws NotFoundHttpException
      */
-    public function findModel($id, $entity = Inode::class)
+    public function findModel($id, $createdAt = null)
     {
-        return InodeHelper::findModel($id, $entity);
+        return InodeHelper::findModel($id, $createdAt);
     }
 }

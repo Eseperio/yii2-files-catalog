@@ -13,6 +13,7 @@
 
 /* @var $error string */
 
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use yii\helpers\Html;
 
 ?>
@@ -37,10 +38,14 @@ use yii\helpers\Html;
                     'item' => function ($model) {
                         /* @var $model \eseperio\filescatalog\models\Inode */
                         $link = Html::a(Html::encode($model->name), ['/filex/default/view', 'uuid' => $model->uuid], ['target' => '_blank']);
-                        $input = Html::hiddenInput('uuids[]', $model->uuid);
-                        $label = Html::tag('li', $link.$input, ['class' => 'list-group-item']);
+                        $input = Html::hiddenInput('uuids[]', $model->uuid . ($model->type == InodeTypes::TYPE_SYMLINK ? "|" . $model->created_at : ""));
+                        $content = $link . $input;
+                        if($model->type==InodeTypes::TYPE_SYMLINK)
+                            $content.=" ".Html::tag('span',Yii::t('filescatalog','Symlink'),['class'=>'label label-warning']);
+                        $label = Html::tag('li', $content, ['class' => 'list-group-item']);
 
-                        return $label ;
+
+                        return $label;
                     },
                     'class' => 'list-group'
                 ]) ?>
@@ -52,7 +57,7 @@ use yii\helpers\Html;
                 ?>
             </div>
             <div class="panel-footer clearfix">
-                <?= Html::a(Yii::t('filescatalog','Cancel'),\yii\helpers\Url::previous(),['class'=>'btn btn-primary']) ?>
+                <?= Html::a(Yii::t('filescatalog', 'Cancel'), \yii\helpers\Url::previous(), ['class' => 'btn btn-primary']) ?>
                 <?= Html::submitButton(Yii::t('filescatalog', 'Delete all items'), ['class' => 'btn btn-danger pull-right']) ?>
             </div>
         </div>

@@ -24,6 +24,7 @@ use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use eseperio\filescatalog\widgets\Breadcrumb;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 FileTypeIconsAsset::register($this);
@@ -71,7 +72,8 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                     'data' => [
                         'method' => 'post',
                         'params' => [
-                            $filexModule->secureHashParamName => $model->deleteHash
+                            $filexModule->secureHashParamName => $model->deleteHash,
+                            'created_at' => $model->created_at
                         ],
                         'confirm' => Yii::t('filescatalog', 'Confirm deletion?')
                     ]
@@ -85,7 +87,16 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 $deleteButtonOptions['data']['params']['dellall'] = true;
                 if ($model->type === InodeTypes::TYPE_DIR)
                     unset($deleteButtonOptions['data']['confirm']);
-                echo Html::a(Yii::t('filescatalog', 'Delete'), $deleteUrl, $deleteButtonOptions) ?>
+
+                if ($model->type == InodeTypes::TYPE_SYMLINK) {
+                    ArrayHelper::setValue($deleteButtonOptions, 'data.params.created_at', $model->created_at);
+                    ArrayHelper::setValue($deleteButtonOptions, 'class', 'btn btn-warning');
+
+                    echo Html::a(Yii::t('filescatalog', 'Delete symlink'), $deleteUrl, $deleteButtonOptions);
+                } else {
+                    echo Html::a(Yii::t('filescatalog', 'Delete'), $deleteUrl, $deleteButtonOptions);
+                }
+                ?>
             </div>
 
         <?php endif; ?>

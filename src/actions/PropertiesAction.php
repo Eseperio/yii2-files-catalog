@@ -34,7 +34,7 @@ class PropertiesAction extends Action
     public function run()
     {
         $filexModule = self::getModule();
-        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), Inode::class);
+        $model = $this->controller->findModel(Yii::$app->request->get('uuid'),Yii::$app->request->get('created_at'));
         $versions = $model->versions;
 
         if (!empty($versions) && is_array($versions) && !Yii::$app->request->get('original', false))
@@ -137,6 +137,12 @@ class PropertiesAction extends Action
     private function getCommonAttributes($inode): array
     {
         return [
+            'type'=>[
+                'attribute'=> 'type',
+                'value'=> function($model){
+                    return InodeTypes::getName($model->type);
+                }
+            ],
             'created_at:datetime',
             'author_name',
             'uuid',

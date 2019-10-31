@@ -185,6 +185,10 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
             $ids[] = $this->id;
             AccessControl::deleteAll(['inode_id' => $ids]);
         }
+        Inode::deleteAll([
+            'uuid' => $this->uuid,
+            'type' => InodeTypes::TYPE_SYMLINK
+        ]);
         parent::afterDelete();
     }
 
@@ -263,7 +267,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         $parent = $this->getParent()->one();
         $siblingsNames = $parent->getChildren()
             ->onlyFiles()
-            ->andWhere(['not',['id' => $this->id]])
+            ->andWhere(['not', ['id' => $this->id]])
             ->asArray()
             ->select('name')
             ->column();

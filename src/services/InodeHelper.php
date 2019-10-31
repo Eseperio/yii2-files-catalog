@@ -97,17 +97,22 @@ class InodeHelper extends Component
 
     /**
      * @param $id
-     * @param string $entity
+     * @param null $created_at if provided then symlink will be returned
      * @return Inode|Directory
+     * @throws FilexAccessDeniedException
      * @throws NotFoundHttpException
      */
-    public static function findModel($id)
+    public static function findModel($id, $created_at = null)
     {
         $query = Inode::find();
         if (strlen($id) === 36) {
             $query->uuid($id);
         } else {
             $query->where(['id' => $id]);
+        }
+
+        if (!empty($created_at) && preg_match('/\d{10}/', $created_at)) {
+            $query->andWhere(['created_at' => $created_at]);
         }
 
         $module = self::getModule();

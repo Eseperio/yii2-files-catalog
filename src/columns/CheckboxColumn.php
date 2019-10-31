@@ -10,6 +10,7 @@ namespace eseperio\filescatalog\columns;
 
 
 use eseperio\admintheme\helpers\Html;
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 
 class CheckboxColumn extends \yii\grid\CheckboxColumn
@@ -35,10 +36,14 @@ class CheckboxColumn extends \yii\grid\CheckboxColumn
             $options = [
                 'value' => $model->uuid
             ];
+            if ($model->type == InodeTypes::TYPE_SYMLINK)
+                $options['value'] .= "|" . $model->created_at;
+
             if (!AclHelper::canDelete($model)) {
                 $options['disabled'] = 1;
                 $options['class'] = 'collapse';
             }
+
             return $options;
         };
         parent::init();
