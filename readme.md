@@ -36,7 +36,7 @@ Add the module to your modules configuration
             'salt' => 'yourrandomstringhere'
             'identityClass' => 'youridentity/classname',
             'administrators' => ['adminusername']
-            // 'administratorPermissionName' => ['permissionname']
+            // 'administratorPermissionName' => 'permissionname'
         ]
       ]
 
