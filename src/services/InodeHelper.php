@@ -62,11 +62,14 @@ class InodeHelper extends Component
 
     /**
      * Returns the model with the uuid specified. It uuid is null then root node is return.
+     * @param null $uuid
+     * @param bool $checkAccess whether perform read permissions check before return
      * @return array|Inode|\eseperio\filescatalog\models\Directory|\yii\db\ActiveRecord|\yii\web\Response|null
      * @throws FilexAccessDeniedException
-     * @throws \yii\web\NotFoundHttpException
+     * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
      */
-    public static function getModel($uuid = null)
+    public static function getModel($uuid = null, $checkAccess= true)
     {
         if (!empty($uuid)) {
             $model = self::findModel($uuid);
@@ -84,14 +87,14 @@ class InodeHelper extends Component
                 $root->type = InodeTypes::TYPE_DIR;
                 $root->makeRoot()->save(false);
 
-                return $root;
+                $model=  $root;
 
             }
 
-            if (!AclHelper::canRead($model))
-                throw new FilexAccessDeniedException();
-        }
 
+        }
+        if ($checkAccess && !AclHelper::canRead($model))
+            throw new FilexAccessDeniedException();
         return $model;
     }
 

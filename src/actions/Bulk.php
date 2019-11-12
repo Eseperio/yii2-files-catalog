@@ -45,7 +45,6 @@ abstract class Bulk extends Action
             if (strstr($uuid, "|")) {
 //                If is symlink
                 $pieces = explode("|", $uuid);
-//                if (!isset($uuids[$pieces[0]]))
                     $symlinks[] = ['uuid' => $pieces[0], 'created_at' => $pieces[1]];
             } else {
                 $other[] = $uuid;
