@@ -58,8 +58,8 @@ class InodeHelper extends Component
         ]);
 
         return $dataProvider;
-    }
 
+    }
     /**
      * Returns the model with the uuid specified. It uuid is null then root node is return.
      * @param null $uuid
