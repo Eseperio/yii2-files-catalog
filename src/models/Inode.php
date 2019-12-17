@@ -8,7 +8,6 @@
 
 namespace eseperio\filescatalog\models;
 
-
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use Yii;
 use yii\base\Exception;
@@ -317,17 +316,37 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         return $name;
     }
 
+    /**
+     * @return mixed
+     */
     public function delete()
     {
         switch ($this->type) {
             case InodeTypes::TYPE_FILE:
             case InodeTypes::TYPE_VERSION:
                 $this->deleteFileInternal();
-
+                break;
+            case InodeTypes::TYPE_DIR:
+                $this->deleteDirInternal();
                 break;
         }
 
         return parent::delete();
+    }
+
+    /**
+     *
+     */
+    private function deleteDirInternal():void{
+        try {
+            if($children = $this->getChildren()->all()){
+                foreach ($children as $k => $child){
+                    $child->delete();
+                }
+            }
+        } catch (\Throwable $e) {
+            Yii::error($e->getMessage());
+        }
     }
 
     /**
