@@ -11,11 +11,21 @@ namespace eseperio\filescatalog\models;
 
 use eseperio\admintheme\helpers\Html;
 
+/**
+ * Class InodePermissionsForm
+ * @package eseperio\filescatalog\models
+ */
 class InodePermissionsForm extends AccessControl
 {
 
+    /**
+     * @var
+     */
     public $type;
 
+    /**
+     * @return array
+     */
     public function scenarios()
     {
         $scenarios = parent::scenarios();
@@ -26,6 +36,9 @@ class InodePermissionsForm extends AccessControl
         return $scenarios;
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         $rules = array_merge_recursive(parent::rules(), [
@@ -38,6 +51,7 @@ class InodePermissionsForm extends AccessControl
             [['role'], 'required', 'when' => function ($model) {
                 return $model->type == self::TYPE_ROLE;
             }],
+            [['user_id', 'role'], 'unique', 'targetAttribute' => ['user_id', 'role', 'inode_id'], 'on' => self::SCENARIO_DEFAULT],
             [['crud', 'type'], 'safe'],
             ['user_id', 'default', 'value' => self::DUMMY_USER],
             ['role', 'default', 'value' => self::DUMMY_ROLE],
@@ -46,9 +60,12 @@ class InodePermissionsForm extends AccessControl
         return $rules;
     }
 
+    /**
+     * @return mixed
+     */
     public function beforeValidate()
     {
-        if (!$this->scenario == self::SCENARIO_DELETE) {
+        if ($this->scenario != self::SCENARIO_DELETE) {
             if ($this->type == self::TYPE_USER && !empty($this->user_id))
                 $this->role = self::DUMMY_ROLE;
 
@@ -60,7 +77,9 @@ class InodePermissionsForm extends AccessControl
     }
 
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function init()
     {
         $this->type = self::TYPE_ROLE;
@@ -68,6 +87,9 @@ class InodePermissionsForm extends AccessControl
         parent::init();
     }
 
+    /**
+     * Register js functionality when form is rendered
+     */
     public function registerAssets()
     {
         $typeInputFormName = Html::getInputName($this, 'type');
