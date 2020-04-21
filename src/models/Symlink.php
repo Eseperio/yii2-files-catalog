@@ -6,13 +6,6 @@
  *
  */
 
-/**
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 namespace eseperio\filescatalog\models;
 
 
