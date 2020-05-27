@@ -221,8 +221,8 @@ class AccessControl extends ActiveRecord
     public function scenarios()
     {
         return [
-            self::SCENARIO_DELETE => ['inode_id', 'user_id', 'role', 'crud'],
-            self::SCENARIO_DEFAULT => ['inode_id', 'user_id', 'role', 'crud'],
+            self::SCENARIO_DELETE => ['inode_id', 'user_id', 'role', 'crud','crud_mask'],
+            self::SCENARIO_DEFAULT => ['inode_id', 'user_id', 'role', 'crud','crud_mask'],
         ];
     }
 

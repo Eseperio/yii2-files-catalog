@@ -17,7 +17,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\ArrayHelper;
 use yii\validators\FileValidator;
-use yii\web\IdentityInterface;
 use yii\web\User;
 
 class FilesCatalogModule extends Module
@@ -109,6 +108,11 @@ class FilesCatalogModule extends Module
         '<controller:[\w\-]+>/<action:[\w\-]+>' => '<controller>/<action>'
     ];
     /**
+     * @var array|callable Array with the available permissions or roles available while managing inode permissions
+     */
+    public $rbacItems = [];
+    /**
+     * @deprecated not used anymore
      * @var int the max amount of elements to display when using a tree view. Set to false to disable
      */
     public $maxTreeDepthDisplay = 4;
@@ -117,6 +121,7 @@ class FilesCatalogModule extends Module
      */
     public $groupFilesByExt = false;
     /**
+     * @deprecated not in use
      * @var bool whether display author names on views
      */
     public $displayAuthorNames = true;
@@ -220,7 +225,8 @@ class FilesCatalogModule extends Module
     /**
      * @var string css classname for the properties icon
      */
-    public $propertiesIconClass = 'glyphicon glyphicon-list-alt';/**
+    public $propertiesIconClass = 'glyphicon glyphicon-list-alt';
+    /**
      * @var string css classname for the properties icon
      */
     public $linkIconClass = 'glyphicon glyphicon-link';
@@ -257,12 +263,23 @@ class FilesCatalogModule extends Module
         }
 
         if (empty($this->getStorageComponent())) {
-                throw new InvalidConfigException(__CLASS__ . "::storage must be a flySystemComponent");
+            throw new InvalidConfigException(__CLASS__ . "::storage must be a flySystemComponent");
         }
 
 
         $this->registerTranslations();
         parent::init();
+    }
+
+    /**
+     * @return object|Filesystem
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getStorageComponent()
+    {
+        $storage = \Yii::$app->get($this->storage);
+
+        return $storage;
     }
 
     /**
@@ -275,17 +292,6 @@ class FilesCatalogModule extends Module
             'sourceLanguage' => 'en-US',
             'basePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
         ];
-    }
-
-    /**
-     * @return object|Filesystem
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function getStorageComponent()
-    {
-        $storage = \Yii::$app->get($this->storage);
-
-        return $storage;
     }
 
     /**
@@ -307,7 +313,8 @@ class FilesCatalogModule extends Module
     public function getUser()
     {
         $user = Yii::$app->get($this->user);
-        /* @var $user User  */
+
+        /* @var $user User */
         return $user;
     }
 
@@ -338,5 +345,25 @@ class FilesCatalogModule extends Module
 
         return $hasAdministratorPermissionName || in_array($username, $this->administrators, false);
 
+    }
+
+    /**
+     * @return array with all the rbac permissions allowed for inodes.
+     */
+    public function getAclPermissions()
+    {
+        $appPermissions = [];
+        if (is_callable($this->rbacItems)) {
+            $appPermissions = call_user_func($this->rbacItems, $this);
+        } else if (is_array($this->rbacItems)) {
+            $appPermissions = $this->rbacItems;
+        }
+
+        $filexCommonRoles = [
+            AccessControl::WILDCARD_ROLE => Yii::t('filescatalog', 'Everyone'),
+            AccessControl::LOGGED_IN_USERS => Yii::t('filescatalog', 'All logged in'),
+        ];
+
+        return $filexCommonRoles + $appPermissions;
     }
 }

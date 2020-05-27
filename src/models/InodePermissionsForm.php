@@ -42,7 +42,7 @@ class InodePermissionsForm extends AccessControl
     public function rules()
     {
         $rules = array_merge_recursive(parent::rules(), [
-            [['user_id', 'inode_id'], 'integer'],
+            [['user_id', 'inode_id','crud_mask'], 'integer'],
             ['role', 'string'],
             [['inode_id'], 'required'],
             [['user_id'], 'required', 'when' => function ($model) {
@@ -52,7 +52,6 @@ class InodePermissionsForm extends AccessControl
                 return $model->type == self::TYPE_ROLE;
             }],
             [['user_id', 'role'], 'unique', 'targetAttribute' => ['user_id', 'role', 'inode_id'], 'on' => self::SCENARIO_DEFAULT],
-            [['crud', 'type'], 'safe'],
             ['user_id', 'default', 'value' => self::DUMMY_USER],
             ['role', 'default', 'value' => self::DUMMY_ROLE],
         ]);

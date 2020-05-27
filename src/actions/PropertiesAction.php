@@ -12,7 +12,6 @@ namespace eseperio\filescatalog\actions;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\File;
-use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use eseperio\filescatalog\widgets\IconDisplay;
@@ -34,12 +33,11 @@ class PropertiesAction extends Action
     public function run()
     {
         $filexModule = self::getModule();
-        $model = $this->controller->findModel(Yii::$app->request->get('uuid'),Yii::$app->request->get('created_at'));
+        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), Yii::$app->request->get('created_at'));
         $versions = $model->versions;
 
         if (!empty($versions) && is_array($versions) && !Yii::$app->request->get('original', false))
             $model = end($versions);
-
 
         $referenceId = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original->id : $model->id;
 
@@ -59,6 +57,7 @@ class PropertiesAction extends Action
                 $model->refresh();
             }
         }
+
 
         return $this->controller->render('properties', [
             'model' => $model,
@@ -137,9 +136,9 @@ class PropertiesAction extends Action
     private function getCommonAttributes($inode): array
     {
         return [
-            'type'=>[
-                'attribute'=> 'type',
-                'value'=> function($model){
+            'type' => [
+                'attribute' => 'type',
+                'value' => function ($model) {
                     return InodeTypes::getName($model->type);
                 }
             ],

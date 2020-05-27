@@ -11,8 +11,8 @@
 /* @var $parent \eseperio\filescatalog\models\Inode */
 /* @var $parentTreeNodes \eseperio\filescatalog\models\Inode[] */
 /* @var $maxTreeDepth int */
-
 /* @var $childrenTreeNodes \eseperio\filescatalog\models\Inode[] */
+/* @var $filexModule \eseperio\filescatalog\FilesCatalogModule */
 
 /* @var $accessControlFormModel InodePermissionsForm */
 
@@ -58,23 +58,18 @@ use yii\helpers\Html;
                 ?>
             </div>
             <div class="col-sm-12 filex-role-input <?= $accessControlFormModel->type !== InodePermissionsForm::TYPE_ROLE ? "collapse" : "" ?>">
-                <h4><?= Yii::t('filescatalog', 'Wildcards') ?></h4>
-                <p><?= Yii::t('filescatalog', '{wildcard} allow everyone access to this item.', [
-                        'wildcard' => Html::tag('strong', AccessControl::WILDCARD_ROLE, ['class' => 'text-info'])
-                    ]) ?></p>
-                <p><?= Yii::t('filescatalog', '{wildcard} allow everyone logged in access to this item.', [
-                        'wildcard' => Html::tag('strong', AccessControl::LOGGED_IN_USERS, ['class' => 'text-info'])
-                    ]) ?></p>
-                <?= $form->field($accessControlFormModel, 'role')->textInput();
+
+                <?= $form->field($accessControlFormModel, 'role')
+                    ->dropDownList($filexModule->getAclPermissions(), ['prompt' => Yii::t('filescatalog', 'Select rol')]);
                 ?>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <?= $form->field($accessControlFormModel, 'crud')->checkboxList([
+                <?= $form->field($accessControlFormModel, 'crud_mask')->dropDownList([
                     AccessControl::ACTION_READ => Yii::t('filescatalog', 'Read'),
-                    AccessControl::ACTION_WRITE => Yii::t('filescatalog', 'Update'),
-                    AccessControl::ACTION_DELETE => Yii::t('filescatalog', 'Delete')
+                    AccessControl::ACTION_READ | AccessControl::ACTION_WRITE => Yii::t('filescatalog', 'Read and write'),
+                    AccessControl::ACTION_READ | AccessControl::ACTION_WRITE | AccessControl::ACTION_DELETE => Yii::t('filescatalog', 'Read, Write and Delete')
                 ]); ?>
             </div>
         </div>
@@ -95,7 +90,7 @@ use yii\helpers\Html;
         <ul class="list-group"><?php
 
 
-            $accessControls = ($model->type == InodeTypes::TYPE_VERSION) ? $model->original->accessControlList:$model->accessControlList;
+            $accessControls = ($model->type == InodeTypes::TYPE_VERSION) ? $model->original->accessControlList : $model->accessControlList;
             foreach ($accessControls as $item) :?>
                 <li class="list-group-item">
                     <div class="row">

@@ -117,7 +117,8 @@ There is a default controller with the following actions.
 |`addFilesIconClass`|css classname for the new add files icon |glyphicon glyphicon-cloud-upload|
 |`showBreadcrumbButtonLabels`|whether display labels in breadcrumb buttons|false|
 |`itemsPerPage`|number of items per page|10|
-  
+|`rbacItems`|array|callable Array with the available permissions or roles available while managing inode permissions|[]|
+
 
 
 
