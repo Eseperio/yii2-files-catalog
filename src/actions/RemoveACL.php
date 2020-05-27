@@ -10,10 +10,10 @@ namespace eseperio\filescatalog\actions;
 
 
 use eseperio\filescatalog\models\AccessControl;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use Yii;
 use yii\base\Action;
-use yii\web\ForbiddenHttpException;
 use yii\web\ServerErrorHttpException;
 
 class RemoveACL extends Action
@@ -39,7 +39,8 @@ class RemoveACL extends Action
             throw new ServerErrorHttpException(Yii::t('filescatalog', 'An error ocurred deleting this item'));
         }
 
+        $inode = Inode::findOne($permModel->inode_id);
 
-        return $this->controller->goBack();
+        return $this->controller->redirect(['properties', 'uuid' => $inode->uuid]);
     }
 }
