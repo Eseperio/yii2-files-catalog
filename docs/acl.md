@@ -1,33 +1,41 @@
-# Access control
+# Access control lists
 
-Access control is managed using ACLs (access control list).
-Each INODE must grant access explicitly to a user or a role.
+This module allow files access restriction using access contro list.
 
-To edit permissions of an Inode go to the properties view. If you comply
-with admin requirements you´ll see the permission editor panel.
-To be considered as an administrator you must set configuration either
-`administrators` or `administratorPermissionName`.
+Each item have three actions controlled.
 
+|Action|Description|
+|------|-----------|
+|Read| Allows reading the file and accessing its own information (properties, download, etc)|
+|Write| Any operation involving modification of the item (add versions, subdirectories...)|
+|Delete| Allow deletion of the item|
 
-## Giving access to INODE.
+Permissions **are not inherited**. Each item has its own acl.
 
-### By user id
-Manually add the user id.
+When granting access to an item, it can be done in two ways
 
-### By role or permission.
-Those users with that permission or role will be able to view the inode,
-according to the permission mask given.
-
-## Permissions
-
-Permissions are given using a three bit binary mask.
-The mask is stored as an integer in the database.
+- **By user id**: A user id is specified and that user will get granted the access.
+- **By role**: All users with that role will have access to the file. **Permissions are ignored. Only roles**
+- **Wildcard**: Instead writing a role name, you can use a wildcard permission. Currently there are two accepted.
+    - `*` Means everyone.
+    - `@` Means everyone logged in
 
 
-| BITS | 0 | 0 | 0 |
+
+
+### How access control crud mask works
+
+Access control is stored in a different table. Each inode must have its own records defining who or which role
+will be able to view, edit or append files.
+That permissions are managed via a crud_mask. It is a 3 bit binary mask, in its integer representation
+
+
+
+| |R|W|D|
 |---|---|---|---|---|
-|  |READ|WRITE|DELETE|
+||Read|Write|Delete|
+|Bit|0|0|0|
+|Value|4|2|1|
 
-
-
-
+So if we want to give only read access to a file, the crud mask must be 100, or its integer representation, which is what we store in database: 4
+Otherwise, if we want all permissions, then all bits are on and the result is 7.
