@@ -84,7 +84,7 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                         . " - " . Yii::t('filescatalog', 'or') . " - ";
                 endif;
 
-                $deleteButtonOptions['data']['params']['dellall'] = true;
+                $deleteButtonOptions['data']['params']['delall'] = true;
                 if ($model->type === InodeTypes::TYPE_DIR)
                     unset($deleteButtonOptions['data']['confirm']);
 
@@ -107,7 +107,8 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
         <div class="col-md-6">
             <?= $this->render('partials/_acl', [
                 'accessControlFormModel' => $accessControlFormModel,
-                'model' => $model
+                'model' => $model,
+                'filexModule'=> $filexModule
             ]) ?>
         </div>
     <?php endif; ?>
