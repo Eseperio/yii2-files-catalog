@@ -131,6 +131,15 @@ class AccessControl extends ActiveRecord
 
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'crud_mask'=> Yii::t('filescatalog','Permissions'),
+            'role'=> Yii::t('filescatalog','Role'),
+            'user_id'=> Yii::t('filescatalog','User id'),
+        ];
+    }
+
     /**
      * @param $item
      * @return int the id

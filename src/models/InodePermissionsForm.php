@@ -10,6 +10,7 @@ namespace eseperio\filescatalog\models;
 
 
 use eseperio\admintheme\helpers\Html;
+use Yii;
 
 /**
  * Class InodePermissionsForm
@@ -57,6 +58,13 @@ class InodePermissionsForm extends AccessControl
         ]);
 
         return $rules;
+    }
+
+    public function attributeLabels()
+    {
+        return array_merge_recursive(parent::attributeLabels(),[
+            'type'=> Yii::t('filescatalog','Type'),
+        ]);
     }
 
     /**
