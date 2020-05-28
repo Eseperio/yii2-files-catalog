@@ -25,7 +25,7 @@ class m190705_143724_add_filescatalog_table extends Migration
     public function safeUp()
     {
         $this->createTable($this->inodeTableName, [
-            'id' => $this->primaryKey(),
+            'id' => 'int(11) NOT NULL AUTO_INCREMENT = 10 PRIMARY KEY',
             'uuid' => $this->string(36),
             'name' => $this->string(255),
             'extension' => $this->string(16),
@@ -41,7 +41,7 @@ class m190705_143724_add_filescatalog_table extends Migration
             'updated_by' => $this->integer(),
             'author_name' => $this->string(128),
             'editor_name' => $this->string(128)
-        ]);
+        ],'AUTO_INCREMENT = 10');
         $this->createIndex('idx_name_ext_inode', $this->inodeTableName, [
             'uuid',
             'type'
