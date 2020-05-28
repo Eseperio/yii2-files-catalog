@@ -117,6 +117,11 @@ class BulkDownload extends Bulk
         }
     }
 
+    public function __destruct()
+    {
+        @unlink($this->tmpFile);
+    }
+
     /**
      * @return \eseperio\filescatalog\models\InodeQuery|\yii\db\ActiveQuery
      * @throws \yii\base\InvalidConfigException
