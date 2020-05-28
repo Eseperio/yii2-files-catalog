@@ -12,6 +12,7 @@ namespace eseperio\filescatalog\actions;
 use creocoder\flysystem\ZipArchiveFilesystem;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\Inode;
+use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
@@ -29,8 +30,13 @@ class BulkDownload extends Bulk
     private $tmpFile;
     private $errors = [];
 
-    private $maxIterations = 100;
+    private $maxIterations = 500;
     private $curIter = 0;
+
+    /**
+     * @var array with all directories uuids to prevent infinite recursion
+     */
+    private $dirsIncluded = [];
 
     /**
      * @throws \Throwable
@@ -69,18 +75,26 @@ class BulkDownload extends Bulk
      */
     protected function pack($models, $path = '.')
     {
-        if (++$this->curIter > $this->maxIterations)
-            throw new Exception('Recursion limit reached');
+        if (++$this->curIter > $this->maxIterations) {
+            $this->errors = [Yii::t('xenon', 'Max amount of files reached')];
+
+            return;
+        }
         try {
             foreach ($models as $model) {
                 /* @var $model Inode */
                 switch ($model->type) {
                     case InodeTypes::TYPE_DIR:
                         $currentPath = $path . DIRECTORY_SEPARATOR . $model->name;
+                        if (in_array($model->uuid, $this->dirsIncluded)) {
+                            break;
+                        } else {
+                            $this->dirsIncluded[] = $model->uuid;
+                        }
                         $this->zipAdapter->createDir($currentPath);
                         $children = $model->getChildren();
                         foreach ($children->batch(50) as $filesGroup) {
-                            if(!is_iterable($filesGroup))
+                            if (!is_iterable($filesGroup))
                                 throw new Exception('filesgroup');
                             $this->pack($filesGroup, $currentPath);
                         }

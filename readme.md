@@ -75,6 +75,7 @@ There is a default controller with the following actions.
 |NewFolder| Displays the "create directory" form|
 |Rename| Allows renaming an inode|
 |BulkDelete| Bulk deletion|
+|BulkDownload|Download many files at the same time|
 |RemoveAcl|Remove permissions from an Inode|
 
 ### Configuration
