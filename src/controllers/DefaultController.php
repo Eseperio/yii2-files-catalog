@@ -11,6 +11,7 @@ namespace eseperio\filescatalog\controllers;
 
 use eseperio\filescatalog\actions\BulkAcl;
 use eseperio\filescatalog\actions\BulkDelete;
+use eseperio\filescatalog\actions\BulkDownload;
 use eseperio\filescatalog\actions\DeleteAction;
 use eseperio\filescatalog\actions\DownloadAction;
 use eseperio\filescatalog\actions\FakeAction;
@@ -48,7 +49,7 @@ class DefaultController extends \yii\web\Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'properties', 'download'],
+                        'actions' => ['index', 'view', 'properties', 'download', 'bulk-download'],
                         'roles' => ['?', '@'],
                     ],
                     [
@@ -71,6 +72,7 @@ class DefaultController extends \yii\web\Controller
                     'delete' => ['post'],
                     'bulk-delete' => ['post'],
                     'bulk-acl' => ['post'],
+                    'bulk-download' => ['post'],
                 ],
             ],
         ];
@@ -108,7 +110,8 @@ class DefaultController extends \yii\web\Controller
             'bulk-delete' => ['class' => BulkDelete::class],
             'bulk-acl' => ['class' => BulkAcl::class],
             'remove-acl' => ['class' => RemoveACL::class],
-            'fake' => ['class' => FakeAction::class]
+            'fake' => ['class' => FakeAction::class],
+            'bulk-download' => ['class' => BulkDownload::class]
         ];
     }
 

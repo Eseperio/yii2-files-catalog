@@ -31,45 +31,9 @@ abstract class Bulk extends Action
      * @throws ForbiddenHttpException
      * @throws \yii\base\InvalidConfigException
      */
-    public function getModels()
+    protected function getModels()
     {
-        $uuids = Yii::$app->request->post('uuids');
-        if (!is_array($uuids))
-            throw new ForbiddenHttpException();
-
-        $uuids = array_combine($uuids, $uuids);
-
-        $symlinks = ['OR'];
-        $other = [];
-        foreach ($uuids as $key => $uuid) {
-            if (strstr($uuid, "|")) {
-//                If is symlink
-                $pieces = explode("|", $uuid);
-                    $symlinks[] = ['uuid' => $pieces[0], 'created_at' => $pieces[1]];
-            } else {
-                $other[] = $uuid;
-            }
-        }
-
-        if (count($symlinks) == 1)
-            $symlinks = "0=1";
-
-        $whereCondition = [
-            'OR',
-            [
-                'AND',
-                $symlinks,
-                ['type' => InodeTypes::TYPE_SYMLINK]
-            ],
-            [
-                'uuid' => $other,
-                'type' => [InodeTypes::TYPE_FILE, InodeTypes::TYPE_DIR]
-            ]
-        ];
-
-//        die(Inode::find()->where($whereCondition)->onlyDeletable()->createCommand()->getRawSql());
-
-        return Inode::find()->where($whereCondition)->onlyDeletable()->all();
+       return $this->getModelsQuery()->all();
     }
 
     abstract public function run();
@@ -95,5 +59,49 @@ abstract class Bulk extends Action
         $ids = ArrayHelper::getColumn($collection, 'id');
 
         return hash('SHA3-256', join($ids) . $this->module->salt);
+    }
+
+    /**
+     * Creates the query to retrieve models selected by bulk action.
+     * @return \eseperio\filescatalog\models\InodeQuery|\yii\db\ActiveQuery
+     * @throws ForbiddenHttpException
+     */
+    protected function getModelsQuery()
+    {
+        $uuids = Yii::$app->request->post('uuids');
+        if (!is_array($uuids))
+            throw new ForbiddenHttpException();
+
+        $uuids = array_combine($uuids, $uuids);
+
+        $symlinks = ['OR'];
+        $other = [];
+        foreach ($uuids as $key => $uuid) {
+            if (strstr($uuid, "|")) {
+//                If is symlink
+                $pieces = explode("|", $uuid);
+                $symlinks[] = ['uuid' => $pieces[0], 'created_at' => $pieces[1]];
+            } else {
+                $other[] = $uuid;
+            }
+        }
+
+        if (count($symlinks) == 1)
+            $symlinks = "0=1";
+
+        $whereCondition = [
+            'OR',
+            [
+                'AND',
+                $symlinks,
+                ['type' => InodeTypes::TYPE_SYMLINK]
+            ],
+            [
+                'uuid' => $other,
+                'type' => [InodeTypes::TYPE_FILE, InodeTypes::TYPE_DIR]
+            ]
+        ];
+
+        return Inode::find()->where($whereCondition);
     }
 }

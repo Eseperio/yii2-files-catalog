@@ -12,7 +12,6 @@ namespace eseperio\filescatalog\actions;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
-use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\InodeSearch;
 use eseperio\filescatalog\services\InodeHelper;
@@ -76,6 +75,18 @@ class IndexAction extends Action
     protected function getBulkActions(): array
     {
         $bulkActions = [
+            [
+                'label' => Yii::t('filescatalog', 'Download'),
+                'url' => ['/filex/default/bulk-download'],
+                'linkOptions' => [
+                    'id' => 'filex-bulk-download',
+                    'data' => [
+                        'method' => 'post',
+                        'params' => json_encode([]),
+
+                    ]
+                ]
+            ],
             [
                 'label' => Yii::t('filescatalog', 'Delete'),
                 'url' => ['/filex/default/bulk-delete'],

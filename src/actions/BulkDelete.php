@@ -12,7 +12,6 @@ namespace eseperio\filescatalog\actions;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\Inode;
-use eseperio\filescatalog\models\File;
 use Yii;
 use yii\web\Controller;
 
@@ -44,6 +43,10 @@ class BulkDelete extends Bulk
 
     }
 
+    protected function getModels()
+    {
+        return $this->getModelsQuery()->onlyDeletable()->all();
+    }
 
     /**
      * @param Inode[]| $models
