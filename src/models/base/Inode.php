@@ -116,7 +116,7 @@ class Inode extends ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'parent_id', 'created_at', 'updated_at', 'created_by'], 'integer'],
+            [['type', 'parent_id'], 'integer'],
             [['name'], 'default', 'value' => Yii::t('filescatalog', 'New inode')],
             ['extension', 'match', 'pattern' => '/[\w\d]+/'],
             [['extension'], 'string', 'max' => 10],
