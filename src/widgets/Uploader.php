@@ -10,9 +10,9 @@ namespace eseperio\filescatalog\widgets;
 
 
 use dosamigos\fileupload\FileUpload;
-use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\validators\FileValidator;
@@ -46,11 +46,19 @@ class Uploader extends FileUpload
     /**
      * @var string jQuery selector for the container where upload errors must be displayed
      */
-    public $errorsContainerSelector = "#filex-error";
+    public $errorsContainerSelector = "#filex-errors";
     /**
      * @var string jQuery selector for the progress bar where display progress.
      */
     public $progressBarSelector = "#filex-progress";
+    /**
+     * @var string markup for displaying errors. {error} is a placeholder that will be replaced with real error message.
+     */
+    public $errorTemplate = '<div class="alert alert-danger">{error}</div>';
+    /**
+     * @var int time in milliseconds that erros will be displayed
+     */
+    public $errorDuration = 3000;
 
     /**
      * @throws \yii\base\InvalidConfigException
@@ -62,7 +70,7 @@ class Uploader extends FileUpload
 
         if (empty($this->model))
             $this->model = \Yii::createObject([
-                'class'=> Inode::class
+                'class' => Inode::class
             ]);
 
         $this->attribute = 'file';
@@ -98,16 +106,23 @@ class Uploader extends FileUpload
     public function registerEvents()
     {
 
+        $this->view->registerJsVar('FILEX_ERRORS', []);
+        $errorMessage = Yii::t('xenon', 'An error ocurred while uploading the file/s');
+
         $pjaxSnippet = '';
         if (!empty($this->pjaxId) && $this->module->usePjax) {
             $url = \Yii::$app->request->url;
-            $pjaxSnippet = "$.pjax.reload({
-            container: '#{$this->pjaxId}',
-            url: '$url',
-            push: false,
-            replace: false
-            }
-            );";
+            $pjaxSnippet = "
+            if(FILEX_ERRORS.length<=0){
+                $.pjax.reload({
+                    container: '#{$this->pjaxId}',
+                    url: '$url',
+                    push: false,
+                    replace: false
+                });
+            }else{
+                FILEX_ERRORS=[];
+            }";
         }
 
         $this->clientEvents = [
@@ -117,6 +132,7 @@ class Uploader extends FileUpload
                 if(file.errors){
                     $("#{$this->id}-errors").append($('<p>',file.name))
                     $.each(file.errors,(k,v)=>{
+                        FILEX_ERRORS.push(v)
                         $("{$this->errorsContainerSelector}").append($('<p>',{
                             text: (Array.isArray(v)?v[0]:v),
                             class:'text-danger'
@@ -125,6 +141,13 @@ class Uploader extends FileUpload
                 }
             });
             }
+JS
+            ),
+            'fileuploadstop' => new JsExpression(<<<JS
+function(e,data){
+    {$pjaxSnippet}
+}
+
 JS
             ),
             'fileuploadprogressall' => new JsExpression(<<<JS
@@ -137,7 +160,6 @@ JS
         if(progress>=100){
             console.log(progress);
             $('{$this->progressBarSelector}').hide();
-                        {$pjaxSnippet}
 
         }
     }
@@ -150,10 +172,21 @@ JS
     }
 JS
             ),
-            'fileuploadfail' => 'function(e, data) {
-                                console.log(e);
-                                console.log(data);
-                            }',
+            'fileuploadfail' => new JsExpression(<<<JS
+          function (e, data) {
+        
+        let message = '{$this->errorTemplate}'.replace('{error}',data.files[0].name + ": "+ data.errorThrown)
+        message= $($.parseHTML(message)[0]);
+        console.log(message);
+        setTimeout(()=>{
+            message.remove();
+        },{$this->errorDuration})
+        FILEX_ERRORS.push(data.errorThrown);
+        console.log(data);
+        $('{$this->errorsContainerSelector}').append(message).show();
+    }
+JS
+            )
         ];
     }
 

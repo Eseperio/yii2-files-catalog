@@ -10,7 +10,10 @@ namespace eseperio\filescatalog\columns;
 
 use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\helpers\AclHelper;
+use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Inode;
+use Yii;
 use yii\grid\DataColumn;
 
 /**
@@ -31,9 +34,13 @@ class InodeNameColumn extends DataColumn
     {
         $humanized = $model->humanName;
         $nameTag = Html::tag('b', $humanized, []);
+
+        if (!AclHelper::can($model, AccessControl::ACTION_WRITE)) {
+            $nameTag .= Html::tag('span', Yii::t('filescatalog', 'Read only'), ['class' => 'text-muted']);
+        }
         $displayExtension = ($model->type === InodeTypes::TYPE_FILE && !empty($model->extension));
         $realName = Html::encode($model->name . ($displayExtension ? "." . $model->extension : ""));
-        $realNameTag = Html::tag('div', $realName, ['class' => 'text-muted']);
+        $realNameTag = Html::tag('div', $realName, ['class' => 'text-muted small']);
 
         $separator = "<br>";
 
