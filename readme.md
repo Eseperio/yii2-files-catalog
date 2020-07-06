@@ -2,7 +2,6 @@
 # Yii2 files catalog
 ## yii2-files-catalog
 
-Disclaimer: This library is under development. It can suffer important changes.
 
 **Developer: waizabu.com**
 
