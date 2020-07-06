@@ -2,7 +2,6 @@
 # Yii2 files catalog
 ## yii2-files-catalog
 
-Disclaimer: This library is under development. It can suffer important changes.
 
 **Developer: waizabu.com**
 
@@ -131,6 +130,5 @@ This module use adjacency models concept to manage nesting. That requires extra 
 
 
 #### To do:
-- [ ] Remove unneeded type models, since only makes code more complicated. Let with only one Inode model.
 - [ ] Check whether new version is of the same type of previous file. Allow disable this via module config.
 - [ ] Improve how different InodeTypes are handled. Currently only File type allows versioning, making it so much different from the other types.
