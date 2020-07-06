@@ -15,6 +15,7 @@ use yii\base\Behavior;
 use yii\base\ModelEvent;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
+use yii\web\Application as WebApplication;
 
 /**
  * Class InfoBehavior
@@ -41,9 +42,13 @@ class FilexBehavior extends Behavior
     {
 
         $owner = $this->owner;
-        $user = Yii::$app->get($owner->module->user);
+        $user = null;
+
+        if (Yii::$app instanceof WebApplication)
+            $user = Yii::$app->get($owner->module->user);
+
         $userId = ArrayHelper::getValue($user, $this->module->userIdAttribute);
-        $userName = ArrayHelper::getValue($user, $this->module->userNameAttribute);
+        $userName = ArrayHelper::getValue($user, $this->module->userNameAttribute,Yii::t('filescatalog','System'));
 
         if ($event->name == BaseActiveRecord::EVENT_BEFORE_INSERT) {
             $owner->created_by = $userId;
