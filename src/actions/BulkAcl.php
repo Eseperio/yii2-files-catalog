@@ -39,7 +39,6 @@ class BulkAcl extends Bulk
 
         if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()) {
 
-            var_dump('Ole');
             var_dump($formModel->uuids);
         }
 
