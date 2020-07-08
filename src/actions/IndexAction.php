@@ -102,7 +102,8 @@ class IndexAction extends Action
             ],
         ];
 
-        if ($this->module->isAdmin())
+//        @todo: disabled until finished
+        if ($this->module->isAdmin() && false)
             $bulkActions[] = [
                 'label' => Yii::t('filescatalog', 'Add permission'),
                 'url' => ['/filex/default/bulk-acl'],
