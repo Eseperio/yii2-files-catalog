@@ -145,6 +145,7 @@ class Inode extends ActiveRecord
             'realPath' => Yii::t('filescatalog', 'Real path'),
             'filesize' => Yii::t('filescatalog', 'File size'),
             'humanName' => Yii::t('filescatalog', 'Human name'),
+            'author_name' => Yii::t('filescatalog', 'Author Name'),
         ];
     }
 
