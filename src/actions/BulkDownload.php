@@ -100,6 +100,11 @@ class BulkDownload extends Bulk
                         }
                         break;
                     case InodeTypes::TYPE_FILE:
+                        if ($this->module->allowVersioning && !empty($model->versions)) {
+                            $versions = $model->versions;
+                            $model = end($versions);
+                        }
+
                         $this->zipAdapter->writeStream($path . DIRECTORY_SEPARATOR . $model->name . "." . $model->extension, $model->getStream());
                         break;
                     case InodeTypes::TYPE_SYMLINK:
@@ -129,7 +134,12 @@ class BulkDownload extends Bulk
      */
     protected function getModelsQuery()
     {
-        return parent::getModelsQuery()->onlyReadable();
+        $activeQuery = parent::getModelsQuery();
+        if ($this->module->allowVersioning) {
+            $activeQuery->with('versions');
+        }
+
+        return $activeQuery->onlyReadable();
     }
 
 
