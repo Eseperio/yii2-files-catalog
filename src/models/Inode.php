@@ -31,6 +31,7 @@ use yii\web\UploadedFile;
  * @property int $created_at
  * @property int $updated_at
  * @property int $created_by
+ * @property null|Inode[] $versions
  */
 class Inode extends \eseperio\filescatalog\models\base\Inode
 {
