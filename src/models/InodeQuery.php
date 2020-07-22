@@ -112,7 +112,7 @@ class InodeQuery extends ActiveQuery
 
             $allRoles = [];
             foreach ($userRoles as $role) {
-                $allRoles = $allRoles + ArrayHelper::getColumn($authManager->getChildRoles($role), 'name');
+                $allRoles = $allRoles + ArrayHelper::getColumn($authManager->getChildren($role), 'name');
             }
             $allRoles[] = AccessControl::WILDCARD_ROLE;
 
