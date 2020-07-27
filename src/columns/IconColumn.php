@@ -10,17 +10,13 @@ namespace eseperio\filescatalog\columns;
 
 
 use eseperio\admintheme\helpers\Html;
-use eseperio\filescatalog\models\InodeQuery;
 use eseperio\filescatalog\widgets\IconDisplay;
 use yii\grid\DataColumn;
 
 class IconColumn extends DataColumn
 {
 
-    /**
-     * @inheritdoc
-     */
-    public $attribute = 'extension';
+
     /**
      * @var string Style of icons accoridng to dmhendricks/file-icon-vectors
      */
@@ -34,7 +30,6 @@ class IconColumn extends DataColumn
      */
     public $fitToContent = true;
 
-
     /**
      * @inheritdoc
      */
@@ -46,9 +41,6 @@ class IconColumn extends DataColumn
         if ($this->fitToContent)
             $this->registerAssets();
 
-        if(empty($this->label))
-            $this->label="";
-        $this->initFilterValues();
         parent::init();
     }
 
@@ -62,27 +54,6 @@ class IconColumn extends DataColumn
         Html::addCssClass($this->filterOptions, 'ic-cl-fit');
         Html::addCssClass($this->contentOptions, 'ic-cl-fit');
         Html::addCssClass($this->footerOptions, 'ic-cl-fit');
-    }
-
-    /**
-     * Initializes filter option values by grouping results.
-     */
-    public function initFilterValues()
-    {
-//        @todo: Disabled until a better way of handling searches is found
-        return;
-        if (empty($this->filter) && $this->grid->dataProvider instanceof \yii\data\ActiveDataProvider) {
-            $query = $this->grid->dataProvider->query;
-
-            /** @var InodeQuery $filterQuery */
-            $filterQuery = clone($query);
-            $filterQuery->join = null;
-            $extensions = $filterQuery->select(['extension', 'id'])
-                ->groupBy('extension')
-                ->column();
-
-            $this->filter = array_combine($extensions, $extensions);
-        }
     }
 
     /**

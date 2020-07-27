@@ -15,21 +15,10 @@ use eseperio\filescatalog\services\InodeHelper;
 class InodeSearch extends \eseperio\filescatalog\models\Inode
 {
 
-    /**
-     * Mode chidren performs search only from children
-     */
-    const MODE_CHILDREN = 1;
-    /**
-     * Mode descendants performs search across all descendants, no matter depth.
-     */
-    const MODE_DESCENDANTS = 2;
-
     public function rules()
     {
         return [
             ['uuid', 'required'],
-//        @todo: Disabled until a better way of handling searches is found
-//            ['extension', 'string'],
             ['name', 'string', 'min' => 3, 'max' => 20],
             ['uuid', 'string', 'min' => 36, 'max' => 36]
         ];
@@ -37,13 +26,13 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
 
     /**
      * @param array $params
-     * @param null $model Override model to be used while searching
+     * @param null $model Override model to be used when searching
      * @return ActiveDataProvider
      * @throws \eseperio\filescatalog\exceptions\FilexAccessDeniedException
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\web\NotFoundHttpException
      */
-    public function search($params = [], $model = null, $mode = 1)
+    public function search($params = [], $model = null)
     {
 
         $this->load($params);
@@ -51,28 +40,14 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
         if (empty($model))
             $model = InodeHelper::getModel($this->uuid);
 
-        if ($mode === self::MODE_DESCENDANTS) {
-            $query = $model->getDescendants()
-                ->onlyFiles();
-        } else {
-            $query = $model->getChildren()
-                ->withSymlinksReferences();
-        }
+        $query = $model->getChildren();
 
 
         $query->with(['accessControlList'])
             ->excludeVersions()
+            ->withSymlinksReferences()
             ->onlyReadable();
-
-
-        $query->andFilterWhere([InodeQuery::prefix('extension')=> $this->extension]);
-
-        if (!empty($this->name)) {
-            $keywords = explode(" ", $this->name);
-            foreach ($keywords as $keyword) {
-                $query->andWhere(['like', InodeQuery::prefix('name'), trim($keyword)]);
-            }
-        }
+        $query->andFilterWhere(['like', InodeQuery::prefix('name'), $this->name]);
 
         if (self::getModule()->groupFilesByExt)
             $query->orderByExtension();
