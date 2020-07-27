@@ -1,10 +1,3 @@
-/*
- *
- * Developed by Waizabú <code@waizabu.com>
- *
- *
- */
-
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -19,9 +12,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *
  *
  */
-var filexIndex =
-/*#__PURE__*/
-function () {
+var filexIndex = /*#__PURE__*/function () {
   function filexIndex(settings) {
     _classCallCheck(this, filexIndex);
 
@@ -43,7 +34,7 @@ function () {
         keys.forEach(function (e, i, a) {
           params['uuids[' + i + ']'] = e;
         });
-        $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").attr('data-params', JSON.stringify(params));
+        $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").data('params', params);
       });
     }
   }, {

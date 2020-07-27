@@ -29,13 +29,6 @@ class InodeQuery extends ActiveQuery
 
     private $formatLimited = false;
 
-    public function limitedByFormat()
-    {
-        if ($this->formatLimited)
-            throw new InvalidArgumentException(__CLASS__ . ' has two type filters that collides');
-        $this->formatLimited = true;
-    }
-
     /**
      * Filters only root files
      * @return InodeQuery
@@ -100,6 +93,8 @@ class InodeQuery extends ActiveQuery
 
     /**
      * Joins results with acl table, so it can be filtered by crud_mask values
+     * @param $crudMaskValues array|integer of masks to filter with
+     * @return InodeQuery
      * @throws \yii\base\InvalidConfigException
      * @internal
      */
@@ -209,6 +204,13 @@ class InodeQuery extends ActiveQuery
         ]);
     }
 
+    public function limitedByFormat()
+    {
+        if ($this->formatLimited)
+            throw new InvalidArgumentException(__CLASS__ . ' has two type filters that collides');
+        $this->formatLimited = true;
+    }
+
     /**
      * @param string $name
      * @param bool $like
@@ -229,6 +231,7 @@ class InodeQuery extends ActiveQuery
     public function onlyFiles()
     {
         $this->limitedByFormat();
+
         return $this->andWhere([
             self::prefix('type') => InodeTypes::TYPE_FILE
         ]);
@@ -243,6 +246,19 @@ class InodeQuery extends ActiveQuery
 
         return $this->andWhere([
             self::prefix('type') => InodeTypes::TYPE_DIR
+        ]);
+    }
+
+    /**
+     * Filters query by the types supplied
+     * @return InodeQuery
+     */
+    public function ofType($types)
+    {
+        $this->limitedByFormat();
+
+        return $this->andWhere([
+            self::prefix('type') => $types
         ]);
     }
 }

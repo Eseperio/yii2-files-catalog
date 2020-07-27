@@ -14,6 +14,7 @@ use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Inode;
 use Yii;
+use yii\base\Model;
 use yii\grid\DataColumn;
 
 /**
@@ -46,5 +47,6 @@ class InodeNameColumn extends DataColumn
 
         return $nameTag . $separator . $realNameTag;
     }
+
 
 }
