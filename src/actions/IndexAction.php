@@ -28,6 +28,10 @@ class IndexAction extends Action
      * @var DefaultController|Controller|\yii\rest\Controller
      */
     public $controller;
+    /**
+     * @var string name of the $_GET param to be used when enabling deep search method
+     */
+    public $deepSearchParamName = 'deep';
 
     /**
      * @return string
@@ -43,10 +47,9 @@ class IndexAction extends Action
         Url::remember();
         $bulkActions = $this->getBulkActions();
 
-
         $searchModel = Yii::createObject(InodeSearch::class);
         $searchModel->uuid = Yii::$app->request->get('uuid');
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->getModel());
+        $dataProvider = $this->getDataProvider($searchModel);
 
         return $this->controller->render('index', [
             'dataProvider' => $dataProvider,
@@ -54,7 +57,9 @@ class IndexAction extends Action
             'model' => $model,
             'usePjax' => $this->module->usePjax,
             'parents' => $model->getParents()->asArray()->all(),
-            'bulkActions' => $bulkActions
+            'bulkActions' => $bulkActions,
+            'isDeepSearch'=> (bool)Yii::$app->request->get($this->deepSearchParamName),
+            'deepSearchParamName'=>$this->deepSearchParamName
         ]);
     }
 
@@ -120,5 +125,23 @@ class IndexAction extends Action
             ];
 
         return $bulkActions;
+    }
+
+    /**
+     * @param $searchModel InodeSearch
+     * @return mixed
+     * @throws FilexAccessDeniedException
+     * @throws \yii\web\NotFoundHttpException
+     */
+    protected function getDataProvider($searchModel)
+    {
+        $mode = InodeSearch::MODE_CHILDREN;
+        if (Yii::$app->request->getQueryParam($this->deepSearchParamName)) {
+            $mode = InodeSearch::MODE_DESCENDANTS;
+        }
+
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->getModel(), $mode);
+
+        return $dataProvider;
     }
 }

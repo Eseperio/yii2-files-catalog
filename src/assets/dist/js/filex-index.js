@@ -34,7 +34,7 @@ var filexIndex = /*#__PURE__*/function () {
         keys.forEach(function (e, i, a) {
           params['uuids[' + i + ']'] = e;
         });
-        $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").attr('data-params', JSON.stringify(params));
+        $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").data('params', params);
       });
     }
   }, {
