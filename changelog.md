@@ -1,5 +1,5 @@
 # Changelog
-## 22-7-2020 0.6
+## 27-7-2020 0.6
 - [+] Add deep search function
 - [*] Improve inode query. Now permissions filter makes use of permissions in addition to roles
 ## 21-7-2020 0.5
