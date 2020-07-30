@@ -1,4 +1,6 @@
 # Changelog
+## 30-7-2020 0.7
+- [+] Added download button in InodeActionColumn
 ## 27-7-2020 0.6
 - [+] Add deep search function
 - [*] Improve inode query. Now permissions filter makes use of permissions in addition to roles
