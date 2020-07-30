@@ -1,5 +1,6 @@
 # Changelog
 ## 30-7-2020 0.7
+- [+] Display icon when no write permission, in gridview.
 - [+] Added download button in InodeActionColumn
 - [+] Added page size links in Gridview
 ## 27-7-2020 0.6
