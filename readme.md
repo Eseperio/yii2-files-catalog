@@ -118,6 +118,7 @@ There is a default controller with the following actions.
 |`showBreadcrumbButtonLabels`|whether display labels in breadcrumb buttons|false|
 |`itemsPerPage`|number of items per page|10|
 |`rbacItems`|array|callable Array with the available permissions or roles available while managing inode permissions|[]|
+|`readOnlyMessage`|string|message to display in gridview as a name suffix when user has no write permissions.|🔒|
 
 
 

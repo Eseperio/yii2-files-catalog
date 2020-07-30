@@ -242,7 +242,9 @@ class FilesCatalogModule extends Module
      * @var int number of items per page
      */
     public $itemsPerPage = 10;
-
+    /**
+     * @var string message to display in gridview as a name suffix when user has no write permissions.
+     */
     public $readOnlyMessage = "🔒";
 
     /**
