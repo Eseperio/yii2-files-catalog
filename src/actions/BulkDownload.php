@@ -76,7 +76,7 @@ class BulkDownload extends Bulk
     protected function pack($models, $path = '.')
     {
         if (++$this->curIter > $this->maxIterations) {
-            $this->errors = [Yii::t('xenon', 'Max amount of files reached')];
+            $this->errors = [Yii::t('filescatalog', 'Max amount of files reached')];
 
             return;
         }

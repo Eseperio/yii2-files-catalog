@@ -16,6 +16,8 @@ use eseperio\filescatalog\columns\InodeActionColumn;
 use eseperio\filescatalog\columns\InodeNameColumn;
 use eseperio\filescatalog\columns\InodeUuidColumn;
 use Yii;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Class GridView
@@ -69,5 +71,32 @@ CSS
             ['class' => InodeUuidColumn::class],
             ['class' => InodeActionColumn::class]
         ];
+    }
+
+
+    /**
+     * Attach page size links to the pagination section.
+     * @return string
+     */
+    public function renderPager()
+    {
+        $pager = parent::renderPager();
+
+        $links = [];
+        foreach ([10, 30, 50] as $item) {
+            if (Yii::$app->request->get($this->dataProvider->getPagination()->pageSizeParam) == $item) {
+                $links[] = Html::tag('span', $item);
+
+            } else {
+                $links[] = Html::a($item, Url::current([$this->dataProvider->getPagination()->pageSizeParam => $item]));
+
+            }
+        }
+
+        $label = Html::tag('span', Yii::t('filescatalog', 'Per page:')) . " ";
+
+        $perPageWrapper = Html::tag('div', $label . implode("  ", $links), ['class' => 'pull-right pagination']);
+
+        return $pager . $perPageWrapper;
     }
 }

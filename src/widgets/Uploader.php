@@ -107,7 +107,7 @@ class Uploader extends FileUpload
     {
 
         $this->view->registerJsVar('FILEX_ERRORS', []);
-        $errorMessage = Yii::t('xenon', 'An error ocurred while uploading the file/s');
+        $errorMessage = Yii::t('filescatalog', 'An error ocurred while uploading the file/s');
 
         $pjaxSnippet = '';
         if (!empty($this->pjaxId) && $this->module->usePjax) {
