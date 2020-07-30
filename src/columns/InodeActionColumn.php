@@ -57,6 +57,7 @@ class InodeActionColumn extends Column
         $propertiesUrl = ['properties', 'uuid' => $model->uuid];
         if ($model->type == InodeTypes::TYPE_SYMLINK)
             $propertiesUrl['created_at'] = $model->created_at;
+
         $items = [Html::tag(
             'li',
             Html::a(Yii::t('filescatalog', 'Properties'), $propertiesUrl,
@@ -66,6 +67,7 @@ class InodeActionColumn extends Column
                 ]
             )
         )];
+
         if ($this->module->allowRenaming && AclHelper::canWrite($model)) {
             $items[] = Html::tag(
                 'li',
@@ -77,6 +79,25 @@ class InodeActionColumn extends Column
                 )
             );
         }
+
+        if ($model->type == InodeTypes::TYPE_FILE) {
+            $downloadModel = $model;
+            if ($this->module->allowVersioning && !empty($model->versions)) {
+                $versions = $model->versions;
+                $downloadModel = end($versions);
+            }
+            $items[] = Html::tag(
+                'li',
+                Html::a(Yii::t('filescatalog', 'Download'), ['download', 'uuid' => $downloadModel->uuid],
+                    [
+                        'class' => 'dropdown-item',
+                        'data-pjax' => 0
+                    ]
+                )
+            );
+        }
+
+
         switch ($model->type) {
             case InodeTypes::TYPE_DIR:
 
