@@ -13,8 +13,7 @@ use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Inode;
-use Yii;
-use yii\base\Model;
+use eseperio\filescatalog\traits\ModuleAwareTrait;
 use yii\grid\DataColumn;
 
 /**
@@ -23,6 +22,14 @@ use yii\grid\DataColumn;
  */
 class InodeNameColumn extends DataColumn
 {
+    use ModuleAwareTrait;
+    /**
+     * @var null|string Html or text indicating read only permissions
+     */
+    public $readOnlyMessage = null;
+    /**
+     * @var string the attribute used to display.
+     */
     public $attribute = "name";
 
     /**
@@ -37,7 +44,10 @@ class InodeNameColumn extends DataColumn
         $nameTag = Html::tag('b', $humanized, []);
 
         if (!AclHelper::can($model, AccessControl::ACTION_WRITE)) {
-            $nameTag .= Html::tag('span', Yii::t('filescatalog', 'Read only'), ['class' => 'text-muted']);
+            if (!empty($this->module->readOnlyMessage))
+                $this->readOnlyMessage = $this->module->readOnlyMessage;
+
+            $nameTag .= $this->readOnlyMessage;
         }
         $displayExtension = ($model->type === InodeTypes::TYPE_FILE && !empty($model->extension));
         $realName = Html::encode($model->name . ($displayExtension ? "." . $model->extension : ""));

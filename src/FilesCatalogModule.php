@@ -243,6 +243,8 @@ class FilesCatalogModule extends Module
      */
     public $itemsPerPage = 10;
 
+    public $readOnlyMessage = "🔒";
+
     /**
      * @inheritdoc
      */
