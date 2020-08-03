@@ -10,6 +10,7 @@ namespace eseperio\filescatalog\models;
 
 
 use eseperio\filescatalog\data\ActiveDataProvider;
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\services\InodeHelper;
 
 class InodeSearch extends \eseperio\filescatalog\models\Inode
@@ -53,7 +54,7 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
 
         if ($mode === self::MODE_DESCENDANTS) {
             $query = $model->getDescendants()
-                ->onlyFiles();
+                ->ofType([InodeTypes::TYPE_FILE, InodeTypes::TYPE_DIR]);
         } else {
             $query = $model->getChildren()
                 ->withSymlinksReferences();
@@ -65,7 +66,7 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
             ->onlyReadable();
 
 
-        $query->andFilterWhere([InodeQuery::prefix('extension')=> $this->extension]);
+        $query->andFilterWhere([InodeQuery::prefix('extension') => $this->extension]);
 
         if (!empty($this->name)) {
             $keywords = explode(" ", $this->name);
