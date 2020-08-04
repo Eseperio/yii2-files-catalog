@@ -21,7 +21,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $created_at
  * @property int $updated_at
  * @property int $created_by
- * @property File $original
+ * @property Inode $original
  */
 class FileVersion extends \yii\db\ActiveRecord
 {

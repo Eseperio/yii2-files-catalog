@@ -56,7 +56,12 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                     <?= Html::a(Yii::t('filescatalog', 'Open parent'), ['index', 'uuid' => $parent->uuid], ['class' => 'btn btn-default']) ?>
                 <?php endif; ?>
                 <?php if ($filexModule->allowRenaming && AclHelper::canWrite($model)): ?>
-                    <?= Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->uuid], ['class' => 'btn btn-info ']) ?>
+                    <?php if ($model->type === InodeTypes::TYPE_VERSION): ?>
+                        <?= Html::a(Yii::t('filescatalog', 'Rename this version'), ['rename', 'uuid' => $model->uuid], ['class' => 'btn btn-info ']) ?>
+                        <?= Html::a(Yii::t('filescatalog', 'Rename main'), ['rename', 'uuid' => $model->original->uuid], ['class' => 'btn btn-info ']) ?>
+                    <?php else: ?>
+                        <?= Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->uuid], ['class' => 'btn btn-info ']) ?>
+                    <?php endif; ?>
                 <?php endif; ?>
                 <?= Html::a(Yii::t('filescatalog', 'View contents'), [($model->type === InodeTypes::TYPE_DIR ? "index" : "view"), 'uuid' => $model->uuid], ['class' => 'btn btn-info pull-right ']) ?>
             </div>
@@ -108,7 +113,7 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
             <?= $this->render('partials/_acl', [
                 'accessControlFormModel' => $accessControlFormModel,
                 'model' => $model,
-                'filexModule'=> $filexModule
+                'filexModule' => $filexModule
             ]) ?>
         </div>
     <?php endif; ?>
