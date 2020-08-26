@@ -221,7 +221,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                     $this->internalSaveStreamAsFile($this->_stream);
 
                 } else if ($file instanceof UploadedFile && $this->validate(['file'])) {
-                    $this->name = Inflector::slug($file->baseName);
+                    $this->name = Inflector::slug($file->baseName,'_');
                     $this->mime = FileHelper::getMimeType($file->tempName);
                     $this->extension = mb_strtolower(Html::encode($file->extension));
                     $this->filesize = $file->size;
