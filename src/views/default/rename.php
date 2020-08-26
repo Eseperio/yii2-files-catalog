@@ -23,7 +23,7 @@ use yii\bootstrap\Html;
             <div class="panel">
                 <div class="panel-heading">
                     <h3><span class="fiv-icon-folder fiv-sqo"></span>
-                        <?= Html::a($model->name, ['view', 'uuid' => $model->uuid]) ?>
+                        <?= Html::a($model->publicName, ['view', 'uuid' => $model->uuid]) ?>
                     </h3>
                 </div>
                 <div class="panel-body">

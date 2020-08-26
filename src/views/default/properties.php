@@ -57,8 +57,7 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
                 <?php endif; ?>
                 <?php if ($filexModule->allowRenaming && AclHelper::canWrite($model)): ?>
                     <?php if ($model->type === InodeTypes::TYPE_VERSION): ?>
-                        <?= Html::a(Yii::t('filescatalog', 'Rename this version'), ['rename', 'uuid' => $model->uuid], ['class' => 'btn btn-info ']) ?>
-                        <?= Html::a(Yii::t('filescatalog', 'Rename main'), ['rename', 'uuid' => $model->original->uuid], ['class' => 'btn btn-info ']) ?>
+                        <?= Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->original->uuid], ['class' => 'btn btn-info ']) ?>
                     <?php else: ?>
                         <?= Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->uuid], ['class' => 'btn btn-info ']) ?>
                     <?php endif; ?>

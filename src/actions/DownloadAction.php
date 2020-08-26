@@ -10,6 +10,7 @@ namespace eseperio\filescatalog\actions;
 
 
 use eseperio\filescatalog\controllers\DefaultController;
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Inode;
@@ -31,6 +32,6 @@ class DownloadAction extends Action
         $model = $this->controller->findModel(Yii::$app->request->get('uuid'), Inode::class);
 
         $stream = $model->getStream();
-        Yii::$app->response->sendStreamAsFile($stream, $model->name . "." . $model->extension);
+        Yii::$app->response->sendStreamAsFile($stream, $model->publicName . "." . $model->extension);
     }
 }

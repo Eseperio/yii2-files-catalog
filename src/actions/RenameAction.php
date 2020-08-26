@@ -42,7 +42,6 @@ class RenameAction extends Action
         if (!AclHelper::canWrite($model))
             throw new ForbiddenHttpException(Yii::t('filescatalog', 'You can not rename this item'));
 
-
         $trans = Yii::$app->db->beginTransaction();
 
         $renameFormModel = new DynamicModel([

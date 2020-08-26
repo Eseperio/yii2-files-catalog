@@ -21,6 +21,7 @@
 
 /* @var string $propertiesIcon */
 
+use app\components\StringHelper;
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
@@ -46,19 +47,25 @@ FileTypeIconsAsset::register($this);
                 $parent = end($parents);
                 if (AclHelper::canRead($parent))
                     echo Html::a('..', ['index', 'uuid' => $parent['uuid']]) . "/";
-            endif;
-            if ($model->type === InodeTypes::TYPE_VERSION): ?>
-                <small class=""
-                       title="<?= Yii::t('filescatalog', 'Original') . ": " . $model->original->humanName ?>"><?= $model->original->getHumanName(12) ?></small>
-            <?php endif; ?>
+            endif; ?>
+
+
             <?= IconDisplay::widget([
                 'model' => $model
             ]) ?>
-            <span title="<?= $model->humanName ?>"><?= $model->getHumanName(23) ?></span>
+            <span data-toggle="tooltip"
+                  title="<?= $model->publicName ?>"><?= StringHelper::truncate($model->publicName, 12) ?></span>
+            <?php
+            if ($model->type === InodeTypes::TYPE_VERSION): ?>
+                <small data-toggle="tooltip"
+                       title="<?= Yii::t('filescatalog', 'Original') . ": " . $model->name ?>">
+                    <?= StringHelper::truncate($model->name, 12) ?>
+                </small>
+            <?php endif; ?>
         </h1>
         <p class="text-muted">
             <?php if (!empty($parents) && AclHelper::canRead(end($parents))): ?>
-            <?php  $pieces = ArrayHelper::map($parents, 'uuid', function ($item) {
+            <?php $pieces = ArrayHelper::map($parents, 'uuid', function ($item) {
                 if (AclHelper::canRead($item))
                     return Html::a(Helper::humanize($item['name']), ['index', 'uuid' => $item['uuid']]);
 

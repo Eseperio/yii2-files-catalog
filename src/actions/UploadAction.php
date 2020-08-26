@@ -12,7 +12,6 @@ namespace eseperio\filescatalog\actions;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
-use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Inode;
 use Yii;
 use yii\base\Action;
@@ -72,7 +71,7 @@ class UploadAction extends Action
         if ($model->hasErrors())
             $response['errors'] = $model->errors;
 
-
+        Yii::$app->response->setStatusCode(200);
 
         return [
             'files' => [

@@ -33,6 +33,7 @@ use yii\web\UploadedFile;
  * @property int $created_by
  * @property null|Inode[] $versions
  * @property Inode|null $original
+ * @property string $publicName
  */
 class Inode extends \eseperio\filescatalog\models\base\Inode
 {
@@ -337,21 +338,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     }
 
     /**
-     *
-     */
-    private function deleteDirInternal():void{
-        try {
-            if($children = $this->getChildren()->all()){
-                foreach ($children as $k => $child){
-                    $child->delete();
-                }
-            }
-        } catch (\Throwable $e) {
-            Yii::error($e->getMessage());
-        }
-    }
-
-    /**
      * Deletes a file
      */
     private function deleteFileInternal(): void
@@ -369,5 +355,35 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
         if ($this->type == InodeTypes::TYPE_VERSION)
             FileVersion::deleteAll(['version_id' => $this->id]);
+    }
+
+    /**
+     *
+     */
+    private function deleteDirInternal(): void
+    {
+        try {
+            if ($children = $this->getChildren()->all()) {
+                foreach ($children as $k => $child) {
+                    $child->delete();
+                }
+            }
+        } catch (\Throwable $e) {
+            Yii::error($e->getMessage());
+        }
+    }
+
+    public function getPublicName():string
+    {
+        switch ($this->type) {
+            case InodeTypes::TYPE_VERSION:
+                $name = $this->original->name;
+                break;
+            default:
+                $name = $this->name;
+                break;
+        }
+
+        return $name;
     }
 }

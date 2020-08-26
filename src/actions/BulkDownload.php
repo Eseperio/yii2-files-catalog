@@ -100,12 +100,13 @@ class BulkDownload extends Bulk
                         }
                         break;
                     case InodeTypes::TYPE_FILE:
+                        $fileName = $model->name;
                         if ($this->module->allowVersioning && !empty($model->versions)) {
                             $versions = $model->versions;
                             $model = end($versions);
                         }
 
-                        $this->zipAdapter->writeStream($path . DIRECTORY_SEPARATOR . $model->name . "." . $model->extension, $model->getStream());
+                        $this->zipAdapter->writeStream($path . DIRECTORY_SEPARATOR . $fileName . "." . $model->extension, $model->getStream());
                         break;
                     case InodeTypes::TYPE_SYMLINK:
                         $realModel = Inode::find()

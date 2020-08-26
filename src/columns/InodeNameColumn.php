@@ -50,7 +50,7 @@ class InodeNameColumn extends DataColumn
             $nameTag .= $this->readOnlyMessage;
         }
         $displayExtension = ($model->type === InodeTypes::TYPE_FILE && !empty($model->extension));
-        $realName = Html::encode($model->name . ($displayExtension ? "." . $model->extension : ""));
+        $realName = Html::encode($model->publicName . ($displayExtension ? "." . $model->extension : ""));
         $realNameTag = Html::tag('div', $realName, ['class' => 'text-muted small']);
 
         $separator = "<br>";

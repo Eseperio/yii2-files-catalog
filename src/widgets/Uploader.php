@@ -175,15 +175,16 @@ JS
             'fileuploadfail' => new JsExpression(<<<JS
           function (e, data) {
         
-        let message = '{$this->errorTemplate}'.replace('{error}',data.files[0].name + ": "+ data.errorThrown)
-        message= $($.parseHTML(message)[0]);
-        console.log(message);
-        setTimeout(()=>{
-            message.remove();
-        },{$this->errorDuration})
-        FILEX_ERRORS.push(data.errorThrown);
-        console.log(data);
-        $('{$this->errorsContainerSelector}').append(message).show();
+    if(data.errorThrown ==="Found"){
+        return;
+    }
+    let message = '{$this->errorTemplate}'.replace('{error}',data.files[0].name + ": "+ data.errorThrown)
+    message= $($.parseHTML(message)[0]);
+    setTimeout(()=>{
+        message.remove();
+    },{$this->errorDuration})
+    FILEX_ERRORS.push(data.errorThrown);
+    $('{$this->errorsContainerSelector}').append(message).show();
     }
 JS
             )

@@ -1,4 +1,7 @@
 # Changelog
+
+## 26-8-2020 0.8
+- [*] No longer use the version name. Only for identifying the version original name when uploaded.
 ## 30-7-2020 0.7
 - [+] Display icon when no write permission, in gridview.
 - [+] Added download button in InodeActionColumn
