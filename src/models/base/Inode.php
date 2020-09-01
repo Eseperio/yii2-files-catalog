@@ -48,7 +48,7 @@ use yii\helpers\StringHelper;
  * @property string $editor_name
  * @property string $deleteHash
  * @property AccessControl[] $accessControlList
- *
+ * @property int $size Size of the file
  * Methods inherited from nested sets behavior:
  * @property string $humanName
  * @method  events()
