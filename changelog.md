@@ -1,7 +1,7 @@
 # Changelog
 
 ## 26-8-2020 0.8
-- [*] Provide size to sendStreamAsFile to prevent Fseek warnings.
+- [*] Use file instead of stream for download action, to prevent issues when stream is not seekable
 - [*] No longer use the version name. Only for identifying the version original name when uploaded.
 ## 30-7-2020 0.7
 - [+] Display icon when no write permission, in gridview.
