@@ -107,6 +107,7 @@ class Inode extends ActiveRecord
     public static function find()
     {
         $class = self::getContainerClass(get_called_class());
+
         return Yii::createObject(InodeQuery::class, [$class]);
     }
 
@@ -305,5 +306,16 @@ class Inode extends ActiveRecord
     protected function getSecureHash($action)
     {
         return hash('SHA3-256', $this->id . $action . $this->module->salt . $this->uuid);
+    }
+
+    /**
+     * @return bool|false|int the size of file
+     * @throws \League\Flysystem\FileNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getSize()
+    {
+        return $this->module->getStorageComponent()->getSize($this->getInodeRealPath());
+
     }
 }
