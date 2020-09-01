@@ -27,11 +27,8 @@ class DownloadAction extends Action
     public function run()
     {
         $model = $this->controller->findModel(Yii::$app->request->get('uuid'), Inode::class);
-
-        $stream = $model->getStream();
+        $stream = $model->getFile();
         $attachmentName = $model->publicName . "." . $model->extension;
-        Yii::$app->response->sendStreamAsFile($stream, $attachmentName, [
-            'fileSize' => $model->getSize()
-        ]);
+        Yii::$app->response->sendContentAsFile($stream, $attachmentName);
     }
 }
