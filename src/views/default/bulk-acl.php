@@ -11,10 +11,11 @@
 
 /* @var $hash string */
 /* @var $formModel \yii\base\DynamicModel */
+/* @var $accessControlFormModel InodePermissionsForm */
 
 /* @var $error string */
 
-use eseperio\filescatalog\models\AccessControl;
+use eseperio\filescatalog\models\InodePermissionsForm;
 use yii\bootstrap\Html;
 
 ?>
@@ -37,10 +38,10 @@ use yii\bootstrap\Html;
                     </div>
                 <?php endif; ?>
                 <?= Html::ul($models, [
-                    'item' => function ($model) use($formModel) {
+                    'item' => function ($model) use ($formModel) {
                         /* @var $model \eseperio\filescatalog\models\Inode */
                         $link = Html::a(Html::encode($model->name), ['/filex/default/view', 'uuid' => $model->uuid], ['target' => '_blank']);
-                        $input = Html::hiddenInput(Html::getInputName($formModel,'uuids[]'), $model->uuid);
+                        $input = Html::hiddenInput(Html::getInputName($formModel, 'uuids[]'), $model->uuid);
                         $label = Html::tag('li', $link . $input, ['class' => 'list-group-item']);
 
                         return $label;
@@ -54,29 +55,16 @@ use yii\bootstrap\Html;
     <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-body">
-                <ul class="list-group">
 
-                    <?php for ($i = 0; $i < 5; $i++) : ?>
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <?= Html::dropDownList(Html::getInputName($formModel, "value[$i]"), $formModel->type[$i], [
-                                        AccessControl::TYPE_ROLE => Yii::t('filescatalog', 'Role'),
-                                        AccessControl::TYPE_USER => Yii::t('filescatalog', 'User')
-                                    ], ['class' => 'form-control']) ?>
-                                </div>
-                                <div class="col-sm-8">
-                                    <?= Html::textInput(Html::getInputName($formModel, "value[$i]"), Html::encode($formModel->value[$i]), [
-                                        'class' => 'form-control',
-                                        'placeholder' => Yii::t('filescatalog', 'Role or user id')
-                                    ]) ?>
-                                </div>
-                            </div>
-
-                        </li>
-                    <?php endfor; ?>
-                </ul>
-
+                <?php /** @var \eseperio\filescatalog\FilesCatalogModule $filexModule */
+                ?>
+                <div class="col-md-6">
+                    <?= $this->render('partials/_acl', [
+                        'accessControlFormModel' => $accessControlFormModel,
+                        'model' => $model,
+                        'filexModule' => $filexModule
+                    ]) ?>
+                </div>
             </div>
 
             <div class="panel-body">

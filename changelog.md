@@ -1,5 +1,7 @@
 # Changelog
 
+## 7-9-2020 0.8.1
+- [+] Remove the need of delete previous permissions. Now a new permission definition override previous if it exists
 ## 26-8-2020 0.8
 - [*] Use file instead of stream for download action, to prevent issues when stream is not seekable
 - [*] No longer use the version name. Only for identifying the version original name when uploaded.

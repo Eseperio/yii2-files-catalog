@@ -10,9 +10,13 @@ namespace eseperio\filescatalog\actions;
 
 
 use eseperio\filescatalog\controllers\DefaultController;
+use eseperio\filescatalog\models\InodePermissionsForm;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\DynamicModel;
+use yii\bootstrap\ActiveForm;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class BulkAcl extends Bulk
 {
@@ -24,27 +28,26 @@ class BulkAcl extends Bulk
 
     public function run()
     {
+        throw new NotFoundHttpException();
         $models = $this->getModels();
         $error = null;
 
-        $formModel = new DynamicModel([
-            'type',
-            'value',
-            'uuids',
-            $this->module->secureHashParamName
-        ]);
-        $uuidLenght = 33;
-        $formModel->addRule('uuids', 'each', ['rule' => ['string', 'min' => $uuidLenght, 'max' => $uuidLenght]]);
+        $permModel = Yii::createObject(InodePermissionsForm::class);
+        $filexModule = self::getModule();
 
+        $formModel= new DynamicModel(['uuids']);
+        if ($permModel->load(Yii::$app->request->post()) && $filexModule->enableACL && $filexModule->isAdmin()) {
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()) {
-
-            var_dump($formModel->uuids);
+                return ActiveForm::validate($permModel);
+            }
         }
 
 
+
         if ($this->checkSecureHash($models)) {
-            if ($this->addPermissions($models, $permissions)) {
+            if ($this->addPermissions($models, $permModel)) {
                 var_dump($permissions);
 
                 return $this->controller->goBack();
@@ -57,7 +60,8 @@ class BulkAcl extends Bulk
             'models' => $models,
             'error' => $error,
             'hash' => $this->getSecureHash($models),
-            'formModel' => $formModel
+            'formModel' => $formModel,
+            'accessControlFormModel'=> $permModel
         ]);
     }
 

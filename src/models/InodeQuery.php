@@ -58,6 +58,10 @@ class InodeQuery extends ActiveQuery
         return $prefix . $column;
     }
 
+    /**
+     * Join with symlinks
+     * @return $this
+     */
     public function withSymlinksReferences()
     {
 

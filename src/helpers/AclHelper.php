@@ -61,6 +61,7 @@ class AclHelper extends Component
     {
         /** @var AclHelper $helper */
         $helper = Yii::createObject(__CLASS__, [$inode]);
+
         return $helper->checkAccess($permission);
     }
 
@@ -102,6 +103,11 @@ class AclHelper extends Component
                 switch ($acl->role) {
                     case AccessControl::WILDCARD_ROLE:
                         $grantAccess = true;
+                        break;
+                    case AccessControl::INHERIT_FROM_PARENT:
+                        $parent = $inode->getParent()->one();
+                        if (!empty($parent))
+                            $grantAccess = self::can($parent, $permission);
                         break;
                     case AccessControl::LOGGED_IN_USERS:
                         $grantAccess = !Yii::$app->get($module->user)->getIsGuest();

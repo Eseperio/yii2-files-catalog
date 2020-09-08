@@ -37,6 +37,7 @@ class AccessControl extends ActiveRecord
 
     const WILDCARD_ROLE = '*';
     const LOGGED_IN_USERS = '@';
+    const INHERIT_FROM_PARENT = '~';
 
 
     const ACTION_READ = 4;
@@ -131,15 +132,6 @@ class AccessControl extends ActiveRecord
 
     }
 
-    public function attributeLabels()
-    {
-        return [
-            'crud_mask'=> Yii::t('filescatalog','Permissions'),
-            'role'=> Yii::t('filescatalog','Role'),
-            'user_id'=> Yii::t('filescatalog','User id'),
-        ];
-    }
-
     /**
      * @param $item
      * @return int the id
@@ -225,36 +217,56 @@ class AccessControl extends ActiveRecord
     }
 
     /**
-     * @return array
+     * @inheritDoc
+     * @return array|int
      */
-    public function scenarios()
+    public function transactions()
     {
         return [
-            self::SCENARIO_DELETE => ['inode_id', 'user_id', 'role', 'crud','crud_mask'],
-            self::SCENARIO_DEFAULT => ['inode_id', 'user_id', 'role', 'crud','crud_mask'],
+            self::SCENARIO_DEFAULT => self::OP_ALL
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'crud_mask' => Yii::t('filescatalog', 'Permissions'),
+            'role' => Yii::t('filescatalog', 'Role'),
+            'user_id' => Yii::t('filescatalog', 'User id'),
         ];
     }
 
     /**
      * @return array
      */
-    public function rules()
+    public function scenarios()
     {
         return [
-            [
-                ['role', 'user_id'],
-                'unique',
-                'targetAttribute' =>
-                    [
-                        'inode_id',
-                        'role',
-                        'user_id'
-                    ],
-                'message' => Yii::t('filescatalog', 'This permission is already assigned'),
-                'on' => self::SCENARIO_DEFAULT
-            ]
+            self::SCENARIO_DELETE => ['inode_id', 'user_id', 'role', 'crud', 'crud_mask'],
+            self::SCENARIO_DEFAULT => ['inode_id', 'user_id', 'role', 'crud', 'crud_mask'],
         ];
     }
+
+    public function beforeSave($insert)
+    {
+        $oldPermission = self::find()->where([
+            'user_id' => $this->user_id,
+            'role' => $this->role,
+            'inode_id' => $this->inode_id
+        ])->all();
+        $response = true;
+        if (!empty($oldPermission)) {
+            foreach ($oldPermission as $old) {
+                $response &= (bool)$old->delete();
+            }
+        }
+
+        if (!$response)
+            return false;
+
+        return parent::beforeSave($insert);
+    }
+
 
     /**
      * @return array with each action and if it is enabled or not

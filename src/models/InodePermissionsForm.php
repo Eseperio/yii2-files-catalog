@@ -52,7 +52,6 @@ class InodePermissionsForm extends AccessControl
             [['role'], 'required', 'when' => function ($model) {
                 return $model->type == self::TYPE_ROLE;
             }],
-            [['user_id', 'role'], 'unique', 'targetAttribute' => ['user_id', 'role', 'inode_id'], 'on' => self::SCENARIO_DEFAULT],
             ['user_id', 'default', 'value' => self::DUMMY_USER],
             ['role', 'default', 'value' => self::DUMMY_ROLE],
         ]);

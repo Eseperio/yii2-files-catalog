@@ -107,7 +107,6 @@ class IndexAction extends Action
             ],
         ];
 
-//        @todo: disabled until finished
         if ($this->module->isAdmin() && false)
             $bulkActions[] = [
                 'label' => Yii::t('filescatalog', 'Add permission'),
