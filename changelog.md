@@ -1,5 +1,7 @@
 # Changelog
 
+## 16-9-2020 0.9
+- [+] Now permissions can be applied to all descentants
 ## 7-9-2020 0.8.1
 - [+] Remove the need of delete previous permissions. Now a new permission definition override previous if it exists
 ## 26-8-2020 0.8
