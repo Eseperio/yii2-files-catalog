@@ -94,8 +94,7 @@ use yii\helpers\Html;
             foreach ($accessControls as $item) :?>
                 <li class="list-group-item">
                     <div class="row">
-
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <?php
                             switch ($item->role) {
                                 case AccessControl::WILDCARD_ROLE:
@@ -114,12 +113,26 @@ use yii\helpers\Html;
                                     break;
                             }
                             ?>
-
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <?= CrudStatus::widget(['model' => $item]) ?>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
+                            <?= Html::a(Yii::t('xenon', 'Apply to children'), ['inherit-acl'],
+                                [
+                                    'class' => 'pull-right',
+                                    'data' => [
+                                        'method' => 'post',
+                                        'confirm' => Yii::t('filescatalog', 'Apply to all children? This cannot be undone'),
+                                        'params' => [
+                                            'inode_id' => $item->inode_id,
+                                            'role' => $item->role,
+                                            'user_id' => $item->user_id
+                                        ]
+                                    ],
+                                ]) ?>
+                        </div>
+                        <div class="col-sm-3">
                             <?= Html::a(Yii::t('filescatalog', 'Delete'), [
                                 'remove-acl',
                             ], [

@@ -16,6 +16,7 @@ use eseperio\filescatalog\actions\DeleteAction;
 use eseperio\filescatalog\actions\DownloadAction;
 use eseperio\filescatalog\actions\FakeAction;
 use eseperio\filescatalog\actions\IndexAction;
+use eseperio\filescatalog\actions\InheritAcl;
 use eseperio\filescatalog\actions\NewFolderAction;
 use eseperio\filescatalog\actions\NewLinkAction;
 use eseperio\filescatalog\actions\PropertiesAction;
@@ -54,8 +55,16 @@ class DefaultController extends \yii\web\Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['upload', 'new-folder', 'remove-acl', 'delete', 'bulk-delete', 'bulk-acl', 'new-link', 'rename'],
+                        'actions' => ['upload', 'new-folder', 'delete', 'bulk-delete', 'new-link', 'rename'],
                         'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['remove-acl','bulk-acl','inherit-acl'],
+                        'matchCallback' => function ($rule, $action) {
+                            $filexModule = $this->module;
+                            return $filexModule->enableACL && $filexModule->isAdmin();
+                        }
                     ],
                     [
                         'allow' => true,
@@ -72,6 +81,7 @@ class DefaultController extends \yii\web\Controller
                     'delete' => ['post'],
                     'bulk-delete' => ['post'],
                     'bulk-acl' => ['post'],
+                    'inherit-acl' => ['post'],
                     'bulk-download' => ['post'],
                 ],
             ],
@@ -110,8 +120,9 @@ class DefaultController extends \yii\web\Controller
             'bulk-delete' => ['class' => BulkDelete::class],
             'bulk-acl' => ['class' => BulkAcl::class],
             'remove-acl' => ['class' => RemoveACL::class],
+            'inherit-acl' => ['class' => InheritAcl::class],
             'fake' => ['class' => FakeAction::class],
-            'bulk-download' => ['class' => BulkDownload::class]
+            'bulk-download' => ['class' => BulkDownload::class],
         ];
     }
 
