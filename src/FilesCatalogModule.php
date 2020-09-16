@@ -366,7 +366,6 @@ class FilesCatalogModule extends Module
         $filexCommonRoles = [
             AccessControl::WILDCARD_ROLE => Yii::t('filescatalog', 'Everyone'),
             AccessControl::LOGGED_IN_USERS => Yii::t('filescatalog', 'All logged in'),
-//            AccessControl::INHERIT_FROM_PARENT => Yii::t('filescatalog', 'Inherit from parent'),
         ];
 
         return $filexCommonRoles + $appPermissions;

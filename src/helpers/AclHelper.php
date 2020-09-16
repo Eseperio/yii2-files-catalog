@@ -104,11 +104,6 @@ class AclHelper extends Component
                     case AccessControl::WILDCARD_ROLE:
                         $grantAccess = true;
                         break;
-                    case AccessControl::INHERIT_FROM_PARENT:
-                        $parent = $inode->getParent()->one();
-                        if (!empty($parent))
-                            $grantAccess = self::can($parent, $permission);
-                        break;
                     case AccessControl::LOGGED_IN_USERS:
                         $grantAccess = !Yii::$app->get($module->user)->getIsGuest();
                         break;

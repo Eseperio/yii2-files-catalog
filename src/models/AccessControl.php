@@ -37,7 +37,6 @@ class AccessControl extends ActiveRecord
 
     const WILDCARD_ROLE = '*';
     const LOGGED_IN_USERS = '@';
-    const INHERIT_FROM_PARENT = '~';
 
 
     const ACTION_READ = 4;

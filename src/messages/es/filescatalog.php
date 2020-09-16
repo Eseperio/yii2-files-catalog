@@ -63,7 +63,6 @@ return [
     'Go last' => 'Ir a la última',
     'Human name' => 'Nombre humanizado',
     'Info' => 'Info',
-    'Inherit from parent' => 'Heredar del padre',
     'If you override a permission, the most permissive will persist'=>'Si sobreescribes un permiso, persistirá el más permisivo.',
     'Items to be affected' => 'Objetos que se ven afectados',
     'Items to be deleted' => 'Objetos a eliminar',
