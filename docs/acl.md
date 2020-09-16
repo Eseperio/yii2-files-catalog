@@ -1,6 +1,6 @@
 # Access control lists
 
-This module allow files access restriction using access contro list.
+This module allow files access restriction using access control list.
 
 Each item have three actions controlled.
 
@@ -12,7 +12,7 @@ Each item have three actions controlled.
 
 Permissions **are not inherited**. Each item has its own acl.
 
-When granting access to an item, it can be done in two ways
+When granting access to an item, it can be done in three ways
 
 - **By user id**: A user id is specified and that user will get granted the access.
 - **By role**: All users with that role will have access to the file. **Permissions are ignored. Only roles**
@@ -31,11 +31,10 @@ That permissions are managed via a crud_mask. It is a 3 bit binary mask, in its 
 
 
 
-| |R|W|D|
-|---|---|---|---|---|
-||Read|Write|Delete|
+| |Read|Write|Delete|
+|---|----|-----|------|
 |Bit|0|0|0|
 |Value|4|2|1|
 
-So if we want to give only read access to a file, the crud mask must be 100, or its integer representation, which is what we store in database: 4
+So if we want to give only read access to a file, the crud binary mask must be `0100', or its integer representation, which is what we store in database: 4
 Otherwise, if we want all permissions, then all bits are on and the result is 7.
