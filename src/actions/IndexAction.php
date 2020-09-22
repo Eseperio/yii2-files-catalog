@@ -70,7 +70,7 @@ class IndexAction extends Action
      */
     protected function getModel()
     {
-        return InodeHelper::getModel(Yii::$app->request->get('uuid', false));
+        return $this->controller->findModel(Yii::$app->request->get('uuid', false));
     }
 
 
