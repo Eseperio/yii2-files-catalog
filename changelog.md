@@ -1,7 +1,5 @@
 # Changelog
 
-## 22-9-2020 0.9.1
-- [*] Indexaction now uses getModel from controller, instead directly calling InodeHelper
 ## 16-9-2020 0.9
 - [+] Now permissions can be applied to all descentants
 ## 7-9-2020 0.8.1
