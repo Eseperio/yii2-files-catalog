@@ -23,4 +23,5 @@ class IndexAsset extends AssetBundle
     public $css=[
       'css/index.css'
     ];
+
 }

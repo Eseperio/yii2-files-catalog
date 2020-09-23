@@ -24,7 +24,14 @@ use yii\helpers\Html;
 use yii\widgets\Pjax;
 
 IndexAsset::register($this);
+$this->registerJs(<<<JS
 
+if (!filexIndexInstance) {
+    var filexIndexInstance = new filexIndex();
+}
+
+JS
+);
 $this->title = Yii::t('filescatalog', 'Files catalog');
 $pjaxId = 'filex-pjax-idx';
 ?>
