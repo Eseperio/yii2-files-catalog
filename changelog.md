@@ -1,5 +1,8 @@
 # Changelog
 
+## 23-9-2020 0.9.1
+- [+] Shift+click is now supported for multiple selection.
+- [+] Rows selected are highlighted
 ## 16-9-2020 0.9
 - [+] Now permissions can be applied to all descentants
 ## 7-9-2020 0.8.1
