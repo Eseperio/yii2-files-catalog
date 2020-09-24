@@ -61,15 +61,7 @@ var filexIndex = /*#__PURE__*/function () {
       }) // Handle click on checkboxes
       .on('click', checkBoxSelector, function (e) {
         e.stopPropagation();
-
-        var keys = _this.getSelectedRows();
-
-        $('#filex-bulk-actions').toggleClass('collapse', !keys.length > 0);
         var row = $(e.currentTarget).closest('tr');
-        var params = {};
-        keys.forEach(function (e, i, a) {
-          params['uuids[' + i + ']'] = e;
-        });
 
         var rowRealObj = row.get(0),
             allRows = _toConsumableArray(rowRealObj.parentElement.children),
@@ -90,11 +82,18 @@ var filexIndex = /*#__PURE__*/function () {
         } else {
           _this.lastRowSelectedIdx = currentIndex;
         }
-
-        $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").data('params', params);
       }).on('change', checkBoxSelector, function (e) {
         var row = $(e.currentTarget).closest('tr');
         row.toggleClass(_this.settings.activeRowClass, $(e.currentTarget).prop('checked'));
+
+        var keys = _this.getSelectedRows();
+
+        $('#filex-bulk-actions').toggleClass('collapse', !keys.length > 0);
+        var params = {};
+        keys.forEach(function (e, i, a) {
+          params['uuids[' + i + ']'] = e;
+        });
+        $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").data('params', params);
       });
     }
   }, {

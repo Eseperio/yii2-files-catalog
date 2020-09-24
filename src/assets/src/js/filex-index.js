@@ -45,14 +45,7 @@ class filexIndex {
             // Handle click on checkboxes
             .on('click', checkBoxSelector, (e) => {
                 e.stopPropagation();
-                let keys = this.getSelectedRows();
-                $('#filex-bulk-actions').toggleClass('collapse', (!keys.length > 0));
                 let row = $(e.currentTarget).closest('tr');
-                let params = {};
-                keys.forEach((e, i, a) => {
-                    params['uuids[' + i + ']'] = e;
-                });
-
                 let rowRealObj = row.get(0),
                     allRows = [...rowRealObj.parentElement.children],
                     currentIndex = allRows.indexOf(rowRealObj);
@@ -72,10 +65,20 @@ class filexIndex {
                 } else {
                     this.lastRowSelectedIdx = currentIndex;
                 }
-                $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").data('params', params);
             }).on('change', checkBoxSelector, (e) => {
+
             let row = $(e.currentTarget).closest('tr');
             row.toggleClass(this.settings.activeRowClass, $(e.currentTarget).prop('checked'));
+
+            let keys = this.getSelectedRows();
+            $('#filex-bulk-actions').toggleClass('collapse', (!keys.length > 0));
+            let params = {};
+            keys.forEach((e, i, a) => {
+                params['uuids[' + i + ']'] = e;
+            });
+
+            $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").data('params', params);
+
         })
     }
 
