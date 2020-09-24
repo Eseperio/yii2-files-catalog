@@ -1,5 +1,7 @@
 # Changelog
 
+## 24-9-2020 0.9.2
+- [*] Fixed bug: select all does not enable bulk actions button.
 ## 23-9-2020 0.9.1
 - [+] Shift+click is now supported for multiple selection.
 - [+] Rows selected are highlighted
