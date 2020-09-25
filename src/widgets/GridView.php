@@ -29,7 +29,7 @@ class GridView extends \yii\grid\GridView
     /**
      * @var array
      */
-    public $tableOptions = ['class' => 'table table-striped'];
+    public $tableOptions = ['class' => 'table table-striped filex-grid'];
 
     /**
      * @throws \yii\base\InvalidConfigException

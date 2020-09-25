@@ -25,6 +25,7 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
      */
     const MODE_DESCENDANTS = 2;
 
+
     public function rules()
     {
         return [

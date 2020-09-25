@@ -85,6 +85,7 @@ class IndexAction extends Action
                 'url' => ['/filex/default/bulk-download'],
                 'linkOptions' => [
                     'id' => 'filex-bulk-download',
+                    'class'=> 'filex-bulk-delete',
                     'data' => [
                         'method' => 'post',
                         'params' => json_encode([]),
@@ -97,7 +98,7 @@ class IndexAction extends Action
                 'url' => ['/filex/default/bulk-delete'],
                 'linkOptions' => [
                     'id' => 'filex-bulk-delete',
-                    'class' => 'text-danger',
+                    'class' => 'text-danger filex-bulk-delete',
                     'data' => [
                         'method' => 'post',
                         'params' => json_encode([]),
@@ -113,7 +114,7 @@ class IndexAction extends Action
                 'url' => ['/filex/default/bulk-acl'],
                 'linkOptions' => [
                     'id' => 'filex-bulk-acl',
-                    'class' => 'text-danger',
+                    'class' => 'text-danger filex-bulk-delete' ,
                     'data' => [
                         'method' => 'post',
                         'params' => json_encode([]),

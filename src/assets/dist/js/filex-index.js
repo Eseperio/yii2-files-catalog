@@ -44,7 +44,7 @@ var filexIndex = /*#__PURE__*/function () {
 
       var checkBoxSelector = '[name="filex-bulk-action[]"]';
       $(document) //Handle click on row
-      .on('click', '#filex-grid tr td', function (e) {
+      .on('click', '.filex-grid tr td', function (e) {
         if (['a', 'button', 'input'].indexOf(e.target.tagName) >= 0) return;
         var checkBox = $(this).parent().find(checkBoxSelector);
         checkBox.prop('checked', !checkBox.prop('checked'));
@@ -88,12 +88,12 @@ var filexIndex = /*#__PURE__*/function () {
 
         var keys = _this.getSelectedRows();
 
-        $('#filex-bulk-actions').toggleClass('collapse', !keys.length > 0);
+        $('.filex-bulk-actions').toggleClass('collapse', !keys.length > 0);
         var params = {};
         keys.forEach(function (e, i, a) {
           params['uuids[' + i + ']'] = e;
         });
-        $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").data('params', params);
+        $(".filex-bulk-delete,.filex-bulk-acl,.filex-bulk-download").data('params', params);
       });
     }
   }, {

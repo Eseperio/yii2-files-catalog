@@ -26,7 +26,7 @@ class filexIndex {
         let checkBoxSelector = '[name="filex-bulk-action[]"]';
         $(document)
             //Handle click on row
-            .on('click', '#filex-grid tr td', function (e) {
+            .on('click', '.filex-grid tr td', function (e) {
                 if (['a', 'button', 'input'].indexOf(e.target.tagName) >= 0)
                     return;
 
@@ -71,13 +71,13 @@ class filexIndex {
             row.toggleClass(this.settings.activeRowClass, $(e.currentTarget).prop('checked'));
 
             let keys = this.getSelectedRows();
-            $('#filex-bulk-actions').toggleClass('collapse', (!keys.length > 0));
+            $('.filex-bulk-actions').toggleClass('collapse', (!keys.length > 0));
             let params = {};
             keys.forEach((e, i, a) => {
                 params['uuids[' + i + ']'] = e;
             });
 
-            $("#filex-bulk-delete,#filex-bulk-acl,#filex-bulk-download").data('params', params);
+            $(".filex-bulk-delete,.filex-bulk-acl,.filex-bulk-download").data('params', params);
 
         })
     }
