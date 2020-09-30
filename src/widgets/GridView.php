@@ -36,10 +36,11 @@ class GridView extends \yii\grid\GridView
      */
     public function init()
     {
-        $this->id = 'filex-grid';
         $this->registerAssets();
-        if (empty($this->columns))
+        if (empty($this->columns)) {
+            $this->columns = $this->getColumns();
             $this->setColumns();
+        }
         parent::init();
     }
 
@@ -60,11 +61,11 @@ CSS
     }
 
     /**
-     *
+     * Defines the columns
      */
-    public function setColumns()
+    public function getColumns()
     {
-        $this->columns = [
+        return [
             ['class' => CheckboxColumn::class],
             ['class' => IconColumn::class, 'iconSize' => IconDisplay::SIZE_MD],
             ['class' => InodeNameColumn::class],
@@ -73,6 +74,12 @@ CSS
         ];
     }
 
+    /**
+     * @deprecated Override getColumns to customize columns
+     */
+    public function setColumns()
+    {
+    }
 
     /**
      * Attach page size links to the pagination section.

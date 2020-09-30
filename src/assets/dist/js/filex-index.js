@@ -28,7 +28,7 @@ var filexIndex = /*#__PURE__*/function () {
   function filexIndex(settings) {
     _classCallCheck(this, filexIndex);
 
-    this.GRID_ID = "#filex-grid";
+    this.GRID_SELECTOR = ".filex-grid";
     this.settings = {
       //Class to be applied for those rows selected
       activeRowClass: 'info'
@@ -42,9 +42,10 @@ var filexIndex = /*#__PURE__*/function () {
     value: function attachEvents() {
       var _this = this;
 
-      var checkBoxSelector = '[name="filex-bulk-action[]"]';
+      var checkBoxSelector = '[name^="filex-bulk-action"]';
       $(document) //Handle click on row
-      .on('click', '.filex-grid tr td', function (e) {
+      .on('click', '.filex-grid tbody td', function (e) {
+        console.log("Clicked", this);
         if (['a', 'button', 'input'].indexOf(e.target.tagName) >= 0) return;
         var checkBox = $(this).parent().find(checkBoxSelector);
         checkBox.prop('checked', !checkBox.prop('checked'));
@@ -99,9 +100,9 @@ var filexIndex = /*#__PURE__*/function () {
   }, {
     key: "getSelectedRows",
     value: function getSelectedRows() {
-      var $grid = $(this.GRID_ID);
+      var $grid = $(this.GRID_SELECTOR);
       var keys = [];
-      $grid.find('[name="filex-bulk-action[]"]:checked').each(function () {
+      $grid.find('[name^="filex-bulk-action"]:checked').each(function () {
         keys.push($(this).val());
       });
       return keys;

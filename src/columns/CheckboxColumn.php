@@ -23,12 +23,17 @@ class CheckboxColumn extends \yii\grid\CheckboxColumn
      */
     public $fitToContent = true;
 
+    private $paramsNameCacheId = 'filex-name-cache-chkcolumn';
+
     /**
      * @inheritdoc
      */
     public function init()
     {
-//        @todo: Hide those checkbox when user can not delete.
+        if (empty(\Yii::$app->params[$this->paramsNameCacheId]))
+            \Yii::$app->params[$this->paramsNameCacheId] = 0;
+
+        $this->name = $this->name . "_" . \Yii::$app->params[$this->paramsNameCacheId]++;
         if ($this->fitToContent)
             $this->registerAssets();
 
@@ -48,6 +53,8 @@ class CheckboxColumn extends \yii\grid\CheckboxColumn
         };
         parent::init();
     }
+
+
 
     /**
      * @param $view

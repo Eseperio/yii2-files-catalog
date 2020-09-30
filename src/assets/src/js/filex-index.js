@@ -8,7 +8,7 @@
 
 class filexIndex {
 
-    GRID_ID = "#filex-grid";
+    GRID_SELECTOR = ".filex-grid";
 
     lastRowSelectedIdx;
 
@@ -23,10 +23,11 @@ class filexIndex {
     }
 
     attachEvents() {
-        let checkBoxSelector = '[name="filex-bulk-action[]"]';
+        let checkBoxSelector = '[name^="filex-bulk-action"]';
         $(document)
             //Handle click on row
-            .on('click', '.filex-grid tr td', function (e) {
+            .on('click', '.filex-grid tbody td', function (e) {
+                console.log("Clicked",this);
                 if (['a', 'button', 'input'].indexOf(e.target.tagName) >= 0)
                     return;
 
@@ -83,9 +84,9 @@ class filexIndex {
     }
 
     getSelectedRows() {
-        var $grid = $(this.GRID_ID);
+        var $grid = $(this.GRID_SELECTOR);
         var keys = [];
-        $grid.find('[name="filex-bulk-action[]"]:checked').each(function () {
+        $grid.find('[name^="filex-bulk-action"]:checked').each(function () {
             keys.push($(this).val());
         });
 
