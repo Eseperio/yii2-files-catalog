@@ -1,5 +1,5 @@
 # Changelog
-## Unreleased
+## 1-10-2020 0.9.3
 - [*] Replace setColumns with getColumns. setColumns is now deprecated on Gridview
 ## 24-9-2020 0.9.2
 - [*] Fixed bug: select all does not enable bulk actions button.
