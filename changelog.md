@@ -1,4 +1,7 @@
 # Changelog
+
+## 13-10-2020 0.9.4
+- [+] Added an event just after file has been inserted into the file system. Useful when you need to work with the content stored
 ## 1-10-2020 0.9.3
 - [*] Replace setColumns with getColumns. setColumns is now deprecated on Gridview
 ## 24-9-2020 0.9.2

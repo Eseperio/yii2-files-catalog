@@ -9,7 +9,9 @@
 namespace eseperio\filescatalog\models;
 
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\events\InodeEvent;
 use Yii;
+use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\base\UserException;
@@ -38,6 +40,7 @@ use yii\web\UploadedFile;
 class Inode extends \eseperio\filescatalog\models\base\Inode
 {
 
+    const EVENT_AFTER_INSERT_FILE = 'afterinsertfile';
     /**
      * @var UploadedFile
      */
@@ -214,14 +217,13 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     {
         if ($insert) {
             try {
-
                 $file = $this->file;
 
                 if (is_resource($this->_stream)) {
                     $this->internalSaveStreamAsFile($this->_stream);
 
                 } else if ($file instanceof UploadedFile && $this->validate(['file'])) {
-                    $this->name = Inflector::slug($file->baseName,'_');
+                    $this->name = Inflector::slug($file->baseName, '_');
                     $this->mime = FileHelper::getMimeType($file->tempName);
                     $this->extension = mb_strtolower(Html::encode($file->extension));
                     $this->filesize = $file->size;
@@ -291,6 +293,9 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         if (!$filesystem->{$method}($inodeRealPath, $fileStream)) {
             $this->addError(Yii::t('filescatalog', 'Unable to move file to its destination'));
         }
+
+        $event = Yii::createObject(Event::class);
+        $this->trigger(self::EVENT_AFTER_INSERT_FILE, $event);
     }
 
     /**
@@ -373,7 +378,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         }
     }
 
-    public function getPublicName():string
+    public function getPublicName(): string
     {
         switch ($this->type) {
             case InodeTypes::TYPE_VERSION:
