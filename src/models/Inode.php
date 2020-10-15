@@ -330,33 +330,41 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
      */
     public function beforeDelete()
     {
-        switch ($this->type) {
-            case InodeTypes::TYPE_FILE:
-            case InodeTypes::TYPE_VERSION:
-                $this->deleteFileInternal();
-                break;
-            case InodeTypes::TYPE_DIR:
-                $this->deleteDirInternal();
-                break;
+        $response = parent::beforeDelete();
+
+        if ($response) {
+            switch ($this->type) {
+                case InodeTypes::TYPE_FILE:
+                case InodeTypes::TYPE_VERSION:
+                    $response &= $this->deleteFileInternal();
+                    break;
+                case InodeTypes::TYPE_DIR:
+                    $response &= $this->deleteDirInternal();
+                    break;
+            }
         }
 
-        return parent::beforeDelete();
+        return $response;
+
+
     }
 
     /**
      * Deletes a file
      */
-    private function deleteFileInternal(): void
+    private function deleteFileInternal(): bool
     {
         try {
             $filesystem = $this->module->getStorageComponent();
             $realPath = $this->getInodeRealPath();
 
             if ($filesystem->has($realPath)) {
-                $filesystem->delete($realPath);
+                return $filesystem->delete($realPath);
             }
         } catch (\Throwable $e) {
             Yii::error($e->getMessage());
+
+            return false;
         }
 
         if ($this->type == InodeTypes::TYPE_VERSION) {
@@ -377,16 +385,18 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     /**
      *
      */
-    private function deleteDirInternal(): void
+    private function deleteDirInternal(): bool
     {
         try {
             if ($children = $this->getChildren()->all()) {
                 foreach ($children as $k => $child) {
-                    $child->delete();
+                    return $child->delete();
                 }
             }
         } catch (\Throwable $e) {
             Yii::error($e->getMessage());
+
+            return false;
         }
     }
 
