@@ -327,7 +327,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     /**
      * @return mixed
      */
-    public function delete()
+    public function beforeDelete()
     {
         switch ($this->type) {
             case InodeTypes::TYPE_FILE:
@@ -339,7 +339,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                 break;
         }
 
-        return parent::delete();
+        return parent::beforeDelete();
     }
 
     /**
