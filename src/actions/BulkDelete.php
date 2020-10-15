@@ -59,20 +59,7 @@ class BulkDelete extends Bulk
             foreach ($models as $model) {
                 switch ($model->type) {
                     case InodeTypes::TYPE_DIR:
-                        $descendantFiles = $model->getDescendants()->andWhere([
-                            'type' => [InodeTypes::TYPE_VERSION, InodeTypes::TYPE_FILE, InodeTypes::TYPE_SYMLINK]
-                        ]);
-                        foreach ($descendantFiles->batch(50) as $rows) {
-                            foreach ($rows as $row) {
-                                /* @var $row Inode */
-                                $row->delete();
-                            }
-                        }
-                        $model->deleteWithChildren();
-                        break;
                     case InodeTypes::TYPE_FILE:
-                        $model->delete();
-                        break;
                     case InodeTypes::TYPE_SYMLINK:
                         $model->delete();
                         break;
