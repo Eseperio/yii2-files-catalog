@@ -1,5 +1,9 @@
 # Changelog
 
+##15-10-2020 0.9.5
+- [+] Delete method instances every model before delete to trigger all events.
+- [*] BulkDelete action and DeleteAction now relies on main inode delete method
+- [*] Use beforeDelete instead delete to allow better event management
 ## 13-10-2020 0.9.4
 - [+] Added an event just after file has been inserted into the file system. Useful when you need to work with the content stored
 ## 1-10-2020 0.9.3
