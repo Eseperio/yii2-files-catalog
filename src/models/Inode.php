@@ -15,6 +15,7 @@ use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\base\UserException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
@@ -358,8 +359,19 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
             Yii::error($e->getMessage());
         }
 
-        if ($this->type == InodeTypes::TYPE_VERSION)
+        if ($this->type == InodeTypes::TYPE_VERSION) {
             FileVersion::deleteAll(['version_id' => $this->id]);
+        } elseif ($this->type === InodeTypes::TYPE_FILE) {
+            $versions = Inode::find()->where([
+                'id' => ArrayHelper::getColumn($this->versions, 'id')
+            ]);
+            foreach ($versions->batch(100) as $rows) {
+                foreach ($rows as $row) {
+                    /* @var $row Inode */
+                    $row->delete();
+                }
+            }
+        }
     }
 
     /**

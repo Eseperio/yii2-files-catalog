@@ -58,18 +58,7 @@ class DeleteAction extends Action
         if (!empty($rcvdHash) && $rcvdHash === $model->deleteHash && AclHelper::canDelete($model)) {
             if ($model->type === InodeTypes::TYPE_DIR) {
                 if (Yii::$app->request->post('confirm_text') === $model->getDeletionConfirmText()) {
-                    //Delete files one per each
-                    $descendantFiles = $model->getDescendants()->andWhere([
-                        'type' => [InodeTypes::TYPE_VERSION, InodeTypes::TYPE_FILE]
-                    ]);
-                    foreach ($descendantFiles->batch(50) as $rows) {
-                        foreach ($rows as $row) {
-                            /* @var $row File */
-                            $row->delete();
-                        }
-                    }
-
-                    $model->deleteWithChildren();
+                    $model->delete();
                 } else {
                     return $this->controller->render('delete', [
                         'model' => $model
@@ -78,9 +67,6 @@ class DeleteAction extends Action
             } else {
                 if (Yii::$app->request->post('delall', false)) {
                     if ($model->type === InodeTypes::TYPE_VERSION) {
-                        Inode::deleteAll([
-                            'id' => ArrayHelper::getColumn($model->original->versions, 'id')
-                        ]);
                         $model = $model->original;
                     }
                 }
