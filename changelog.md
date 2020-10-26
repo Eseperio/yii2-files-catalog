@@ -1,6 +1,8 @@
 # Changelog
 
-##15-10-2020 0.9.5
+## 26-10-2020 0.9.6
+- [*] Fix an issue when deleting a file caused an error.
+## 15-10-2020 0.9.5
 - [+] Delete method instances every model before delete to trigger all events.
 - [*] BulkDelete action and DeleteAction now relies on main inode delete method
 - [*] Use beforeDelete instead delete to allow better event management
