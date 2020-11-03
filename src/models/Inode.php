@@ -358,7 +358,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     private function deleteFileInternal(): bool
     {
         $response = true;
-
         try {
             $filesystem = $this->module->getStorageComponent();
             $realPath = $this->getInodeRealPath();

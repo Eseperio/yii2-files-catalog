@@ -118,7 +118,7 @@ use yii\helpers\Html;
                             <?= CrudStatus::widget(['model' => $item]) ?>
                         </div>
                         <div class="col-sm-3">
-                            <?= Html::a(Yii::t('xenon', 'Apply to children'), ['inherit-acl'],
+                            <?= Html::a(Yii::t('filescatalog', 'Apply to children'), ['inherit-acl'],
                                 [
                                     'class' => 'pull-right',
                                     'data' => [

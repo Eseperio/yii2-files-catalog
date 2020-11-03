@@ -119,6 +119,7 @@ return [
     'by' => 'por',
     'link this' => 'Enlazar',
     'or' => 'ó',
+    'Apply to children' => 'Aplicar a hijos',
     'ID' => '',
     'MD5 Checksum' => '',
     'Mime' => '',
