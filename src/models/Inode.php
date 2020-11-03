@@ -350,20 +350,26 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     }
 
     /**
-     * Deletes a file
+     * Deletes the real file associated with inode.
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     private function deleteFileInternal(): bool
     {
+        $response = true;
+
         try {
             $filesystem = $this->module->getStorageComponent();
             $realPath = $this->getInodeRealPath();
 
             if ($filesystem->has($realPath)) {
-                return $filesystem->delete($realPath);
+                $response &= $filesystem->delete($realPath);
+                if (!$response)
+                    throw new Exception('Unable to delete file');
             }
         } catch (\Throwable $e) {
             Yii::error($e->getMessage());
-
             return false;
         }
 
@@ -380,6 +386,8 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                 }
             }
         }
+
+        return $response;
     }
 
     /**
