@@ -1,5 +1,7 @@
 # Changelog
 
+## 19-10-2020 0.9.7
+- [*] Add missing return on deleteDirInternal
 ## 26-10-2020 0.9.6
 - [*] Fix an issue when deleting a file caused an error.
 ## 15-10-2020 0.9.5

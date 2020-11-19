@@ -405,6 +405,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
             return false;
         }
+        return true;
     }
 
     public function getPublicName(): string
