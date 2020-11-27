@@ -224,7 +224,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                     $this->internalSaveStreamAsFile($this->_stream);
 
                 } else if ($file instanceof UploadedFile && $this->validate(['file'])) {
-                    $this->name = Inflector::slug($file->baseName, '_');
+                    $this->name = $this->getSafeFileName($file);
                     $this->mime = FileHelper::getMimeType($file->tempName);
                     $this->extension = mb_strtolower(Html::encode($file->extension));
                     $this->filesize = $file->size;
@@ -420,5 +420,15 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         }
 
         return $name;
+    }
+
+    /**
+     * Returns a safe name for compatibility with many operative systems
+     * @param UploadedFile $file
+     * @return string
+     */
+    protected function getSafeFileName(UploadedFile $file): string
+    {
+        return Inflector::slug($file->baseName, '_');
     }
 }

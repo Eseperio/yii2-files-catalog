@@ -1,6 +1,8 @@
 # Changelog
 
-## 19-10-2020 0.9.7
+## 27-10-2020 0.9.9
+- [*] Create method getSafeFileName to allow customization of generated filenames by extending InodeClass
+## 19-10-2020 0.9.8
 - [*] Add missing return on deleteDirInternal
 ## 26-10-2020 0.9.6
 - [*] Fix an issue when deleting a file caused an error.
