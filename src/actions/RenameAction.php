@@ -17,7 +17,6 @@ use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
 use yii\base\DynamicModel;
-use yii\helpers\Inflector;
 use yii\validators\StringValidator;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -51,7 +50,7 @@ class RenameAction extends Action
 
         try {
             if ($renameFormModel->load(Yii::$app->request->post()) && $renameFormModel->validate()) {
-                $model->updateAttributes(['name' => Inflector::slug(Html::encode($renameFormModel->name))]);
+                $model->updateAttributes(['name' => $model->getSafeFileName(Html::encode($renameFormModel->name))]);
                 $trans->commit();
 
                 return $this->controller->goBack(['index', 'uuid' => $model->uuid]);

@@ -1,7 +1,9 @@
 # Changelog
-
+## 30-10-2020 1.0.0
+- [+] getSafeFileName is now used on rename action too.
+- [+] getSafeFileName accepts mixed value, allowing UploadedFile or string
 ## 27-10-2020 0.9.9
-- [*] Create method getSafeFileName to allow customization of generated filenames by extending InodeClass
+- [+] Create method getSafeFileName to allow customization of generated filenames by extending InodeClass
 ## 19-10-2020 0.9.8
 - [*] Add missing return on deleteDirInternal
 ## 26-10-2020 0.9.6

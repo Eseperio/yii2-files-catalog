@@ -326,6 +326,19 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     }
 
     /**
+     * Returns a safe name for compatibility with many operative systems
+     * @param UploadedFile|string $file
+     * @return string
+     */
+    public function getSafeFileName($name): string
+    {
+        if ($name instanceof UploadedFile)
+            $name = $name->baseName;
+
+        return Inflector::slug($name, '_');
+    }
+
+    /**
      * @return mixed
      */
     public function beforeDelete()
@@ -369,6 +382,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
             }
         } catch (\Throwable $e) {
             Yii::error($e->getMessage());
+
             return false;
         }
 
@@ -405,6 +419,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
             return false;
         }
+
         return true;
     }
 
@@ -420,15 +435,5 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         }
 
         return $name;
-    }
-
-    /**
-     * Returns a safe name for compatibility with many operative systems
-     * @param UploadedFile $file
-     * @return string
-     */
-    protected function getSafeFileName(UploadedFile $file): string
-    {
-        return Inflector::slug($file->baseName, '_');
     }
 }
