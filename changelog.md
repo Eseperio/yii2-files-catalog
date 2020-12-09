@@ -1,5 +1,5 @@
 # Changelog
-## 9-12-2020 1.1.1
+## 9-12-2020 1.0.1
 - [+] Added getSafeFileName for directories
 ## 30-10-2020 1.0.0
 - [+] getSafeFileName is now used on rename action too.
