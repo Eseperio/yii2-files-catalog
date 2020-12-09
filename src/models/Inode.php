@@ -108,9 +108,10 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
     public function beforeSave($insert)
     {
-
-
         switch ($this->type) {
+            case InodeTypes::TYPE_DIR:
+                $this->name = $this->getSafeFileName($this->name);
+                break;
             case InodeTypes::TYPE_FILE:
             case InodeTypes::TYPE_VERSION:
                 $this->beforeSaveFileInternal($insert);
@@ -119,6 +120,19 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         }
 
         return parent::beforeSave($insert);
+    }
+
+    /**
+     * Returns a safe name for compatibility with many operative systems
+     * @param UploadedFile|string $file
+     * @return string
+     */
+    public function getSafeFileName($name): string
+    {
+        if ($name instanceof UploadedFile)
+            $name = $name->baseName;
+
+        return Inflector::slug($name, '_');
     }
 
     /**
@@ -201,9 +215,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     public function afterSave($insert, $changedAttributes)
     {
         switch ($this->type) {
-            case InodeTypes::TYPE_DIR:
-                $this->name = $this->getSafeFileName($this->name);
-                break;
             case InodeTypes::TYPE_FILE:
             case InodeTypes::TYPE_VERSION:
                 $this->insertFileInternal($insert);
@@ -257,7 +268,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                     throw new Exception('Unable to save version.');
                 }
             }
-
 
 
         }
@@ -328,19 +338,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         }
 
         return $name;
-    }
-
-    /**
-     * Returns a safe name for compatibility with many operative systems
-     * @param UploadedFile|string $file
-     * @return string
-     */
-    public function getSafeFileName($name): string
-    {
-        if ($name instanceof UploadedFile)
-            $name = $name->baseName;
-
-        return Inflector::slug($name, '_');
     }
 
     /**
