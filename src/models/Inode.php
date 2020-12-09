@@ -201,6 +201,9 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     public function afterSave($insert, $changedAttributes)
     {
         switch ($this->type) {
+            case InodeTypes::TYPE_DIR:
+                $this->name = $this->getSafeFileName($this->name);
+                break;
             case InodeTypes::TYPE_FILE:
             case InodeTypes::TYPE_VERSION:
                 $this->insertFileInternal($insert);
@@ -216,6 +219,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
      */
     private function insertFileInternal($insert): void
     {
+
         if ($insert) {
             try {
                 $file = $this->file;
@@ -253,6 +257,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                     throw new Exception('Unable to save version.');
                 }
             }
+
 
 
         }
