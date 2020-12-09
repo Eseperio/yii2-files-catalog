@@ -115,7 +115,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
             case InodeTypes::TYPE_FILE:
             case InodeTypes::TYPE_VERSION:
                 $this->beforeSaveFileInternal($insert);
-
                 break;
         }
 

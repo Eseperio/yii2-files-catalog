@@ -1,4 +1,6 @@
 # Changelog
+## 9-12-2020 1.0.2
+- [-] Removed sluggableBehavior from Inode. Now using getSafeFilename
 ## 9-12-2020 1.0.1
 - [+] Added getSafeFileName for directories
 ## 30-10-2020 1.0.0

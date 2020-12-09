@@ -20,7 +20,6 @@ use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListBehavior;
 use Ramsey\Uuid\Uuid;
 use Yii;
-use yii\behaviors\SluggableBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
@@ -184,11 +183,6 @@ class Inode extends ActiveRecord
             'adjacency' => [
                 'class' => AdjacencyListBehavior::class,
                 'sortable' => false
-            ],
-            'slug' => [
-                'class' => SluggableBehavior::class,
-                'slugAttribute' => 'name',
-                'attribute' => 'name'
             ],
             'filex' => [
                 'class' => FilexBehavior::class
