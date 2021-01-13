@@ -1,4 +1,6 @@
 # Changelog
+## 13-1-2020 1.0.3
+- [+] Added UniqueFilenameInFolderValidator. In use in rename action. Prevents a file to be renamed with an existing one.
 ## 9-12-2020 1.0.2
 - [-] Removed sluggableBehavior from Inode. Now using getSafeFilename
 ## 9-12-2020 1.0.1
