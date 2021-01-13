@@ -14,6 +14,7 @@ use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use eseperio\filescatalog\validators\UniqueFilenameOnFolderValidator;
 use Yii;
 use yii\base\Action;
 use yii\base\DynamicModel;
@@ -47,13 +48,16 @@ class RenameAction extends Action
             'name'
         ]);
         $renameFormModel->addRule('name', StringValidator::class, ['min' => 3, 'max' => 255]);
+        $renameFormModel->addRule('name', UniqueFilenameOnFolderValidator::class, ['inode' => $model]);
 
         try {
-            if ($renameFormModel->load(Yii::$app->request->post()) && $renameFormModel->validate()) {
-                $model->updateAttributes(['name' => $model->getSafeFileName(Html::encode($renameFormModel->name))]);
-                $trans->commit();
+            if ($renameFormModel->load(Yii::$app->request->post())) {
+                if($renameFormModel->validate()) {
+                    $model->updateAttributes(['name' => $model->getSafeFileName(Html::encode($renameFormModel->name))]);
+                    $trans->commit();
 
-                return $this->controller->goBack(['index', 'uuid' => $model->uuid]);
+                    return $this->controller->goBack(['index', 'uuid' => $model->uuid]);
+                }
             } else {
                 $renameFormModel->name = $model->name;
             }
