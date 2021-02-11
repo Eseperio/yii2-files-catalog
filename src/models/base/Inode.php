@@ -120,7 +120,7 @@ class Inode extends ActiveRecord
             [['name'], 'default', 'value' => Yii::t('filescatalog', 'New inode')],
             ['extension', 'match', 'pattern' => '/[\w\d]+/'],
             [['extension'], 'string', 'max' => 10],
-            [['name'], 'string', 'max' => 255, 'min' => 3],
+            [['name'], 'string', 'max' => 255, 'min' => 1],
             [['mime'], 'string', 'max' => 128],
         ];
     }
