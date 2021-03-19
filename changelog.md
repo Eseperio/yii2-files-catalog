@@ -1,6 +1,6 @@
 # Changelog
 ## 19-03-2021 1.0.5
-- [+] Permissions checking directly instead by role in InodeQuery.
+- [+] ACL query now checks all user permissions instead the ones contained in roles.
 ## 11-2-2021 1.0.4
 - [+] Change file name min length from 3 to 1.
 ## 13-1-2020 1.0.3
