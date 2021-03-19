@@ -107,18 +107,14 @@ class InodeQuery extends ActiveQuery
         if (!$this->module->isAdmin()) {
             $authManager = Yii::$app->authManager;
             $userId = $this->module->getUserId();
-            $userRoles = ArrayHelper::getColumn($authManager->getRolesByUser($userId), 'name');
-
-            $allRoles = [];
-            foreach ($userRoles as $role) {
-                $allRoles = $allRoles + ArrayHelper::getColumn($authManager->getChildren($role), 'name');
-            }
-            $allRoles[] = AccessControl::WILDCARD_ROLE;
+            
+            $userPermissions = ArrayHelper::getColumn($authManager->getPermissionsByUser($userId), 'name', false);
+            $allPermissions[] = AccessControl::WILDCARD_ROLE;
 
             $this->joinWith('accessControlList acl');
 
             $condition = ['or',
-                ['acl.role' => $allRoles],
+                ['acl.role' => $allPermissions],
                 ['acl.user_id' => $userId],
             ];
 
