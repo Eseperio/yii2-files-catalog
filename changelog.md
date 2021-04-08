@@ -1,5 +1,6 @@
 # Changelog
 ## 08-04-2021 1.0.6
+- [+] Enable check roles on InodeQuery onlyAllowed().
 - [+] Fix InodeQuery bug.
 ## 19-03-2021 1.0.5
 - [+] ACL query now checks all user permissions instead the ones contained in roles.
