@@ -42,6 +42,8 @@ return [
     'Created At' => 'Creado',
     'Created By' => 'Creado por',
     'Current permissions' => 'Permisos actuales',
+    'Custom' => 'Personalizado',
+    'Custom role' => 'Rol personalizado',
     'Deep search' => 'Búsqueda profunda',
     'Deep search this directory' => 'Búsqueda profunda en este directorio',
     'Delete' => 'Eliminar',
