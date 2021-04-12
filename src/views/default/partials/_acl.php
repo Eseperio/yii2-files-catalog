@@ -6,22 +6,25 @@
  *
  */
 
-/* @var $model \eseperio\filescatalog\models\Inode|\eseperio\filescatalog\models\File */
-
-/* @var $parent \eseperio\filescatalog\models\Inode */
-/* @var $parentTreeNodes \eseperio\filescatalog\models\Inode[] */
-/* @var $maxTreeDepth int */
-/* @var $childrenTreeNodes \eseperio\filescatalog\models\Inode[] */
-/* @var $filexModule \eseperio\filescatalog\FilesCatalogModule */
-
-/* @var $accessControlFormModel InodePermissionsForm */
-
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use eseperio\filescatalog\widgets\CrudStatus;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+
+/* @var $model \eseperio\filescatalog\models\Inode|\eseperio\filescatalog\models\File */
+/* @var $parent \eseperio\filescatalog\models\Inode */
+/* @var $parentTreeNodes \eseperio\filescatalog\models\Inode[] */
+/* @var $maxTreeDepth int */
+/* @var $childrenTreeNodes \eseperio\filescatalog\models\Inode[] */
+/* @var $filexModule \eseperio\filescatalog\FilesCatalogModule */
+/* @var $accessControlFormModel InodePermissionsForm */
+
+
+$fileRoles = $filexModule->getAclPermissions();
+$fileRoles[InodePermissionsForm::CUSTOM_ROLE_VALUE] = Yii::t('filescatalog', 'Custom');
+
 
 ?>
 <div class="panel">
@@ -62,6 +65,12 @@ use yii\helpers\Html;
                 <?= $form->field($accessControlFormModel, 'role')
                     ->dropDownList($filexModule->getAclPermissions(), ['prompt' => Yii::t('filescatalog', 'Select rol')]);
                 ?>
+                <?= $form->field($accessControlFormModel, 'custom_role', [
+                    'options' => [
+                        'id' => InodePermissionsForm::CUSTOM_ROLE_GROUP_ID,
+                        'class' => 'collapse'
+                    ]
+                ]); ?>
             </div>
         </div>
         <div class="row">
@@ -155,4 +164,3 @@ use yii\helpers\Html;
         </ul>
     </div>
 </div>
-
