@@ -134,20 +134,25 @@ class InodePermissionsForm extends AccessControl
 
         $typeRole = self::TYPE_ROLE;
         $js = <<<JS
-        $(() => {
-           filexCheckType();
-           $('#$roleSelector').on('change', (e) => {
-                let elm = $(e.currentTarget);
-                let val = elm.val();
-                let customRoleGroup = $('#$customRoleGroupId');
-             
-                if(val == $customRoleVal){
-                     customRoleGroup.removeClass('collapse');
-                }else{
-                    customRoleGroup.addClass('collapse');
-                }
-           });
-        });
+        (function() {
+            filexCheckType();
+            document.getElementById('$roleSelector').addEventListener("change", checkCustomRole);
+        })();
+
+        function checkCustomRole(){
+            let elm = document.getElementById('$roleSelector');
+    
+            let val = elm.value;
+            console.warn('val');
+            console.log(val);
+            let customRoleGroup = document.getElementById('$customRoleGroupId');
+                 
+            if(val == $customRoleVal){
+                customRoleGroup.classList.remove('collapse');
+            }else{
+                customRoleGroup.classList.add('collapse');
+            }
+        }    
         document.getElementsByName('{$typeInputFormName}').forEach(function(e,i,a){
         e.addEventListener('click',filexCheckType);
         });
