@@ -1,4 +1,6 @@
 # Changelog
+## 12-04-2021 1.0.7
+- [+] Enable custom role in Inode permission
 ## 08-04-2021 1.0.6
 - [+] Enable check roles on InodeQuery onlyAllowed().
 - [+] Fix InodeQuery bug.
