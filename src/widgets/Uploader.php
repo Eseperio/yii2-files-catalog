@@ -10,11 +10,14 @@ namespace eseperio\filescatalog\widgets;
 
 
 use dosamigos\fileupload\FileUpload;
+use dosamigos\fileupload\FileUploadAsset;
+use dosamigos\fileupload\FileUploadPlusAsset;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\validators\FileValidator;
 use yii\web\JsExpression;
 
@@ -61,6 +64,11 @@ class Uploader extends FileUpload
     public $errorDuration = 3000;
 
     /**
+     * @var string css selector of area to be enabled as dropzone. Defaults to null, which means all document will be a dropzone
+     */
+    public $dropZone = null;
+
+    /**
      * @throws \yii\base\InvalidConfigException
      */
     public function init()
@@ -84,6 +92,9 @@ class Uploader extends FileUpload
                 'target' => $this->targetUuid,
             ]
         ];
+        if (!empty($this->dropZone)) {
+            $this->clientOptions['dropZone'] = $this->dropZone;
+        }
 
         $this->registerEvents();
         parent::init();
@@ -165,6 +176,12 @@ JS
     }
 JS
             ),
+            'fileuploaddrop' => new JsExpression(<<<JS
+          function (e, data) {
+    e.stopPropagation();
+    }
+JS
+            ),
             'fileuploadstart' => new JsExpression(<<<JS
           function (e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -173,8 +190,7 @@ JS
 JS
             ),
             'fileuploadfail' => new JsExpression(<<<JS
-          function (e, data) {
-        
+function (e, data) {
     if(data.errorThrown ==="Found"){
         return;
     }
@@ -185,7 +201,7 @@ JS
     },{$this->errorDuration})
     FILEX_ERRORS.push(data.errorThrown);
     $('{$this->errorsContainerSelector}').append(message).show();
-    }
+}
 JS
             )
         ];
@@ -210,5 +226,30 @@ JS
         ]);
 
         $this->registerClientScript();
+    }
+
+    /**
+     * Registers required script for the plugin to work as jQuery File Uploader
+     */
+    public function registerClientScript()
+    {
+        $view = $this->getView();
+
+        if ($this->plus) {
+            FileUploadPlusAsset::register($view);
+        } else {
+            FileUploadAsset::register($view);
+        }
+
+        $options = Json::encode($this->clientOptions);
+        $id = $this->options['id'];
+
+        $js[] = ";$(document).off('drop');jQuery('#$id').fileupload($options);";
+        if (!empty($this->clientEvents)) {
+            foreach ($this->clientEvents as $event => $handler) {
+                $js[] = "jQuery('#$id').on('$event', $handler);";
+            }
+        }
+        $view->registerJs(implode("\n", $js));
     }
 }

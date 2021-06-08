@@ -1,7 +1,10 @@
 # Changelog
 
-## 7-6-2021 1.0.8
+## 8-6-2021 1.0.8
 
+- [+] Added dropZone option to Uploader
+- [*] Fix a bug with FileUpload which prevents a file to be uploaded twice or more while using drag and drop
+- [*] Fixed a bug in rename action which prevent users from renaming symlink
 - [+] Added previous/next buttons in item view
 
 ## 12-04-2021 1.0.7

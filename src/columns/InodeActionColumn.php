@@ -130,9 +130,16 @@ class InodeActionColumn extends Column
         )];
 
         if ($this->module->allowRenaming && AclHelper::canWrite($model)) {
+
+            $renameUrl = ['rename', 'uuid' => $model->uuid];
+
+            if ($model->type == InodeTypes::TYPE_SYMLINK) {
+                $renameUrl['created_at'] = $model->created_at;
+            }
+
             $items[] = Html::tag(
                 'li',
-                Html::a(Yii::t('filescatalog', 'Rename'), ['rename', 'uuid' => $model->uuid],
+                Html::a(Yii::t('filescatalog', 'Rename'), $renameUrl,
                     [
                         'class' => 'dropdown-item',
                         'data-pjax' => 0

@@ -75,7 +75,6 @@ use yii\helpers\Html;
             </div>
             <hr>
             <div class="panel-body">
-                <h1><?= Yii::$app->request->get('filex-offset') ?></h1>
                 <?php if (!empty($prevLink)): ?>
                     <?= Html::a(Yii::t('filescatalog', 'Previous'), $prevLink, ['class' => 'btn btn-primary','data-pjax'=>0]) ?>
                 <?php endif; ?>

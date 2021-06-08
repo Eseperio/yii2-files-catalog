@@ -11,6 +11,7 @@ namespace eseperio\filescatalog\actions;
 
 use eseperio\admintheme\helpers\Html;
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
+use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
@@ -22,7 +23,11 @@ use yii\validators\StringValidator;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-
+/**
+ * Class RenameAction
+ * @property DefaultController $controller
+ * @package eseperio\filescatalog\actions
+ */
 class RenameAction extends Action
 {
     use ModuleAwareTrait;
@@ -34,7 +39,8 @@ class RenameAction extends Action
 
         FileTypeIconsAsset::register($this->controller->view);
         $uuid = Yii::$app->request->getQueryParam('uuid', false);
-        $model = Inode::find()->uuid($uuid)->one();
+        $model = $this->controller->findModel($uuid, Yii::$app->request->get('created_at'));
+
 
         if (empty($model))
             throw new NotFoundHttpException('Page not found');
@@ -52,7 +58,7 @@ class RenameAction extends Action
 
         try {
             if ($renameFormModel->load(Yii::$app->request->post())) {
-                if($renameFormModel->validate()) {
+                if ($renameFormModel->validate()) {
                     $model->updateAttributes(['name' => $model->getSafeFileName(Html::encode($renameFormModel->name))]);
                     $trans->commit();
 

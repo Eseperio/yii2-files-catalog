@@ -40,20 +40,18 @@ class ViewAction extends Action
      * @return array|Inode|\yii\db\ActiveRecord|null
      * @throws \yii\base\InvalidConfigException
      */
-    protected function getNearInode($model, $offset)
+    protected function getInodeByOffset($parentId, $offset)
     {
 
         $sortAttribute = Yii::$app->request->get($this->module->sortParam);
-        $inodeOffset = Yii::$app->request->get($this->module->offsetParam, 0);
-        $realOffset = $inodeOffset + $offset;
-        if ($realOffset < 0) {
+        if ($offset < 0) {
             return null;
         }
         $query = Inode::find()
-            ->where(['parent_id' => $model->parent_id])
+            ->where(['parent_id' => $parentId])
             ->onlyReadable()
             ->excludeVersions()
-            ->offset($realOffset)
+            ->offset($offset)
             ->limit(1);
 
         if (!empty($sortAttribute)) {
@@ -89,7 +87,7 @@ class ViewAction extends Action
          */
         $tag = null;
 
-        if (!$thismodel->fileExists()) {
+        if (!$this->model->fileExists()) {
             $tag = false;
         }
 
@@ -100,17 +98,12 @@ class ViewAction extends Action
             $tag = $this->getTag($tagName, $this->model->getContentAsBase64(), $this->model);
         }
 
-        $previousModel = $this->getNearInode($this->model, -1);
-        $nextModel = $this->getNearInode($this->model, 1);
-        list($prevLink, $nextLink) = $this->nearItemLinks($previousModel, $nextModel);
 
         return $this->controller->render('view', [
             'model' => $this->model,
             'tag' => $tag,
-            'previous' => $previousModel,
-            'next' => $nextModel,
-            'nextLink' => $nextLink,
-            'prevLink' => $prevLink,
+            'nextLink' => $this->getNearItemLink(SORT_ASC),
+            'prevLink' => $this->getNearItemLink(SORT_DESC),
             'checkFilesIntegrity' => $this->module->checkFilesIntegrity,
         ]);
 
@@ -187,37 +180,51 @@ class ViewAction extends Action
     }
 
     /**
-     * @param Inode|array|\yii\db\ActiveRecord|null $previousModel
-     * @param Inode|array|\yii\db\ActiveRecord|null $nextModel
-     * @return array
+     * Search for the nearest item based on the offset
+     * @param int $direction for searching. Use sort constants SORT_ASC and SORT_DESC
+     * @return array|false
+     * @throws \yii\base\InvalidConfigException
      */
-    protected function nearItemLinks(Inode|array|\yii\db\ActiveRecord|null $previousModel, Inode|array|\yii\db\ActiveRecord|null $nextModel): array
+    protected function getNearItemLink($direction = SORT_ASC)
     {
+        $parentId = $this->model->parent_id;
         $offset = Yii::$app->request->get($this->module->offsetParam);
+        $nearModel = $this->getInodeByOffset($parentId, $direction == SORT_DESC ? $offset - 1 : $offset + 1);
 
-        $prevLink = null;
-        $nextLink = null;
+        if ($direction === SORT_ASC) {
+            $offset++;
+        } else {
+            $offset--;
+        }
 
         if ($offset !== false && !is_null($offset)) {
-            if (!empty($previousModel)) {
-                $prevLink = \yii\helpers\Url::to([
+            if (!empty($nearModel)) {
+                while ($nearModel->type === InodeTypes::TYPE_DIR || $nearModel->type === InodeTypes::TYPE_SYMLINK) { // Skip folders
+                    if ($direction === SORT_ASC) {
+                        $offset++;
+                    } else {
+                        $offset--;
+                    }
+                    $nearModel = $this->getInodeByOffset($parentId, $offset);
+                    if (empty($nearModel)) {
+                        break;
+                    }
+
+                }
+
+                return [
                     'view',
-                    'uuid' => $previousModel->uuid,
-                    $this->module->offsetParam => $offset - 1,
+                    'uuid' => $nearModel->uuid,
+                    $this->module->offsetParam => $offset,
                     $this->module->sortParam => Yii::$app->request->get($this->module->sortParam)
-                ]);
+                ];
             }
 
-            if (!empty($nextModel)) {
-                $nextLink = \yii\helpers\Url::to([
-                    'view',
-                    'uuid' => $nextModel->uuid,
-                    $this->module->offsetParam => $offset + 1,
-                    $this->module->sortParam => Yii::$app->request->get($this->module->sortParam)
-                ]);
-            }
 
+        } else {
+            return false;
         }
-        return array($prevLink, $nextLink);
+
     }
+
 }
