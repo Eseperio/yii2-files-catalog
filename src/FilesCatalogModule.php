@@ -246,6 +246,15 @@ class FilesCatalogModule extends Module
      * @var string message to display in gridview as a name suffix when user has no write permissions.
      */
     public $readOnlyMessage = "🔒";
+    /**
+     * @var string param name to be used while transferring offset to view. Used on next-previoust buttons
+     */
+    public $offsetParam = 'filex-offset';
+
+    /**
+     * @var string param name to be used while transferring sort to view
+     */
+    public $sortParam = 'filex-sort';
 
     /**
      * @inheritdoc

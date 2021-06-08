@@ -16,6 +16,7 @@ use eseperio\filescatalog\columns\InodeActionColumn;
 use eseperio\filescatalog\columns\InodeNameColumn;
 use eseperio\filescatalog\columns\InodeUuidColumn;
 use Yii;
+use yii\grid\SerialColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -31,6 +32,7 @@ class GridView extends \yii\grid\GridView
      */
     public $tableOptions = ['class' => 'table table-striped filex-grid'];
 
+
     /**
      * @throws \yii\base\InvalidConfigException
      */
@@ -44,6 +46,9 @@ class GridView extends \yii\grid\GridView
         parent::init();
     }
 
+    /**
+     * Register assets
+     */
     private function registerAssets(): void
     {
         $view = Yii::$app->view;
@@ -75,7 +80,7 @@ CSS
     }
 
     /**
-     * @deprecated Override getColumns to customize columns
+     * @deprecated to be removed on 2.0 Override getColumns to customize columns
      */
     public function setColumns()
     {

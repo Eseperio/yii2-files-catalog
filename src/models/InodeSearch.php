@@ -48,6 +48,32 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
     public function search($params = [], $model = null, $mode = 1)
     {
 
+        $query = $this->getSearchQuery($params, $model, $mode);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'key' => 'uuid',
+            'sort' => [
+                'defaultOrder' => [
+                    'name' => SORT_ASC
+                ]
+            ]
+        ]);
+
+        return $dataProvider;
+    }
+
+    /**
+     * @param array $params
+     * @param $model
+     * @param mixed $mode
+     * @return InodeQuery
+     * @throws \eseperio\filescatalog\exceptions\FilexAccessDeniedException
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function getSearchQuery(array $params, $model = null, mixed $mode = self::MODE_CHILDREN): InodeQuery
+    {
         $this->load($params);
 
         if (empty($model))
@@ -78,17 +104,6 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
 
         if (self::getModule()->groupFilesByExt)
             $query->orderByExtension();
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'key' => 'uuid',
-            'sort' => [
-                'defaultOrder' => [
-                    'name' => SORT_ASC
-                ]
-            ]
-        ]);
-
-        return $dataProvider;
+        return $query;
     }
 }

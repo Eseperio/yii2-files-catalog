@@ -341,6 +341,8 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
     /**
      * @return mixed
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function beforeDelete()
     {
@@ -368,6 +370,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
      * @return bool
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
+     * @internal
      */
     private function deleteFileInternal(): bool
     {
@@ -405,7 +408,8 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     }
 
     /**
-     *
+     * @internal
+     * Deletes a directory
      */
     private function deleteDirInternal(): bool
     {
@@ -424,6 +428,9 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         return true;
     }
 
+    /**
+     * @return string the public name of the item. As an example, it ignores version filenames and use the main one
+     */
     public function getPublicName(): string
     {
         switch ($this->type) {

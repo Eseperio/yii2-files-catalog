@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog\columns;
 
 
+use app\helpers\ArrayHelper;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
@@ -22,6 +23,53 @@ class InodeActionColumn extends Column
     use ModuleAwareTrait;
 
     /**
+     * @var string param name of sort attribute. This value will be appended to view url for rendering next-previous links
+     */
+    public $sortParam = 'sort';
+
+
+    /**
+     * @inheritDoc
+     * @throws \Throwable if debug is enabled and sortParam cannot be retrieved
+     */
+    public function init()
+    {
+        $this->sortParam = $this->getSortParam();
+        parent::init();
+    }
+
+    /**
+     * @return false|mixed
+     * @throws \Throwable
+     */
+    private function getSortParam()
+    {
+        try {
+            return ArrayHelper::getValue($this, 'grid.dataProvider.sort.sortParam');
+        } catch (\Throwable $e) {
+            if (YII_DEBUG) {
+                throw $e;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param $index
+     * @return float|int the row offset
+     */
+    public function getOffset($index)
+    {
+        $pagination = $this->grid->dataProvider->getPagination();
+        if ($pagination !== false) {
+            return $pagination->getOffset() + $index;
+        }
+
+        return $index + 1;
+
+    }
+
+    /**
      * @param Inode $model
      * @param mixed $key
      * @param int $index
@@ -33,13 +81,26 @@ class InodeActionColumn extends Column
         if (!AclHelper::canRead($model))
             return "";
 
-        $label = Yii::t('filescatalog', 'View');
-        $action = 'view';
+
         if ($model->type == InodeTypes::TYPE_DIR || ($model->type == InodeTypes::TYPE_SYMLINK && $model->symlink_type == InodeTypes::TYPE_DIR)) {
             $action = 'index';
             $label = Yii::t('filescatalog', 'Open');
+            $url = [
+                $action,
+            ];
+        } else {
+            $label = Yii::t('filescatalog', 'View');
+            $action = 'view';
+            $url = [
+                $action,
+                $this->module->sortParam => Yii::$app->request->get($this->getSortParam()),
+                $this->module->offsetParam => $this->getOffset($index),
+            ];
         }
-        $result = Html::a($label, [$action, 'uuid' => $model->uuid], [
+
+        $url['uuid'] = $model->uuid;
+
+        $result = Html::a($label, $url, [
             'class' => 'btn btn-default btn-sm',
             'data-pjax' => 0
         ]);
@@ -95,13 +156,6 @@ class InodeActionColumn extends Column
                     ]
                 )
             );
-        }
-
-
-        switch ($model->type) {
-            case InodeTypes::TYPE_DIR:
-
-                break;
         }
         $result .= Html::tag('ul', join('', $items), ['class' => 'dropdown-menu dropdown-menu-right']);
 

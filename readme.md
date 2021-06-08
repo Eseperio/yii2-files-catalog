@@ -119,6 +119,8 @@ There is a default controller with the following actions.
 |`itemsPerPage`|number of items per page|10|
 |`rbacItems`|array|callable Array with the available permissions or roles available while managing inode permissions|[]|
 |`readOnlyMessage`|string|message to display in gridview as a name suffix when user has no write permissions.|🔒|
+|`offsetParam`|string|param name to be used while transferring offset to view. Used on next-previoust buttons|`filex-offset`|
+|`sortParam`|string|param name to be used while transferring sort to view|`filex-sort`|
 
 
 
