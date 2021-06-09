@@ -207,7 +207,7 @@ class ViewAction extends Action
                     }
                     $nearModel = $this->getInodeByOffset($parentId, $offset);
                     if (empty($nearModel)) {
-                        break;
+                        return false;
                     }
 
                 }

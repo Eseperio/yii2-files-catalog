@@ -1,5 +1,9 @@
 # Changelog
 
+## 8-6-2021 1.0.9
+
+- [*] Fix next/previous bug when no near available
+
 ## 8-6-2021 1.0.8
 
 - [+] Added dropZone option to Uploader
