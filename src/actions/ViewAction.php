@@ -209,7 +209,6 @@ class ViewAction extends Action
                     if (empty($nearModel)) {
                         return false;
                     }
-
                 }
 
                 return [
