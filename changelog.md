@@ -1,5 +1,8 @@
 # Changelog
 
+## 18-2-2022 1.0.10
+- [*] Remove upper limit in name search field
+
 ## 8-6-2021 1.0.9
 
 - [*] Fix next/previous bug when no near available
