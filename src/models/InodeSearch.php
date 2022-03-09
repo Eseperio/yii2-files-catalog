@@ -32,7 +32,7 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
             ['uuid', 'required'],
 //        @todo: Disabled until a better way of handling searches is found
 //            ['extension', 'string'],
-            ['name', 'string', 'min' => 3, 'max' => 20],
+            ['name', 'string', 'min' => 3],
             ['uuid', 'string', 'min' => 36, 'max' => 36]
         ];
     }
