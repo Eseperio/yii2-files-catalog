@@ -22,6 +22,7 @@ use eseperio\filescatalog\actions\NewLinkAction;
 use eseperio\filescatalog\actions\PropertiesAction;
 use eseperio\filescatalog\actions\RemoveACL;
 use eseperio\filescatalog\actions\RenameAction;
+use eseperio\filescatalog\actions\ShareViaEmail;
 use eseperio\filescatalog\actions\UploadAction;
 use eseperio\filescatalog\actions\ViewAction;
 use eseperio\filescatalog\models\Directory;
@@ -55,12 +56,12 @@ class DefaultController extends \yii\web\Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['upload', 'new-folder', 'delete', 'bulk-delete', 'new-link', 'rename'],
+                        'actions' => ['upload', 'new-folder', 'delete', 'bulk-delete', 'new-link', 'rename', 'email'],
                         'roles' => ['@'],
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['remove-acl','bulk-acl','inherit-acl'],
+                        'actions' => ['remove-acl', 'bulk-acl', 'inherit-acl'],
                         'matchCallback' => function ($rule, $action) {
                             $filexModule = $this->module;
                             return $filexModule->enableACL && $filexModule->isAdmin();
@@ -107,7 +108,7 @@ class DefaultController extends \yii\web\Controller
      */
     public function actions()
     {
-        return [
+        $actions = [
             'index' => ['class' => IndexAction::class],
             'upload' => ['class' => UploadAction::class],
             'rename' => ['class' => RenameAction::class],
@@ -124,6 +125,11 @@ class DefaultController extends \yii\web\Controller
             'fake' => ['class' => FakeAction::class],
             'bulk-download' => ['class' => BulkDownload::class],
         ];
+        if ($this->module->enableEmailSharing) {
+            $actions['email'] = ['class' => ShareViaEmail::class];
+        }
+        return $actions;
+
     }
 
     /**

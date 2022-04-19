@@ -149,24 +149,46 @@ class InodeActionColumn extends Column
         }
 
         if ($model->type == InodeTypes::TYPE_FILE) {
-            $downloadModel = $model;
-            if ($this->module->allowVersioning && !empty($model->versions)) {
-                $versions = $model->versions;
-                $downloadModel = end($versions);
-            }
-            $items[] = Html::tag(
-                'li',
-                Html::a(Yii::t('filescatalog', 'Download'), ['download', 'uuid' => $downloadModel->uuid],
-                    [
-                        'class' => 'dropdown-item',
-                        'data-pjax' => 0
-                    ]
-                )
-            );
+            $this->addFileButtons($items,$model);
         }
         $result .= Html::tag('ul', join('', $items), ['class' => 'dropdown-menu dropdown-menu-right']);
 
 
         return Html::tag('div', $result, ['class' => 'btn-group pull-right', 'style' => 'display: flex']);
+    }
+
+    /**
+     * @param $items
+     * @param $model
+     * @return void
+     */
+    public function addFileButtons(&$items, $model)
+    {
+        $recentVersion = $model;
+        if ($this->module->allowVersioning && !empty($model->versions)) {
+            $versions = $model->versions;
+            $recentVersion = end($versions);
+        }
+        $items[] = Html::tag(
+            'li',
+            Html::a(Yii::t('filescatalog', 'Download'), ['download', 'uuid' => $recentVersion->uuid],
+                [
+                    'class' => 'dropdown-item',
+                    'data-pjax' => 0
+                ]
+            )
+        );
+
+        $items[] = Html::tag(
+            'li',
+            Html::a(Yii::t('filescatalog', 'Share via email'), ['email', 'uuid' => $recentVersion->uuid],
+                [
+                    'class' => 'dropdown-item',
+                    'data-pjax' => 0
+                ]
+            )
+        );
+
+
     }
 }

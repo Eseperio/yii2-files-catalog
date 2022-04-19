@@ -82,6 +82,10 @@ class FilesCatalogModule extends Module
      */
     public $db = 'db';
     /**
+     * @var string name of mailer component to be used while sharing files
+     */
+    public $mailer = 'mailer';
+    /**
      * @var bool whether use pjax on main view
      */
     public $usePjax = true;
@@ -97,6 +101,10 @@ class FilesCatalogModule extends Module
      * @var bool whether allow users rename the items. If acl is enabled this will require write permissions.
      */
     public $allowRenaming = true;
+    /**
+     * @var bool
+     */
+    public $enableEmailSharing = true;
     /**
      * @var string the prefix to be used on urlGroup
      */
