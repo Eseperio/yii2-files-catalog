@@ -106,6 +106,10 @@ class FilesCatalogModule extends Module
      */
     public $enableEmailSharing = true;
     /**
+     * @var int max size of allowed files to be shared via email. In bytes. Defaults to 5mb
+     */
+    public $maxFileSizeForEmailShare = 5 * 1024 * 1024;
+    /**
      * @var string the prefix to be used on urlGroup
      */
     public $prefix = 'filex';

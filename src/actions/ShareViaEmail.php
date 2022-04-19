@@ -13,7 +13,6 @@ use yii\base\UserException;
 use yii\web\NotFoundHttpException;
 
 /**
- * @property $module FilesCatalogModule
  */
 class ShareViaEmail extends Action
 {
@@ -43,20 +42,34 @@ class ShareViaEmail extends Action
         return $this->formModelInstance;
     }
 
+    /**
+     * @return string
+     * @throws \eseperio\filescatalog\exceptions\FilexAccessDeniedException
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\NotFoundHttpException
+     */
     public function run()
     {
-        $formModel = $this->getFormModel();
-        if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()) {
-            $this->share();
-
-        }
-
-
         $model = $this->getModel();
-        if ($model->type !== InodeTypes::TYPE_FILE && !$model->isRoot()) {
-            throw new UserException(Yii::t('xenon', 'Cannot share directories or symlinks via email'));
+
+        $formModel = $this->getFormModel();
+        $status = null;
+
+        if($this->inode->size > $this->module->maxFileSizeForEmailShare ){
+            return $this->controller->render('share-via-email-locked',[
+                'model'=> $model
+            ]);
         }
 
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()) {
+            $status = $this->share();
+        }
+
+        return $this->controller->render('share-via-email', [
+            'formModel' => $formModel,
+            'model' => $model,
+            'status' => $status,
+        ]);
 
     }
 
@@ -68,12 +81,16 @@ class ShareViaEmail extends Action
      */
     protected function getModel()
     {
+
         if (!empty($this->inode)) {
             return $this->inode;
         }
 
         $this->inode = InodeHelper::getModel(Yii::$app->request->get('uuid', false));
 
+        if ($this->inode->type !== InodeTypes::TYPE_FILE) {
+            throw new UserException(Yii::t('filescatalog', 'Cannot share directories or symlinks via email'));
+        }
         if (empty($this->inode)) {
             throw new NotFoundHttpException();
         }
@@ -81,7 +98,7 @@ class ShareViaEmail extends Action
     }
 
     /**
-     * @return void
+     * @return bool
      * @throws \yii\base\InvalidConfigException
      */
     private function share()
@@ -89,12 +106,16 @@ class ShareViaEmail extends Action
         /* @var $mailer \yii\mail\MailerInterface */
         $mailer = Yii::$app->get($this->module->mailer);
 
-        $mailer->compose('email', [
+        $view = DIRECTORY_SEPARATOR . "email/layout";
+        $message = $mailer->compose($view, [
             'username' => Yii::$app->user->identity->getFullname(),
-            'filename' => $this->inode->getPublicName()
+            'filename' => $this->inode->getPublicName(),
         ])
-            ->attachContent($this->inode->getFile());
+            ->attachContent($this->inode->getFile(), [
+                'fileName' => $this->inode->publicName . "." . $this->inode->extension
+            ]);
 
+        return $mailer->send($message);
 
     }
 }

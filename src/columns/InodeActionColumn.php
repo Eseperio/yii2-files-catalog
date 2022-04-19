@@ -179,15 +179,18 @@ class InodeActionColumn extends Column
             )
         );
 
-        $items[] = Html::tag(
-            'li',
-            Html::a(Yii::t('filescatalog', 'Share via email'), ['email', 'uuid' => $recentVersion->uuid],
-                [
-                    'class' => 'dropdown-item',
-                    'data-pjax' => 0
-                ]
-            )
-        );
+        if($this->module->enableEmailSharing){
+            $items[] = Html::tag(
+                'li',
+                Html::a(Yii::t('filescatalog', 'Share via email'), ['email', 'uuid' => $recentVersion->uuid],
+                    [
+                        'class' => 'dropdown-item',
+                        'data-pjax' => 0
+                    ]
+                )
+            );
+        }
+
 
 
     }

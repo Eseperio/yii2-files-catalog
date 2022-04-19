@@ -13,6 +13,7 @@
 /* @var $next \eseperio\filescatalog\models\Inode|null next inode */
 /* @var $nextLink string|array link to next item */
 /* @var $prevLink string|array link to previous item */
+
 /* @var $checkFilesIntegrity boolean */
 
 use eseperio\filescatalog\widgets\Versions;
@@ -71,15 +72,19 @@ use yii\helpers\Html;
             <?php endif; ?>
 
             <div class="panel-body">
+                <?php if ($filexModule->enableEmailSharing): ?>
+                    <?= Html::a(Yii::t('filescatalog', 'Share via email'), ['email', 'uuid' => $model->uuid], ['class' => 'btn btn-default']) ?>
+                    <hr>
+                <?php endif; ?>
                 <?= Html::a(Yii::t('filescatalog', 'View file properties'), ['properties', 'uuid' => $model->uuid, 'original' => true], ['class' => 'btn btn-primary']) ?>
             </div>
             <hr>
             <div class="panel-body">
                 <?php if (!empty($prevLink)): ?>
-                    <?= Html::a(Yii::t('filescatalog', 'Previous'), $prevLink, ['class' => 'btn btn-primary','data-pjax'=>0]) ?>
+                    <?= Html::a(Yii::t('filescatalog', 'Previous'), $prevLink, ['class' => 'btn btn-primary', 'data-pjax' => 0]) ?>
                 <?php endif; ?>
                 <?php if (!empty($nextLink)): ?>
-                    <?= Html::a(Yii::t('filescatalog', 'Next'), $nextLink, ['class' => 'btn btn-primary pull-right','data-pjax'=>0]) ?>
+                    <?= Html::a(Yii::t('filescatalog', 'Next'), $nextLink, ['class' => 'btn btn-primary pull-right', 'data-pjax' => 0]) ?>
                 <?php endif; ?>
             </div>
         </div>
