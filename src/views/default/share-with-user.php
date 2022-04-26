@@ -11,6 +11,14 @@ use yii\helpers\Html;
 /* @var $formModel \yii\base\DynamicModel */
 
 FileTypeIconsAsset::register($this);
+$selector = Html::getInputId($formModel, 'set_end_date');
+$this->registerJs(<<<JS
+$(document).on('change','#{$selector}',function(e){
+    console.log(this,e)
+    $('.expiry-date').toggle($(this).is(':checked'))
+});
+JS
+)
 ?>
 <div class="row">
     <div class="col-md-4 col-md-offset-4">
@@ -35,8 +43,13 @@ FileTypeIconsAsset::register($this);
 
             <div class="panel-body">
 
-                <?= $form->field($formModel, 'recipient')->label(Yii::t('filescatalog', 'Recipient')) ?>
-                <?= $form->field($formModel, 'message')->textarea()->label(Yii::t('filescatalog', 'Message')) ?>
+                <?= $form->field($formModel, 'user_id')->label(Yii::t('filescatalog', 'Recipient')) ?>
+                <?= $form->field($formModel, 'set_end_date')->checkbox(['label' => Yii::t('filescatalog', 'Set an expiry date')]) ?>
+                <?= $form->field($formModel, 'date', [
+                    'options' => [
+                        'class' => 'expiry-date collapse '
+                    ]
+                ])->input('date')->label(Yii::t('filescatalog', 'Date')) ?>
 
             </div>
             <div class="panel-footer clearfix">
