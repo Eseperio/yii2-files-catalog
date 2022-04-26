@@ -44,8 +44,9 @@ class FilexBehavior extends Behavior
         $owner = $this->owner;
         $user = null;
 
-        if (Yii::$app instanceof WebApplication)
+        if (Yii::$app instanceof WebApplication){
             $user = Yii::$app->get($owner->module->user);
+        }
 
         $userId = ArrayHelper::getValue($user, $this->module->userIdAttribute);
         $userName = ArrayHelper::getValue($user, $this->module->userNameAttribute,Yii::t('filescatalog','System'));

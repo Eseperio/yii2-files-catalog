@@ -13,6 +13,7 @@ use yii\base\UserException;
 use yii\web\NotFoundHttpException;
 
 /**
+ * @property \eseperio\filescatalog\controllers\DefaultController $controller
  */
 class ShareViaEmail extends Action
 {
@@ -86,7 +87,7 @@ class ShareViaEmail extends Action
             return $this->inode;
         }
 
-        $this->inode = InodeHelper::getModel(Yii::$app->request->get('uuid', false));
+        $this->inode = $this->controller->findModel(Yii::$app->request->get('uuid'));
 
         if ($this->inode->type !== InodeTypes::TYPE_FILE) {
             throw new UserException(Yii::t('filescatalog', 'Cannot share directories or symlinks via email'));

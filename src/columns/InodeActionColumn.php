@@ -42,7 +42,7 @@ class InodeActionColumn extends Column
      * @return false|mixed
      * @throws \Throwable
      */
-    private function getSortParam()
+    protected function getSortParam()
     {
         try {
             return ArrayHelper::getValue($this, 'grid.dataProvider.sort.sortParam');
@@ -83,12 +83,12 @@ class InodeActionColumn extends Column
 
         $result = $this->getMainButton($model, $index);
         $items = [];
-        $this->addCommonButtons($items, $model);
+        $this->addCommonActions($items, $model);
 
         if ($model->type == InodeTypes::TYPE_FILE) {
-            $this->addFileButtons($items, $model);
+            $this->addFileActions($items, $model);
         } elseif ($model->type == InodeTypes::TYPE_DIR) {
-            $this->addDirButtons($items, $model);
+            $this->addDirActions($items, $model);
         }
         $result .= Html::tag('ul', join('', $items), ['class' => 'dropdown-menu dropdown-menu-right']);
 
@@ -100,7 +100,7 @@ class InodeActionColumn extends Column
      * @param $model
      * @return void
      */
-    public function addFileButtons(&$items, $model)
+    public function addFileActions(&$items, $model)
     {
         $recentVersion = $model;
         if ($this->module->allowVersioning && !empty($model->versions)) {
@@ -137,7 +137,7 @@ class InodeActionColumn extends Column
      * @param $model
      * @return void
      */
-    public function addDirButtons(&$items, $model)
+    public function addDirActions(&$items, $model)
     {
 
 
@@ -148,7 +148,7 @@ class InodeActionColumn extends Column
      * @param $model
      * @return void
      */
-    public function addCommonButtons(&$items, $model)
+    public function addCommonActions(&$items, $model)
     {
         $propertiesUrl = ['properties', 'uuid' => $model->uuid];
         if ($model->type == InodeTypes::TYPE_SYMLINK) {
@@ -201,7 +201,7 @@ class InodeActionColumn extends Column
      * @return string
      * @throws \Throwable
      */
-    private function getMainButton(Inode $model, int $index): string
+    protected function getMainButton(Inode $model, int $index): string
     {
         if ($model->type == InodeTypes::TYPE_DIR || ($model->type == InodeTypes::TYPE_SYMLINK && $model->symlink_type == InodeTypes::TYPE_DIR)) {
             $action = 'index';

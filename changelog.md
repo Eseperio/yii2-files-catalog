@@ -1,5 +1,9 @@
 # Changelog
-
+## Unreleased
+- [+] Added email sharing for files
+- [+] Added user file sharing
+- [-] Removed unused old dropdownActionColumn
+- [*] Fixed visibility of inodeActionColumn methods
 ## 18-2-2022 1.0.10
 - [*] Remove upper limit in name search field
 

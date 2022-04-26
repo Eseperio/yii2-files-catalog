@@ -34,11 +34,10 @@ class IndexAction extends Action
     public $deepSearchParamName = 'deep';
 
     /**
-     * @return string
+     * @return string|\yii\web\Response
      */
     public function run()
     {
-
         $model = $this->getModel();
 
         if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot())

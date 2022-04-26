@@ -27,6 +27,11 @@ class InodeQuery extends ActiveQuery
     use ModuleAwareTrait;
     use AdjacencyListQueryTrait;
 
+
+    const WRITE_MASKS = [7, 6, 3, 2];
+    const DELETE_MASKS = [1, 3, 5, 7];
+    const READABLE_MASKS = [7, 6, 5, 4];
+
     private $formatLimited = false;
 
     /**
@@ -92,7 +97,7 @@ class InodeQuery extends ActiveQuery
      */
     public function onlyReadable()
     {
-        return $this->onlyAllowed([7, 6, 5, 4]);
+        return $this->onlyAllowed(self::READABLE_MASKS);
     }
 
     /**
@@ -107,7 +112,7 @@ class InodeQuery extends ActiveQuery
         if (!$this->module->isAdmin()) {
             $authManager = Yii::$app->authManager;
             $userId = $this->module->getUserId();
-            
+
             $userRoles = ArrayHelper::getColumn($authManager->getRolesByUser($userId), 'name', false);
             $allPermissions = ArrayHelper::getColumn($authManager->getPermissionsByUser($userId), 'name', false);
             $allPermissions = array_merge($userRoles, $allPermissions);
@@ -139,7 +144,7 @@ class InodeQuery extends ActiveQuery
      */
     public function onlyWriteable()
     {
-        return $this->onlyAllowed([7, 6, 3, 2]);
+        return $this->onlyAllowed(self::WRITE_MASKS);
     }
 
     /**
@@ -149,7 +154,7 @@ class InodeQuery extends ActiveQuery
      */
     public function onlyDeletable()
     {
-        return $this->onlyAllowed([1, 3, 5, 7]);
+        return $this->onlyAllowed(self::DELETE_MASKS);
     }
 
     /**
@@ -262,5 +267,10 @@ class InodeQuery extends ActiveQuery
         return $this->andWhere([
             self::prefix('type') => $types
         ]);
+    }
+
+    public function sharedWithMe()
+    {
+        return $this->onlyReadable();
     }
 }

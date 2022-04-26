@@ -35,10 +35,10 @@ class m190705_143724_add_filescatalog_table extends Migration
             'md5hash' => $this->string(32),
             'depth' => $this->integer()->notNull(),
             'filesize' => $this->bigInteger(),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
-            'created_by' => $this->integer(),
-            'updated_by' => $this->integer(),
+            'created_at' => $this->integer()->null(),
+            'updated_at' => $this->integer()->null(),
+            'created_by' => $this->integer()->null(),
+            'updated_by' => $this->integer()->null(),
             'author_name' => $this->string(128),
             'editor_name' => $this->string(128)
         ],'AUTO_INCREMENT = 10');

@@ -1,0 +1,50 @@
+<?php
+
+use yii\db\Migration;
+
+/**
+ * Class m220426_093025_add_shares_table
+ */
+class m220426_093025_add_shares_table extends Migration
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function safeUp()
+    {
+        $this->createTable('fcatalog_shares', [
+            'inode_id' => $this->integer()->comment('Inode id'),
+            'user_id' => $this->integer(),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer(),
+            'created_by' => $this->integer(),
+            'updated_by' => $this->integer(),
+            'expires_at' => $this->integer()->comment('Since which date the shared item will stop working')
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function safeDown()
+    {
+        echo "m220426_093025_add_shares_table cannot be reverted.\n";
+
+        return false;
+    }
+
+    /*
+    // Use up()/down() to run migration code without a transaction.
+    public function up()
+    {
+
+    }
+
+    public function down()
+    {
+        echo "m220426_093025_add_shares_table cannot be reverted.\n";
+
+        return false;
+    }
+    */
+}

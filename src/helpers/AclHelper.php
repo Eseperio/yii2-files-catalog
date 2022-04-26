@@ -74,13 +74,15 @@ class AclHelper extends Component
     {
         $inode = $this->inode;
 
-        if (empty($inode))
+        if (empty($inode)) {
             throw new InvalidArgumentException('Inode cannot be empty');
+        }
 
         $module = self::getModule();
 
-        if (!self::getModule()->enableACL)
+        if (!self::getModule()->enableACL) {
             return true;
+        }
 
         if ($inode['type'] === InodeTypes::TYPE_VERSION) {
             $version = FileVersion::findOne(['version_id' => $inode['id']]);
@@ -97,8 +99,9 @@ class AclHelper extends Component
             $grantAccess = false;
             foreach ($inode['accessControlList'] as $acl) {
 
-                if (($acl->crud_mask & $permission) !== $permission)
+                if (($acl->crud_mask & $permission) !== $permission) {
                     continue;
+                }
 
                 switch ($acl->role) {
                     case AccessControl::WILDCARD_ROLE:
@@ -111,14 +114,16 @@ class AclHelper extends Component
                         $grantAccess = $acl['user_id'] == $userId;
                         break;
                     default:
-                        if (!empty(trim($acl['role'])))
+                        if (!empty(trim($acl['role']))) {
                             $grantAccess = $user->can($acl['role']);
+                        }
                         break;
                 }
 
 
-                if ($grantAccess)
+                if ($grantAccess) {
                     break;
+                }
             }
 
             return $grantAccess;

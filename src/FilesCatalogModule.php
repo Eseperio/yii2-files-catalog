@@ -104,7 +104,7 @@ class FilesCatalogModule extends Module
     /**
      * @var bool
      */
-    public $enableEmailSharing = true;
+    public $enableEmailSharing = false;
     /**
      * @var int max size of allowed files to be shared via email. In bytes. Defaults to 5mb
      */
@@ -174,6 +174,10 @@ class FilesCatalogModule extends Module
         'video/ogg' => 'video',
 
     ];
+    /**
+     * @var bool whether allow users share a file
+     */
+    public $enableUserSharing = false;
     /**
      * @var array a list of admin usernames
      */
