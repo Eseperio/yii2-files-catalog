@@ -81,7 +81,128 @@ class InodeActionColumn extends Column
         if (!AclHelper::canRead($model))
             return "";
 
+        $result = $this->getMainButton($model, $index);
+        $items = [];
+        $this->addCommonButtons($items, $model);
 
+        if ($model->type == InodeTypes::TYPE_FILE) {
+            $this->addFileButtons($items, $model);
+        } elseif ($model->type == InodeTypes::TYPE_DIR) {
+            $this->addDirButtons($items, $model);
+        }
+        $result .= Html::tag('ul', join('', $items), ['class' => 'dropdown-menu dropdown-menu-right']);
+
+        return Html::tag('div', $result, ['class' => 'btn-group pull-right', 'style' => 'display: flex']);
+    }
+
+    /**
+     * @param $items
+     * @param $model
+     * @return void
+     */
+    public function addFileButtons(&$items, $model)
+    {
+        $recentVersion = $model;
+        if ($this->module->allowVersioning && !empty($model->versions)) {
+            $versions = $model->versions;
+            $recentVersion = end($versions);
+        }
+        $items[] = Html::tag(
+            'li',
+            Html::a(Yii::t('filescatalog', 'Download'), ['download', 'uuid' => $recentVersion->uuid],
+                [
+                    'class' => 'dropdown-item',
+                    'data-pjax' => 0
+                ]
+            )
+        );
+
+        if ($this->module->enableEmailSharing) {
+            $items[] = Html::tag(
+                'li',
+                Html::a(Yii::t('filescatalog', 'Share via email'), ['email', 'uuid' => $recentVersion->uuid],
+                    [
+                        'class' => 'dropdown-item',
+                        'data-pjax' => 0
+                    ]
+                )
+            );
+        }
+
+
+    }
+
+    /**
+     * @param $items
+     * @param $model
+     * @return void
+     */
+    public function addDirButtons(&$items, $model)
+    {
+
+
+    }
+
+    /**
+     * @param $items
+     * @param $model
+     * @return void
+     */
+    public function addCommonButtons(&$items, $model)
+    {
+        $propertiesUrl = ['properties', 'uuid' => $model->uuid];
+        if ($model->type == InodeTypes::TYPE_SYMLINK) {
+            $propertiesUrl['created_at'] = $model->created_at;
+        }
+        $items[] = Html::tag(
+            'li',
+            Html::a(Yii::t('filescatalog', 'Properties'), $propertiesUrl,
+                [
+                    'class' => 'dropdown-item',
+                    'data-pjax' => 0
+                ]
+            )
+        );
+
+        if ($this->module->allowRenaming && AclHelper::canWrite($model)) {
+            $renameUrl = ['rename', 'uuid' => $model->uuid];
+            if ($model->type == InodeTypes::TYPE_SYMLINK) {
+                $renameUrl['created_at'] = $model->created_at;
+            }
+            $items[] = Html::tag(
+                'li',
+                Html::a(Yii::t('filescatalog', 'Rename'), $renameUrl,
+                    [
+                        'class' => 'dropdown-item',
+                        'data-pjax' => 0
+                    ]
+                )
+            );
+        }
+
+        if ($this->module->enableEmailSharing) {
+            $items[] = Html::tag(
+                'li',
+                Html::a(Yii::t('filescatalog', 'Share with a user'), ['share', 'uuid' => $model->uuid],
+                    [
+                        'class' => 'dropdown-item',
+                        'data-pjax' => 0
+                    ]
+                )
+            );
+        }
+
+
+    }
+
+    /**
+     * @param \eseperio\filescatalog\models\Inode $model
+     * @param int $index
+     * @return string
+     * @throws \Throwable
+     */
+    private function getMainButton(Inode $model, int $index): string
+    {
         if ($model->type == InodeTypes::TYPE_DIR || ($model->type == InodeTypes::TYPE_SYMLINK && $model->symlink_type == InodeTypes::TYPE_DIR)) {
             $action = 'index';
             $label = Yii::t('filescatalog', 'Open');
@@ -114,84 +235,6 @@ class InodeActionColumn extends Column
                 'aria-expanded' => 'false',
             ]
         );
-
-        $propertiesUrl = ['properties', 'uuid' => $model->uuid];
-        if ($model->type == InodeTypes::TYPE_SYMLINK)
-            $propertiesUrl['created_at'] = $model->created_at;
-
-        $items = [Html::tag(
-            'li',
-            Html::a(Yii::t('filescatalog', 'Properties'), $propertiesUrl,
-                [
-                    'class' => 'dropdown-item',
-                    'data-pjax' => 0
-                ]
-            )
-        )];
-
-        if ($this->module->allowRenaming && AclHelper::canWrite($model)) {
-
-            $renameUrl = ['rename', 'uuid' => $model->uuid];
-
-            if ($model->type == InodeTypes::TYPE_SYMLINK) {
-                $renameUrl['created_at'] = $model->created_at;
-            }
-
-            $items[] = Html::tag(
-                'li',
-                Html::a(Yii::t('filescatalog', 'Rename'), $renameUrl,
-                    [
-                        'class' => 'dropdown-item',
-                        'data-pjax' => 0
-                    ]
-                )
-            );
-        }
-
-        if ($model->type == InodeTypes::TYPE_FILE) {
-            $this->addFileButtons($items,$model);
-        }
-        $result .= Html::tag('ul', join('', $items), ['class' => 'dropdown-menu dropdown-menu-right']);
-
-
-        return Html::tag('div', $result, ['class' => 'btn-group pull-right', 'style' => 'display: flex']);
-    }
-
-    /**
-     * @param $items
-     * @param $model
-     * @return void
-     */
-    public function addFileButtons(&$items, $model)
-    {
-        $recentVersion = $model;
-        if ($this->module->allowVersioning && !empty($model->versions)) {
-            $versions = $model->versions;
-            $recentVersion = end($versions);
-        }
-        $items[] = Html::tag(
-            'li',
-            Html::a(Yii::t('filescatalog', 'Download'), ['download', 'uuid' => $recentVersion->uuid],
-                [
-                    'class' => 'dropdown-item',
-                    'data-pjax' => 0
-                ]
-            )
-        );
-
-        if($this->module->enableEmailSharing){
-            $items[] = Html::tag(
-                'li',
-                Html::a(Yii::t('filescatalog', 'Share via email'), ['email', 'uuid' => $recentVersion->uuid],
-                    [
-                        'class' => 'dropdown-item',
-                        'data-pjax' => 0
-                    ]
-                )
-            );
-        }
-
-
-
+        return $result;
     }
 }
