@@ -60,7 +60,7 @@ class BulkDownload extends Bulk
     protected function initZipAdapter()
     {
         $filename = Yii::$app->security->generateRandomString(8);
-        $this->tmpFile = sys_get_temp_dir().$filename;
+        $this->tmpFile = sys_get_temp_dir() . $filename;
         $this->zipAdapter = \Yii::createObject([
             'class' => ZipArchiveFilesystem::class,
             'path' => $this->tmpFile
