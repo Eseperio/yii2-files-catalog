@@ -15,6 +15,7 @@ use paulzi\adjacencyList\AdjacencyListQueryTrait;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\db\ActiveQuery;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -272,5 +273,16 @@ class InodeQuery extends ActiveQuery
     public function sharedWithMe()
     {
         return $this->onlyReadable();
+    }
+
+    /**
+     * @return void
+     */
+    public function withShares()
+    {
+        $alias = "shr";
+        $this->joinWith("shares {$alias}");
+        $this->groupBy(self::prefix('id'));
+        $this->addSelect(new Expression("count({$alias}.user_id) as shared"));
     }
 }

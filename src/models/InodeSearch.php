@@ -88,10 +88,12 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
         }
 
 
-        $query->with(['accessControlList'])
-            ->excludeVersions()
+        $query->excludeVersions()
             ->onlyReadable();
 
+        if($this->module->enableUserSharing){
+            $query->withShares();
+        }
 
         $query->andFilterWhere([InodeQuery::prefix('extension') => $this->extension]);
 

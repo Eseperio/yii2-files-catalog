@@ -14,6 +14,7 @@ use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
+use Yii;
 use yii\grid\DataColumn;
 
 /**
@@ -23,6 +24,7 @@ use yii\grid\DataColumn;
 class InodeNameColumn extends DataColumn
 {
     use ModuleAwareTrait;
+
     /**
      * @var null|string Html or text indicating read only permissions
      */
@@ -46,11 +48,18 @@ class InodeNameColumn extends DataColumn
         if (!AclHelper::can($model, AccessControl::ACTION_WRITE)) {
             if (!empty($this->module->readOnlyMessage))
                 $this->readOnlyMessage = $this->module->readOnlyMessage;
-
             $nameTag .= $this->readOnlyMessage;
+        }
+
+        if ((bool)$model->shared) {
+            $sharedMsg = Yii::t('filescatalog', 'Shared with {qty}', [
+                'qty' => $model->shared
+            ]);
+            $nameTag .= Html::tag('span', "(" . $sharedMsg . ")", ['class' => 'text-muted small']);
         }
         $displayExtension = ($model->type === InodeTypes::TYPE_FILE && !empty($model->extension));
         $realName = Html::encode($model->publicName . ($displayExtension ? "." . $model->extension : ""));
+
         $realNameTag = Html::tag('div', $realName, ['class' => 'text-muted small']);
 
         $separator = "<br>";

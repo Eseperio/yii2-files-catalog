@@ -88,7 +88,13 @@ class Inode extends ActiveRecord
      * @var int
      */
     public $symlink_type;
+    /**
+     * @var
+     */
     public $symlink_name;
+    /**
+     * @var
+     */
     public $symlink_extension;
 
     /**
@@ -149,6 +155,9 @@ class Inode extends ActiveRecord
         ];
     }
 
+    /**
+     * @return array
+     */
     public function transactions()
     {
         return [
@@ -164,6 +173,11 @@ class Inode extends ActiveRecord
         return trim(mb_substr($this->name, 0, 5));
     }
 
+    /**
+     * @param $insert
+     * @return bool
+     * @throws \Exception
+     */
     public function beforeSave($insert)
     {
         if ($insert && !in_array($this->type, [InodeTypes::TYPE_SYMLINK]))
@@ -192,6 +206,9 @@ class Inode extends ActiveRecord
     }
 
 
+    /**
+     * @return bool
+     */
     public function beforeDelete()
     {
         return parent::beforeDelete();
@@ -277,9 +294,20 @@ class Inode extends ActiveRecord
         return $humanized;
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAccessControlList()
     {
         return $this->hasMany(AccessControl::class, ['inode_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShares()
+    {
+        return $this->hasMany(\eseperio\filescatalog\models\InodeShare::class, ['inode_id' => 'id']);
     }
 
     /**

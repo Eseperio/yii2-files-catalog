@@ -42,6 +42,14 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 {
 
     const EVENT_AFTER_INSERT_FILE = 'afterinsertfile';
+
+    /**
+     * Virtual property to store the amount of shares of a file. Must
+     * be used in conjuntion with [[InodeQuery::withShares()]]. If not, false value
+     * will be always returned.
+     * @var bool|integer
+     */
+    public $shared = false;
     /**
      * @var UploadedFile
      */

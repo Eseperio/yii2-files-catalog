@@ -148,6 +148,7 @@ return [
     'by' => 'por',
     'link this' => 'Enlazar',
     'or' => 'ó',
-    '{user} has shared the file {filename} with you' => '{user} ha compartido el archivo {filename} contigo',
     'tomorrow' => 'mañana',
+    '{user} has shared the file {filename} with you' => '{user} ha compartido el archivo {filename} contigo',
+    'Shared with {qty}' => 'Compartido con {qty}',
 ];
