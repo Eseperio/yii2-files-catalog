@@ -99,6 +99,7 @@ class InodeHelper extends Component
     }
 
     /**
+     * Searchs the requested model and checks if user has read rights
      * @param $id
      * @param null $created_at if provided then symlink will be returned
      * @return Inode|Directory

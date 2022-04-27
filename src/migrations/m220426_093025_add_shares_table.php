@@ -19,6 +19,8 @@ class m220426_093025_add_shares_table extends Migration
             'updated_at' => $this->integer(),
             'created_by' => $this->integer(),
             'updated_by' => $this->integer(),
+            'author_name' => $this->string(128),
+            'editor_name' => $this->string(128),
             'expires_at' => $this->integer()->comment('Since which date the shared item will stop working')
         ]);
     }

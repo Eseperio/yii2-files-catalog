@@ -8,10 +8,10 @@ use yii\helpers\Html;
 /* @var $this \yii\web\View */
 /* @var $model \eseperio\filescatalog\models\Inode */
 /* @var $status int|bool */
-/* @var $formModel \yii\base\DynamicModel */
+/* @var $formModel \eseperio\filescatalog\models\InodeShare */
 
 FileTypeIconsAsset::register($this);
-$selector = Html::getInputId($formModel, 'set_end_date');
+$selector = Html::getInputId($formModel, 'set_expiring_date');
 $this->registerJs(<<<JS
 $(document).on('change','#{$selector}',function(e){
     console.log(this,e)
@@ -44,13 +44,12 @@ JS
             <div class="panel-body">
 
                 <?= $form->field($formModel, 'user_id')->label(Yii::t('filescatalog', 'Recipient')) ?>
-                <?= $form->field($formModel, 'set_end_date')->checkbox(['label' => Yii::t('filescatalog', 'Set an expiry date')]) ?>
-                <?= $form->field($formModel, 'date', [
+                <?= $form->field($formModel, 'set_expiring_date')->checkbox(['label' => Yii::t('filescatalog', 'Set an expiry date')]) ?>
+                <?= $form->field($formModel, 'expires_at', [
                     'options' => [
-                        'class' => 'expiry-date collapse '
+                        'class' => 'expiry-date '.($formModel->set_expiring_date?"":"collapse")
                     ]
-                ])->input('date')->label(Yii::t('filescatalog', 'Date')) ?>
-
+                ])->input('date') ?>
             </div>
             <div class="panel-footer clearfix">
                 <?= Html::a(Yii::t('filescatalog', 'Back'), ['index', 'uuid' => $model->parent->uuid], ['class' => 'btn btn-default']) ?>

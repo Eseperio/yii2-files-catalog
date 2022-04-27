@@ -3,9 +3,10 @@
 namespace eseperio\filescatalog\models\base;
 
 
-
+use eseperio\bootstrap\Html;
 use eseperio\filescatalog\behaviors\FilexBehavior;
 use Yii;
+use yii\validators\DateValidator;
 
 /**
  * This is the base model class for table "{{%fcatalog_shares}}".
@@ -21,14 +22,49 @@ use Yii;
 class InodeShare extends \yii\db\ActiveRecord
 {
 
+    public $set_expiring_date = false;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
+        $expiresAtInputId = Html::getInputId($this, 'set_expiring_date');
         return [
-
-            [['inode_id', 'user_id', 'expires_at'], 'integer']
+            [['inode_id', 'user_id'], 'integer'],
+            ['user_id', 'required'],
+            ['set_expiring_date', 'boolean'],
+            [
+                'expires_at',
+                'required',
+                'when' => function ($model) {
+                    return (bool)$model['set_expiring_date'];
+                },
+                'whenClient' => <<<JS
+function(){
+    return $('#{$expiresAtInputId}').is(':checked')
+}
+JS
+            ],
+            [
+                'expires_at',
+                'date',
+                'type' => DateValidator::TYPE_DATE,
+                'min' => strtotime('+10minutes'),
+                'minString' => Yii::t('filescatalog', 'tomorrow'),
+                'format' => 'yyyy-MM-dd',
+                'timestampAttribute' => 'expires_at'
+            ],
+            [
+                'user_id', 'unique',
+                'targetAttribute' => ['user_id', 'inode_id'],
+                'filter' => [
+                    'OR',
+                    ['>', 'expires_at', time()],
+                    ['expires_at' => null]
+                ],
+                'message' => Yii::t('filescatalog', 'This item has already shared with this user')
+            ]
         ];
     }
 
