@@ -101,6 +101,26 @@ class AccessControl extends ActiveRecord
     }
 
     /**
+     * Removes all sibling permissions in all the inode descendants
+     * @return void
+     */
+    public function removeSiblingsRecursive()
+    {
+        $inode = $this->inode;
+        $children = $inode->getDescendantsIds(null, true);
+        $delPk = ['OR'];
+        foreach ($children as $child) {
+            $delPk[] = [
+                'user_id' => $this->user_id,
+                'role' => $this->role,
+                'inode_id' => $child
+            ];
+        }
+
+        self::deleteAll($delPk);
+    }
+
+    /**
      * Allow one or many users to access a file.
      * @param $files
      * @param $users

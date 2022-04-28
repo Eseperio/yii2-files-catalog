@@ -272,11 +272,15 @@ class InodeQuery extends ActiveQuery
 
     public function sharedWithMe()
     {
-        return $this->onlyReadable();
+        $alias = "shr";
+        $this->onlyReadable();
+        $this->joinWith("shares {$alias}");
+        $this->andWhere(['IS NOT',"{$alias}.user_id",null]);
+        return $this;
     }
 
     /**
-     * @return void
+     * @return \eseperio\filescatalog\models\InodeQuery
      */
     public function withShares()
     {
@@ -284,5 +288,6 @@ class InodeQuery extends ActiveQuery
         $this->joinWith("shares {$alias}");
         $this->groupBy(self::prefix('id'));
         $this->addSelect(new Expression("count({$alias}.user_id) as shared"));
+        return $this;
     }
 }

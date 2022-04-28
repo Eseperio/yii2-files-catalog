@@ -19,7 +19,6 @@ class SharedWithMe extends Action
      */
     public function run()
     {
-        $bulkActions = $this->getBulkActions();
 
         $dataProvider = $this->getDataProvider();
         return $this->controller->render('shared-with-me', [
@@ -36,8 +35,7 @@ class SharedWithMe extends Action
     protected function getDataProvider()
     {
         $query = Inode::find()
-            ->sharedWithMe()
-            ->onlyDirs();
+            ->sharedWithMe();
 
         return new ActiveDataProvider([
             'query' => $query,

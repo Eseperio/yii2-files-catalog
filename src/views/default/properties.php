@@ -116,4 +116,12 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
             ]) ?>
         </div>
     <?php endif; ?>
+    <?php if ($filexModule->enableUserSharing): ?>
+        <div class="col-md-6">
+            <?= $this->render('partials/_shares', [
+                'model' => $model,
+                'filexModule' => $filexModule
+            ]) ?>
+        </div>
+    <?php endif; ?>
 </div>

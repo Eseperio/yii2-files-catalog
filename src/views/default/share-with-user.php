@@ -52,7 +52,7 @@ JS
                 ])->input('date') ?>
             </div>
             <div class="panel-footer clearfix">
-                <?= Html::a(Yii::t('filescatalog', 'Back'), ['index', 'uuid' => $model->parent->uuid], ['class' => 'btn btn-default']) ?>
+                <?= Html::a(Yii::t('filescatalog', 'Back'), \yii\helpers\Url::previous(), ['class' => 'btn btn-default']) ?>
                 <button type="submit" class="btn btn-primary pull-right"><?= Yii::t('filescatalog', 'Share') ?></button>
             </div>
         </div>

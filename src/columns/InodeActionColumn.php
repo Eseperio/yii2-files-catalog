@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\columns;
 
 
-use app\helpers\ArrayHelper;
+use yii\helpers\ArrayHelper;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;

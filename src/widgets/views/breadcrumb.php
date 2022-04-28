@@ -21,7 +21,7 @@
 
 /* @var string $propertiesIcon */
 
-use app\components\StringHelper;
+use yii\helpers\StringHelper;
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;

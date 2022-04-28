@@ -48,8 +48,12 @@ use yii\helpers\StringHelper;
  * @property string $deleteHash
  * @property AccessControl[] $accessControlList
  * @property int $size Size of the file
- * Methods inherited from nested sets behavior:
  * @property string $humanName
+ * @property \eseperio\filescatalog\models\base\InodeShare[]|null $shares
+ *
+ * ********************************************
+ * Methods inherited from nested sets behavior:
+ * ********************************************
  * @method  events()
  * @method  attach($owner)
  * @method  InodeQuery getParents($depth = null)

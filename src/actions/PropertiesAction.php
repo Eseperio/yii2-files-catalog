@@ -11,7 +11,6 @@ namespace eseperio\filescatalog\actions;
 
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
-use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use eseperio\filescatalog\widgets\IconDisplay;
@@ -25,6 +24,7 @@ use yii\web\Response;
 class PropertiesAction extends Action
 {
     use ModuleAwareTrait;
+
     /**
      * @var DefaultController|Controller|\yii\rest\Controller
      */
@@ -57,7 +57,6 @@ class PropertiesAction extends Action
                 $model->refresh();
             }
         }
-
 
         return $this->controller->render('properties', [
             'model' => $model,
