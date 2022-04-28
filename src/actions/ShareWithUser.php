@@ -2,7 +2,7 @@
 
 namespace eseperio\filescatalog\actions;
 
-use eseperio\filescatalog\models\base\InodeShare;
+use eseperio\filescatalog\models\InodeShare;
 use Yii;
 use yii\base\Action;
 use yii\base\DynamicModel;
@@ -23,19 +23,19 @@ class ShareWithUser extends Action
      */
     public function run()
     {
-        $formModel = new InodeShare();
+        $shareModel = new InodeShare();
         $model = $this->controller->findModel(\Yii::$app->request->get('uuid'));
-        $formModel->inode_id = $model->id;
-        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
+        $shareModel->inode_id = $model->id;
+        if ($shareModel->load(Yii::$app->request->post()) && $shareModel->save()) {
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
         }
 
         // Prevent publishing real inode id
-        $formModel->inode_id = null;
+        $shareModel->inode_id = null;
 
         return $this->controller->render('share-with-user', [
             'model' => $model,
-            'formModel' => $formModel
+            'formModel' => $shareModel
         ]);
     }
 

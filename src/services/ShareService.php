@@ -24,7 +24,6 @@ class ShareService
     {
         $message= $this->prepareEmail();
         foreach ((array)$recipients as $recipient) {
-
         }
     }
 

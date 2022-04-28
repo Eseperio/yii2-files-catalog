@@ -19,10 +19,20 @@ use yii\base\InvalidArgumentException;
 use yii\db\Connection;
 use yii\web\ServerErrorHttpException;
 
+/**
+ * @property \eseperio\filescatalog\controllers\DefaultController $controller
+ */
 class InheritAcl extends Action
 {
     use ModuleAwareTrait;
 
+    /**
+     * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     * @throws \yii\web\ServerErrorHttpException
+     */
     public function run()
     {
         $permModel = Yii::createObject(InodePermissionsForm::class);
@@ -30,44 +40,15 @@ class InheritAcl extends Action
         $permModel->setAttributes(Yii::$app->request->post(), false);
         if ($permModel->validate()) {
             try {
-                $inode = Inode::find()->where(['id' => $permModel->inode_id])->one();
+                // Call controller findModel, which performs access control to inode
+                $this->controller->findModel($permModel->inode_id);
+
                 $realModel = AccessControl::find()->where([
                     'user_id' => $permModel->user_id,
                     'role' => $permModel->role,
                     'inode_id' => $permModel->inode_id
                 ])->one();
-
-                if (empty($inode) || empty($realModel))
-                    throw new InvalidArgumentException('Inode not found');
-
-                $children = $inode->getDescendantsIds(null, true);
-
-                $data = [];
-                $delPk = ['OR'];
-                foreach ($children as $child) {
-                    $delPk[] = [
-                        'user_id' => $permModel->user_id,
-                        'role' => $permModel->role,
-                        'inode_id' => $child
-                    ];
-                    $data[] = [
-                        $permModel->user_id,
-                        $permModel->role,
-                        $child,
-                        $realModel->crud_mask
-                    ];
-                }
-
-                AccessControl::deleteAll($delPk);
-
-                /** @var Connection $db */
-                $db = Yii::$app->get($this->module->db);
-                $db->createCommand()->batchInsert($this->module->inodeAccessControlTableName, [
-                    'user_id',
-                    'role',
-                    'inode_id',
-                    'crud_mask'
-                ], $data)->execute();
+                $realModel->copyPermissionToDescendants();
 
             } catch (\Throwable $e) {
                 throw $e;

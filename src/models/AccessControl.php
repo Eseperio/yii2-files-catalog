@@ -9,9 +9,12 @@
 namespace eseperio\filescatalog\models;
 
 
+use eseperio\filescatalog\traits\InodeRelationTrait;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
+use yii\db\Connection;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -26,6 +29,8 @@ class AccessControl extends ActiveRecord
 {
 
     use ModuleAwareTrait;
+    use InodeRelationTrait;
+
     /**
      * This role is used to keep primary index working
      */
@@ -38,7 +43,9 @@ class AccessControl extends ActiveRecord
     const WILDCARD_ROLE = '*';
     const LOGGED_IN_USERS = '@';
 
-
+    /**
+     * Binary constants for CRUD_MASK
+     */
     const ACTION_READ = 4;
     const ACTION_WRITE = 2;
     const ACTION_DELETE = 1;
@@ -51,6 +58,46 @@ class AccessControl extends ActiveRecord
     public static function tableName()
     {
         return static::getModule()->inodeAccessControlTableName;
+    }
+
+    /**
+     * @param array|integer|integer[]|Inode|Inode[] $inodes
+     * @param \eseperio\filescatalog\models\AccessControl $permModel
+     * @return void
+     */
+    public function copyPermissionToDescendants()
+    {
+        if($this->isNewRecord){
+            throw new InvalidConfigException('Permissions can only be copied from a stored record');
+        }
+        $inode = $this->inode;
+        $children = $inode->getDescendantsIds(null, true);
+        $data = [];
+        $delPk = ['OR'];
+        foreach ($children as $child) {
+            $delPk[] = [
+                'user_id' => $this->user_id,
+                'role' => $this->role,
+                'inode_id' => $child
+            ];
+            $data[] = [
+                $this->user_id,
+                $this->role,
+                $child,
+                $this->crud_mask
+            ];
+        }
+
+        self::deleteAll($delPk);
+
+        /** @var Connection $db */
+        $db = Yii::$app->get($this->module->db);
+        $db->createCommand()->batchInsert($this->module->inodeAccessControlTableName, [
+            'user_id',
+            'role',
+            'inode_id',
+            'crud_mask'
+        ], $data)->execute();
     }
 
     /**
