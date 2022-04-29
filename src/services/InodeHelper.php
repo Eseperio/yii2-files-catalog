@@ -60,6 +60,7 @@ class InodeHelper extends Component
         return $dataProvider;
 
     }
+
     /**
      * Returns the model with the uuid specified. It uuid is null then root node is return.
      * @param null $uuid
@@ -69,15 +70,15 @@ class InodeHelper extends Component
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getModel($uuid = null, $checkAccess= true)
+    public static function getModel($uuid = null, $checkAccess = true)
     {
         if (!empty($uuid)) {
             $model = self::findModel($uuid);
         } else {
             $model = Inode::find()
                 ->onlyRoot()
+                ->withShares()
                 ->one();
-
             if (empty($model)) {
 //                Root does not exists, create it
                 $root = \Yii::createObject([
@@ -87,8 +88,7 @@ class InodeHelper extends Component
                 $root->type = InodeTypes::TYPE_DIR;
                 $root->makeRoot()->save(false);
 
-                $model=  $root;
-
+                $model = $root;
             }
 
 
@@ -120,8 +120,11 @@ class InodeHelper extends Component
         }
 
         $module = self::getModule();
-        if ($module->enableACL)
+        if ($module->enableACL) {
             $query->with(['accessControlList']);
+        }
+//        $query->withShares();
+
         /* @var $model Inode|Symlink */
         if (($model = $query->one()) == null)
             throw new NotFoundHttpException();

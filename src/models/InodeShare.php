@@ -42,17 +42,19 @@ class InodeShare extends BaseInodeShare
      */
     public function afterSave($insert, $changedAttributes)
     {
-        AccessControl::grantAccessToUsers($this->inode, $this->user_id, AccessControl::ACTION_READ);
-        $permModel = $this->accessControl;
-        if (empty($permModel)) {
-            throw new ServerErrorHttpException('Permission model was not found');
-        }
         self::deleteAll([
             'AND',
             ['user_id' => $this->user_id],
             ['inode_id' => $this->inode_id],
-            ['<', 'expires_at', time()]
+            ['<', 'expires_at', time()],
         ]);
+        AccessControl::grantAccessToUsers($this->inode, $this->user_id, AccessControl::ACTION_READ);
+        $this->refresh();
+        $permModel = $this->accessControl;
+        if (empty($permModel)) {
+            throw new ServerErrorHttpException('Permission model was not found');
+        }
+
         $permModel->copyPermissionToDescendants();
 
         parent::afterSave($insert, $changedAttributes);

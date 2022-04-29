@@ -50,6 +50,7 @@ class Breadcrumb extends Widget
 
         return $this->render('breadcrumb', [
             'model' => $this->model,
+            'filexModule'=> $this->module,
             'parents' => $parents,
             'pjaxId' => $this->pjaxId,
             'showPropertiesBtn' => $this->showPropertiesBtn,

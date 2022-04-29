@@ -270,24 +270,42 @@ class InodeQuery extends ActiveQuery
         ]);
     }
 
+    /**
+     * @return $this
+     * @throws \yii\base\InvalidConfigException
+     */
     public function sharedWithMe()
     {
         $alias = "shr";
-        $this->onlyReadable();
-        $this->joinWith("shares {$alias}");
-        $this->andWhere(['IS NOT',"{$alias}.user_id",null]);
+        $this
+//            ->select([self::prefix('*')])
+            ->onlyReadable()
+            ->joinWith("shares {$alias}")
+            ->andWhere([
+                'AND',
+                ['IS NOT', "{$alias}.user_id", null],
+                [
+                    'OR',
+                    ['>', "{$alias}.expires_at", time()],
+                    ["{$alias}.expires_at" => null],
+                ],
+            ]);
         return $this;
     }
 
     /**
+     * Joins shares table and fill a virtual property called shared with the amount of shares
      * @return \eseperio\filescatalog\models\InodeQuery
      */
     public function withShares()
     {
+        if (!$this->module->enableUserSharing) {
+            return $this;
+        }
         $alias = "shr";
-        $this->joinWith("shares {$alias}");
+        $this->joinWith("shares {$alias}", false);
         $this->groupBy(self::prefix('id'));
-        $this->addSelect(new Expression("count({$alias}.user_id) as shared"));
+        $this->addSelect([self::prefix('*'),new Expression("count({$alias}.user_id) as shared")]);
         return $this;
     }
 }

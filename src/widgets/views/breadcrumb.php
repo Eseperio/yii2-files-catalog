@@ -21,7 +21,6 @@
 
 /* @var string $propertiesIcon */
 
-use yii\helpers\StringHelper;
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
@@ -30,6 +29,7 @@ use eseperio\filescatalog\widgets\IconDisplay;
 use eseperio\filescatalog\widgets\Uploader;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 use yii\helpers\Url;
 
 FileTypeIconsAsset::register($this);
@@ -54,7 +54,11 @@ FileTypeIconsAsset::register($this);
                 'model' => $model
             ]) ?>
             <span data-toggle="tooltip"
-                  title="<?= $model->publicName ?>"><?= StringHelper::truncate($model->publicName, 12) ?></span>
+                  title="<?= Html::encode($model->publicName) ?>"><?= StringHelper::truncate($model->publicName, 12) ?></span>
+            <?php if ($filexModule->enableUserSharing && $model->shared): ?>
+                <span><?= Yii::t('filescatalog', 'Shared with {qty}', ['qty' => $model->shared]) ?></span>
+            <?php endif; ?>
+
             <?php
             if ($model->type === InodeTypes::TYPE_VERSION): ?>
                 <small data-toggle="tooltip"

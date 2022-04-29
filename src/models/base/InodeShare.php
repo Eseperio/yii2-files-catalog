@@ -25,7 +25,13 @@ class InodeShare extends \yii\db\ActiveRecord
 {
 
     use InodeRelationTrait;
+
     public $set_expiring_date = false;
+
+    public function transactions()
+    {
+        return self::OP_ALL;
+    }
 
     /**
      * @inheritdoc
@@ -70,7 +76,6 @@ JS
             ]
         ];
     }
-
 
 
     /**
