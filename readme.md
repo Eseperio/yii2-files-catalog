@@ -1,33 +1,36 @@
-
 # Yii2 files catalog
-## yii2-files-catalog
 
+## yii2-files-catalog
 
 **Developer: waizabu.com**
 
 It is a virtual file system with access control lists.
 
-I have replicated the main principles of *nix filesystem where any object is represented
-by an inode in the disk, and each inode have a different identity (directory, file, symlink).
-What you get is a virtual file system that can rely on any existing file system, thanks to the usage of
+I have replicated the main principles of *nix filesystem where any object is represented by an inode in the disk, and
+each inode have a different identity (directory, file, symlink). What you get is a virtual file system that can rely on
+any existing file system, thanks to the usage of
 [FlySystem](https://flysystem.thephpleague.com/docs/usage/filesystem-api/) in a deep layer,
 
-
 ## License
+
 Free for NonCommercial use. Otherwise contact us for a commercial license.
+
 ## Installation
 
 This extension is distributed as a composer library. Run
+
 ```
 composer require eseperio/yii2-files-catalog
 ```
 
 Then run migration
+
 ```
 php yii migrate/up --migrationPath=@vendor/eseperio/yii2-files-catalog/src/migrations
 ```
 
 Add the module to your modules configuration
+
 ```
 'modules' => [
      'filex' => [
@@ -41,41 +44,56 @@ Add the module to your modules configuration
 
 ```
 
-
 To manage access control list, add administrators to module configuration.
+
 ## Versioning.
 
-This module supports file versioning. You can set how much files must be kept. File versioning can be disabled via configuration
+This module supports file versioning. You can set how much files must be kept. File versioning can be disabled via
+configuration
 
 ## Access control
 
-Inodes access control is performed by ACLs. Any inode must have a rule associated in order to give access to it.
-Access can be granted to a user id or a role.
+Inodes access control is performed by ACLs. Any inode must have a rule associated in order to give access to it. Access
+can be granted to a user id or a role.
 
 To know more about access control, see [access control docs](docs/acl.md)
 
-## Customization
-You can customize any element of the module by overriding the classes in container definitions.
-Gridview uses column classes, controller uses actions, and so on.
+## File sharing
+This module also includes file sharing functionalities. A file can be shared via email and folders and files can
+be shared with other users via user_id param. There are specific views for that. 
+To see "Shared with me" files, go into shared url 
+Users can only share those files which they had write permissions. You can set your custom settings overriding `AclHelper::canShare()` 
 
+## Customization
+
+You can customize any element of the module by overriding the classes in container definitions. Gridview uses column
+classes, controller uses actions, and so on.
 
 ## Usage
 
+
+
 ### Actions available
+
 There is a default controller with the following actions.
 
-
-| Action | Description |
-|---|---|
-|Index| Displays the contents of a given dir. Accepts param `uuid` to select which directory to show|
-|View| Only for inodes of type `file`. If files is image or pdf, it displays on screen, otherwise downloads the file |
-|Properties| Displays properties of the file or directory selected|
-|Upload| Action to handle file uploads|
-|NewFolder| Displays the "create directory" form|
-|Rename| Allows renaming an inode|
-|BulkDelete| Bulk deletion|
-|BulkDownload|Download many files at the same time|
-|RemoveAcl|Remove permissions from an Inode|
+| Action        | Description                                                                                                   |
+|---------------|---------------------------------------------------------------------------------------------------------------|
+| Index         | Displays the contents of a given dir. Accepts param `uuid` to select which directory to show                  |
+| View          | Only for inodes of type `file`. If files is image or pdf, it displays on screen, otherwise downloads the file |
+| Properties    | Displays properties of the file or directory selected                                                         |
+| Upload        | Action to handle file uploads                                                                                 |
+| NewFolder     | Displays the "create directory" form                                                                          |
+| Rename        | Allows renaming an inode                                                                                      |
+| BulkDelete    | Bulk deletion                                                                                                 |
+| BulkDownload  | Download many files at the same time                                                                          |
+| RemoveAcl     | Remove permissions from an Inode                                                                              |
+| BulkAcl       | Bulk permissions attachment                                                                                   |
+| inheritAcl    | Copy all selected permissions to all children                                                                 |
+| bulk-download | Download multiple files as  a zip file                                                                        |
+| shared        | Shows all files shared with the current logged in user                                                        |
+| unshare       | Removes an existing share with a user                                                                         |
+| email         | Sends a file via email to custom address                                                                      |
 
 ### Configuration
 
@@ -104,16 +122,16 @@ There is a default controller with the following actions.
 | `administrators`             | List of roles or usernames that can manage acl| \['admin'\]                                                                                  |
 | `aclException`               | Classname of the exception to be thrown when user can access an inode| `eseperio\filescatalog\exceptions\FilexAccessDeniedException`                                |
 | `defaultACLmask`             |Default value for access control crud mask when no one has been defined| 4                                                                                            |
-| `maxInlineFileSize`          | Since this module relies on Flysystem, you can not have a direct link to the file, so in order to preview images or mp4 videos they are converted to base64. This number limits the maximun size allowed for a file to be embedded.  int max inline file size in bytes. Defaults to 10Mb| 10000000                                                                                     |
-| `checkFilesIntegrity`        |  bool whether save file hashes in database and check integrity everytime a file is required.   In large filesystems it can make the database grow significantly.| true                                                                                         |
+| `maxInlineFileSize`          | Since this module relies on Flysystem, you can not have a direct link to the file, so in order to preview images or mp4 videos they are converted to base64. This number limits the maximun size allowed for a file to be embedded. int max inline file size in bytes. Defaults to 10Mb| 10000000                                                                                     |
+| `checkFilesIntegrity`        |  bool whether save file hashes in database and check integrity everytime a file is required. In large filesystems it can make the database grow significantly.| true                                                                                         |
 | `allowVersioning`            |  bool whether allow multiple versions of a file.| true                                                                                         |
 | `identityClass`              | string the class name of the [[identity]] object.| null                                                                                         |
 | `salt`                       |String to be used as hash salt on sensitive operations, like delete| null                                                                                         |
-| `defaultInodePermissions`    |list with default permissions for inodes| \[AccessControl::ACTION_READ\]                                                               
+| `defaultInodePermissions`    |list with default permissions for inodes| \[AccessControl::ACTION_READ\]
 | `secureHashParamName`        |name of the parameter to be used when sending and receiving secure hash| fxsh                                                                                         |
 | `secureHashAlgorithm`        | which algorithm use for secure hash generation| SHA3-256                                                                                     |
-| `newFolderIconclass`         |css classname for the new folder icon | 'glyphicon glyphicon-folder-open';                                                           
-| `propertiesIconClass`        |css classname for the properties icon | glyphicon glyphicon-list-alt                                                                 
+| `newFolderIconclass`         |css classname for the new folder icon | 'glyphicon glyphicon-folder-open';
+| `propertiesIconClass`        |css classname for the properties icon | glyphicon glyphicon-list-alt
 | `addFilesIconClass`          |css classname for the new add files icon | glyphicon glyphicon-cloud-upload                                                             |
 | `showBreadcrumbButtonLabels` |whether display labels in breadcrumb buttons| false                                                                                        |
 | `itemsPerPage`               |number of items per page| 10                                                                                           |
@@ -124,17 +142,10 @@ There is a default controller with the following actions.
 | `enableEmailSharing`         |whether allow users share a file via email| false|                                                                                        |
 | `maxFileSizeForEmailShare`   |max allowed size for a file to be sent over email|5mb|
 
-
-
-
-
-
-
 ### Other
-In order to improve privacy inodes use the uuid as public pk, but an integer as internal pk. Keep simple id private. When using data providers, remember use the one included within this module.
-This module use adjacency models concept to manage nesting. That requires extra queries to get parents or childrens, but is way more efficient than nested-set pattern on system that require a lot of nodes and writes
 
+In order to improve privacy inodes use the uuid as public pk, but an integer as internal pk. Keep simple id private.
+When using data providers, remember use the one included within this module. This module use adjacency models concept to
+manage nesting. That requires extra queries to get parents or childrens, but is way more efficient than nested-set
+pattern on system that require a lot of nodes and writes
 
-#### To do:
-- [ ] Check whether new version is of the same type of previous file. Allow disable this via module config.
-- [ ] Improve how different InodeTypes are handled. Currently only File type allows versioning, making it so much different from the other types.

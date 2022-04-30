@@ -144,6 +144,17 @@ class AclHelper extends Component
     }
 
     /**
+     * Whether user can share the inode
+     * @param $inode
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function canShare($inode)
+    {
+        return self::canWrite($inode);
+    }
+
+    /**
      * @param $inode
      * @return bool
      */

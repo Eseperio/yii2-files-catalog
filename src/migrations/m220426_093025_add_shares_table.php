@@ -12,7 +12,8 @@ class m220426_093025_add_shares_table extends Migration
      */
     public function safeUp()
     {
-        $this->createTable('fcatalog_shares', [
+        $tablename = '{{%fcatalog_shares}}';
+        $this->createTable($tablename, [
             'inode_id' => $this->integer()->comment('Inode id'),
             'user_id' => $this->integer(),
             'created_at' => $this->integer(),
@@ -22,6 +23,10 @@ class m220426_093025_add_shares_table extends Migration
             'author_name' => $this->string(128),
             'editor_name' => $this->string(128),
             'expires_at' => $this->integer()->comment('Since which date the shared item will stop working')
+        ]);
+        $this->addPrimaryKey('fcatalog_shares_pk', $tablename, [
+            'inode_id',
+            'user_id'
         ]);
     }
 

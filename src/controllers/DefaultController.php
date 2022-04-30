@@ -21,6 +21,7 @@ use eseperio\filescatalog\actions\NewFolderAction;
 use eseperio\filescatalog\actions\NewLinkAction;
 use eseperio\filescatalog\actions\PropertiesAction;
 use eseperio\filescatalog\actions\RemoveACL;
+use eseperio\filescatalog\actions\RemoveShare;
 use eseperio\filescatalog\actions\RenameAction;
 use eseperio\filescatalog\actions\SharedWithMe;
 use eseperio\filescatalog\actions\ShareViaEmail;
@@ -58,7 +59,7 @@ class DefaultController extends \yii\web\Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['upload', 'new-folder', 'delete', 'bulk-delete', 'new-link', 'rename', 'email','share'],
+                        'actions' => ['upload', 'new-folder', 'delete', 'bulk-delete', 'new-link', 'rename', 'email', 'share', 'unshare'],
                         'roles' => ['@'],
                     ],
                     [
@@ -86,6 +87,7 @@ class DefaultController extends \yii\web\Controller
                     'bulk-acl' => ['post'],
                     'inherit-acl' => ['post'],
                     'bulk-download' => ['post'],
+                    'unshare' => ['post'],
                 ],
             ],
         ];
@@ -132,12 +134,14 @@ class DefaultController extends \yii\web\Controller
             'fake' => ['class' => FakeAction::class],
             'bulk-download' => ['class' => BulkDownload::class],
             'shared' => ['class' => SharedWithMe::class],
+            'unshare' => ['class' => SharedWithMe::class],
         ];
         if ($this->getModule()->enableEmailSharing) {
             $actions['email'] = ['class' => ShareViaEmail::class];
         }
         if ($this->getModule()->enableUserSharing) {
             $actions['share'] = ['class' => ShareWithUser::class];
+            $actions['unshare'] = ['class' => RemoveShare::class];
         }
         return $actions;
 

@@ -62,7 +62,7 @@ class SharesGridview extends GridView
                         'data' => [
                             'method' => 'post',
                             'params' => [
-                                'inode_id' => $inodeShare->inode_id,
+                                'uuid' => $inodeShare->inode->uuid,
                                 'user_id' => $inodeShare->user_id
                             ]
                         ]

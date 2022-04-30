@@ -22,6 +22,7 @@
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
+use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\InodePermissionsForm;
 use eseperio\filescatalog\widgets\Breadcrumb;
 use yii\helpers\ArrayHelper;
@@ -116,7 +117,7 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
             ]) ?>
         </div>
     <?php endif; ?>
-    <?php if ($filexModule->enableUserSharing): ?>
+    <?php if ($filexModule->enableUserSharing && AclHelper::canShare($model)): ?>
         <div class="col-md-6">
             <?= $this->render('partials/_shares', [
                 'model' => $model,

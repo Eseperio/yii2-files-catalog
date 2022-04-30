@@ -20,21 +20,30 @@ When granting access to an item, it can be done in three ways
     - `*` Means everyone.
     - `@` Means everyone logged in
 
-
-
-
 ### How access control crud mask works
 
-Access control is stored in a different table. Each inode must have its own records defining who or which role
-will be able to view, edit or append files.
-That permissions are managed via a crud_mask. It is a 3 bit binary mask, in its integer representation
-
-
+Access control is stored in a different table. Each inode must have its own records defining who or which role will be
+able to view, edit or append files. That permissions are managed via a crud_mask. It is a 3 bit binary mask, in its
+integer representation
 
 | |Read|Write|Delete|
 |---|----|-----|------|
 |Bit|0|0|0|
 |Value|4|2|1|
 
-So if we want to give only read access to a file, the crud binary mask must be `0100', or its integer representation, which is what we store in database: 4
-Otherwise, if we want all permissions, then all bits are on and the result is 7.
+So if we want to give only read access to a file, the crud binary mask must be `0100', or its integer representation,
+which is what we store in database: 4 Otherwise, if we want all permissions, then all bits are on and the result is 7.
+
+## Helpers for checking file permissions
+
+`InodeQuery` contains a lot of methods related to permissions, like `onlyReadable()`, `onlyWritable`, etc... Those
+methods will automatically join the permission table and perform the check of the file permissions.
+
+### AclHelper
+
+A usefull tool is also included. `AclHelper` is a class containing methods to directly check permissions for an Inode.
+Here is an example:
+
+```php
+\eseperio\filescatalog\helpers\AclHelper::canRead($inode);
+```

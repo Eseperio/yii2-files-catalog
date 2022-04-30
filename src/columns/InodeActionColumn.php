@@ -9,13 +9,13 @@
 namespace eseperio\filescatalog\columns;
 
 
-use yii\helpers\ArrayHelper;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\grid\Column;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 class InodeActionColumn extends Column
@@ -180,7 +180,7 @@ class InodeActionColumn extends Column
             );
         }
 
-        if ($this->module->enableEmailSharing) {
+        if ($this->module->enableEmailSharing && AclHelper::canShare($model)) {
             $items[] = Html::tag(
                 'li',
                 Html::a(Yii::t('filescatalog', 'Share with a user'), ['share', 'uuid' => $model->uuid],
