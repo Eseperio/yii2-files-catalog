@@ -67,7 +67,7 @@ class AccessControl extends ActiveRecord
      */
     public function copyPermissionToDescendants()
     {
-        if($this->isNewRecord){
+        if ($this->isNewRecord) {
             throw new InvalidConfigException('Permissions can only be copied from a stored record');
         }
         $inode = $this->inode;
@@ -88,7 +88,9 @@ class AccessControl extends ActiveRecord
             ];
         }
 
-        self::deleteAll($delPk);
+        if (count($delPk) > 1) {
+            self::deleteAll($delPk);
+        }
 
         /** @var Connection $db */
         $db = Yii::$app->get($this->module->db);
