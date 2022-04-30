@@ -3,6 +3,7 @@
 namespace eseperio\filescatalog\actions;
 
 use eseperio\filescatalog\models\InodeShare;
+use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
 use yii\base\DynamicModel;
@@ -23,7 +24,7 @@ class ShareWithUser extends Action
      */
     public function run()
     {
-        $shareModel = new InodeShare();
+        $shareModel = Yii::createObject(InodeShare::class);
         $model = $this->controller->findModel(\Yii::$app->request->get('uuid'));
         $shareModel->inode_id = $model->id;
         if ($shareModel->load(Yii::$app->request->post()) && $shareModel->save()) {

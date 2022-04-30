@@ -1,5 +1,9 @@
 # Changelog
 ## Unreleased
+## 1.1.1
+- [*] Fix bug when coping permissions recursively
+- [+] Use container references for inodeShare instance creation
+## 1.1.0
 - [+] Added email sharing for files
 - [+] Added user file sharing
 - [-] Removed unused old dropdownActionColumn

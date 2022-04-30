@@ -116,7 +116,6 @@ class Inode extends ActiveRecord
     public static function find()
     {
         $class = self::getContainerClass(get_called_class());
-
         return Yii::createObject(InodeQuery::class, [$class]);
     }
 

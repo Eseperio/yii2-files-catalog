@@ -44,8 +44,11 @@ class RemoveShare extends Action
         $shareObj = $inode->getShares()->where([
             'user_id' => $uuid
         ])->one();
-
-        return $shareObj->delete();
+        if(!empty($shareObj)){
+            return $shareObj->delete();
+        }else{
+            return true;
+        }
     }
 
 

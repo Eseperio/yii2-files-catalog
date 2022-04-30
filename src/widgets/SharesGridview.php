@@ -38,7 +38,7 @@ class SharesGridview extends GridView
     /**
      * @return void
      */
-    private function loadColumns()
+    protected function loadColumns()
     {
         $this->columns = [
             'user_id' => 'user_id',

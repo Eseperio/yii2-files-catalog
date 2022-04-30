@@ -56,10 +56,6 @@ FileTypeIconsAsset::register($this);
             ]) ?>
             <span data-toggle="tooltip"
                   title="<?= Html::encode($model->publicName) ?>"><?= StringHelper::truncate($model->publicName, 12) ?></span>
-            <?php if ($filexModule->enableUserSharing && $model->shared): ?>
-                <span><?= Yii::t('filescatalog', 'Shared with {qty}', ['qty' => $model->shared]) ?></span>
-            <?php endif; ?>
-
             <?php
             if ($model->type === InodeTypes::TYPE_VERSION): ?>
                 <small data-toggle="tooltip"

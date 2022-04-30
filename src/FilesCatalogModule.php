@@ -65,7 +65,8 @@ class FilesCatalogModule extends Module
      */
     public $user = 'user';
     /**
-     * @var string the class name of the [[identity]] object.
+     * Identity must implement ActiveRecord
+     * @var string|\yii\web\IdentityInterface the class name of the [[identity]] object.
      */
     public $identityClass;
     /**

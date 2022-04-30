@@ -6,6 +6,7 @@ namespace eseperio\filescatalog\models\base;
 use eseperio\bootstrap\Html;
 use eseperio\filescatalog\behaviors\FilexBehavior;
 use eseperio\filescatalog\traits\InodeRelationTrait;
+use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\validators\DateValidator;
 
@@ -25,6 +26,7 @@ class InodeShare extends \yii\db\ActiveRecord
 {
 
     use InodeRelationTrait;
+    use ModuleAwareTrait;
 
     public $set_expiring_date = false;
 

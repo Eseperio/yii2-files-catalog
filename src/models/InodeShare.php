@@ -23,6 +23,14 @@ class InodeShare extends BaseInodeShare
         return self::OP_ALL;
     }
 
+    /**
+     * Return the user related
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne($this->module->identityClass, [$this->module->userIdAttribute => 'user_id']);
+    }
 
     /**
      * The access control entity associated to this share
@@ -67,8 +75,10 @@ class InodeShare extends BaseInodeShare
     public function afterDelete()
     {
         $permModel = $this->accessControl;
-        $permModel->removeSiblingsRecursive();
-        $permModel->delete();
+        if (!empty($permModel)) {
+            $permModel->removeSiblingsRecursive();
+            $permModel->delete();
+        }
 
         parent::afterDelete();
     }

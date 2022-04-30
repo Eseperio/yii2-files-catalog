@@ -14,7 +14,7 @@ use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
-use Yii;
+use eseperio\filescatalog\widgets\SharedWith;
 use yii\grid\DataColumn;
 
 /**
@@ -51,20 +51,17 @@ class InodeNameColumn extends DataColumn
             $nameTag .= $this->readOnlyMessage;
         }
 
-        if ((bool)$model->shared) {
-            $sharedMsg = Yii::t('filescatalog', 'Shared with {qty}', [
-                'qty' => $model->shared
-            ]);
-            $nameTag .= Html::tag('span', "(" . $sharedMsg . ")", ['class' => 'text-muted small']);
-        }
+
         $displayExtension = ($model->type === InodeTypes::TYPE_FILE && !empty($model->extension));
         $realName = Html::encode($model->publicName . ($displayExtension ? "." . $model->extension : ""));
 
         $realNameTag = Html::tag('div', $realName, ['class' => 'text-muted small']);
 
-        $separator = "<br>";
-
-        return $nameTag . $separator . $realNameTag;
+        $sharedTag = SharedWith::widget([
+            'model' => $model,
+            'options' => ['tag' => 'span']
+        ]);
+        return $nameTag . $realNameTag . $sharedTag;
     }
 
 
