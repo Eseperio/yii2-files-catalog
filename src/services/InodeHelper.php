@@ -123,7 +123,7 @@ class InodeHelper extends Component
         if ($module->enableACL) {
             $query->with(['accessControlList']);
         }
-//        $query->withShares();
+        $query->withShares();
 
         /* @var $model Inode|Symlink */
         if (($model = $query->one()) == null)

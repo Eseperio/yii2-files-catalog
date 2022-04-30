@@ -26,6 +26,7 @@ use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\helpers\Helper;
 use eseperio\filescatalog\widgets\IconDisplay;
+use eseperio\filescatalog\widgets\SharedWith;
 use eseperio\filescatalog\widgets\Uploader;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -67,6 +68,7 @@ FileTypeIconsAsset::register($this);
                 </small>
             <?php endif; ?>
         </h1>
+        <?= SharedWith::widget(['model' => $model]) ?>
         <p class="text-muted">
             <?php if (!empty($parents) && AclHelper::canRead(end($parents))): ?>
             <?php $pieces = ArrayHelper::map($parents, 'uuid', function ($item) {
@@ -77,7 +79,7 @@ FileTypeIconsAsset::register($this);
             });
             $pieces = array_filter($pieces);
             echo join('/', $pieces) ?></p>
-        <?php endif; ?>
+    <?php endif; ?>
     </div>
     <div class="col-sm-5 text-right">
         <?php if ($model->type == InodeTypes::TYPE_DIR): ?>

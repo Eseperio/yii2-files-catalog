@@ -16,6 +16,7 @@
 
 /* @var $checkFilesIntegrity boolean */
 
+use eseperio\filescatalog\widgets\SharedWith;
 use eseperio\filescatalog\widgets\Versions;
 use yii\helpers\Html;
 
@@ -64,6 +65,7 @@ use yii\helpers\Html;
             <?php if ($filexModule->allowVersioning): ?>
 
                 <div class="panel-body ">
+                    <?= SharedWith::widget(['model' => $model]) ?>
                     <?= Versions::widget([
                         'model' => $model
                     ]) ?>

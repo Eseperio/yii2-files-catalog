@@ -40,8 +40,9 @@ class IndexAction extends Action
     {
         $model = $this->getModel();
 
-        if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot())
+        if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot()){
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
+        }
 
         Url::remember();
         $bulkActions = $this->getBulkActions();
