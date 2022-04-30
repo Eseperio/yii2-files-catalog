@@ -305,12 +305,27 @@ class Inode extends ActiveRecord
         return $this->hasMany(AccessControl::class, ['inode_id' => 'id']);
     }
 
+    public function getSharesActive()
+    {
+        return $this->getShares(true);
+    }
+
     /**
+     * @param bool $onlyActive whether return only shares that are active (not expired)
      * @return \yii\db\ActiveQuery
      */
-    public function getShares()
+    public function getShares($onlyActive = false)
     {
-        return $this->hasMany(\eseperio\filescatalog\models\InodeShare::class, ['inode_id' => 'id']);
+        $sharesTablename = InodeShare::tableName();
+        $activeQuery = $this->hasMany(\eseperio\filescatalog\models\InodeShare::class, ['inode_id' => 'id']);
+        if ($onlyActive) {
+            $activeQuery->andWhere([
+                'OR',
+                ['>', "{$sharesTablename}.expires_at", time()],
+                ["{$sharesTablename}.expires_at" => null],
+            ]);
+        }
+        return $activeQuery;
     }
 
     /**

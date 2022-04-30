@@ -33,6 +33,9 @@ class ShareWithUser extends Action
 
         // Prevent publishing real inode id
         $shareModel->inode_id = null;
+        if($shareModel->isNewRecord){
+            $shareModel->expires_at= Yii::$app->formatter->asDate('+1day','yyyy-MM-dd');
+        }
 
         return $this->controller->render('share-with-user', [
             'model' => $model,

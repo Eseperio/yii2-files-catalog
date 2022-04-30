@@ -92,7 +92,7 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
             ->onlyReadable();
 
         if($this->module->enableUserSharing){
-            $query->withShares();
+            $query->withSharesActive();
         }
 
         $query->andFilterWhere([InodeQuery::prefix('extension') => $this->extension]);

@@ -119,7 +119,9 @@ class AccessControl extends ActiveRecord
             ];
         }
 
-        self::deleteAll($delPk);
+        if(count($delPk)> 1){
+            self::deleteAll($delPk);
+        }
     }
 
     /**

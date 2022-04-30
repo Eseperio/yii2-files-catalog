@@ -77,7 +77,7 @@ class InodeHelper extends Component
         } else {
             $model = Inode::find()
                 ->onlyRoot()
-                ->withShares()
+                ->withSharesActive()
                 ->one();
             if (empty($model)) {
 //                Root does not exists, create it

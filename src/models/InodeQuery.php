@@ -271,23 +271,33 @@ class InodeQuery extends ActiveQuery
     }
 
     /**
+     * Filters results to those shared with current user
      * @return $this
      * @throws \yii\base\InvalidConfigException
      */
     public function sharedWithMe()
     {
-        $alias = "shr";
+        return $this->sharedWith($this->module->getUserId());
+    }
+
+    /**
+     * Filters the results to all those shared with certain user
+     * @return $this
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function sharedWith($userId)
+    {
+        $SharesTable = InodeShare::tableName();
         $this
-//            ->select([self::prefix('*')])
             ->onlyReadable()
-            ->joinWith("shares {$alias}")
+            ->joinWith("shares")
             ->andWhere([
                 'AND',
-                ['IS NOT', "{$alias}.user_id", null],
+                ["{$SharesTable}.user_id" => $userId],
                 [
                     'OR',
-                    ['>', "{$alias}.expires_at", time()],
-                    ["{$alias}.expires_at" => null],
+                    ['>', "{$SharesTable}.expires_at", time()],
+                    ["{$SharesTable}.expires_at" => null],
                 ],
             ]);
         return $this;
@@ -295,17 +305,28 @@ class InodeQuery extends ActiveQuery
 
     /**
      * Joins shares table and fill a virtual property called shared with the amount of shares
+     * but only those active
+     * @return $this
+     */
+    public function withSharesActive()
+    {
+        return $this->withShares(true);
+    }
+
+    /**
+     * Joins shares table and fill a virtual property called shared with the amount of shares
      * @return \eseperio\filescatalog\models\InodeQuery
      */
-    public function withShares()
+    public function withShares($onlyActive = false)
     {
         if (!$this->module->enableUserSharing) {
             return $this;
         }
-        $alias = "shr";
-        $this->joinWith("shares {$alias}", false);
+        $sharesTable = InodeShare::tableName();
+        $relation = $onlyActive ? "sharesActive" : "shares";
+        $this->joinWith($relation, false);
         $this->groupBy(self::prefix('id'));
-        $this->addSelect([self::prefix('*'),new Expression("count({$alias}.user_id) as shared")]);
+        $this->addSelect([self::prefix('*'), new Expression("count({$sharesTable}.user_id) as shared")]);
         return $this;
     }
 }
