@@ -1,5 +1,7 @@
 # Changelog
 ## Unreleased
+## 1.2.0
+- [+] Added bit for `ACTION_SHARE`. Currently work as an alias for `ACTION_WRITE` but allows overriding access control
 ## 1.1.1
 - [*] Fix bug when coping permissions recursively
 - [+] Use container references for inodeShare instance creation

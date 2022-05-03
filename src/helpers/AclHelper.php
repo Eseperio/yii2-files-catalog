@@ -12,7 +12,6 @@ namespace eseperio\filescatalog\helpers;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Directory;
-use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\FileVersion;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ContainerStaticHelper;
@@ -30,6 +29,7 @@ class AclHelper extends Component
 
     use ModuleAwareTrait;
     use ContainerStaticHelper;
+
 
     /**
      * @var
@@ -72,6 +72,11 @@ class AclHelper extends Component
      */
     public function checkAccess($permission)
     {
+        // ACTION_SHARE is an alias for ACTION_WRITE, but has its own bit
+        if ($permission == AccessControl::ACTION_SHARE) {
+            $permission = AccessControl::ACTION_WRITE;
+        }
+
         $inode = $this->inode;
 
         if (empty($inode)) {
@@ -151,7 +156,7 @@ class AclHelper extends Component
      */
     public static function canShare($inode)
     {
-        return self::canWrite($inode);
+        return self::can($inode, AccessControl::ACTION_SHARE);
     }
 
     /**

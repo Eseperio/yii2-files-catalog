@@ -49,6 +49,13 @@ class AccessControl extends ActiveRecord
     const ACTION_READ = 4;
     const ACTION_WRITE = 2;
     const ACTION_DELETE = 1;
+    /**
+     * Share action is defined in fourth bit, but not included in representation or
+     * in queries filters. It is used by accessControl as an alias for ACTION_WRITE and
+     * it helps to develop complex sharing rules in your own code.
+     */
+    const ACTION_SHARE = 8;
+
 
     const SCENARIO_DELETE = 'delscen';
 
