@@ -1,6 +1,8 @@
 # Changelog
 ## Unreleased
+
 ## 1.2.0
+- [*] No longer use `tempnam()`
 - [+] Added bit for `ACTION_SHARE`. Currently work as an alias for `ACTION_WRITE` but allows overriding access control
 ## 1.1.1
 - [*] Fix bug when coping permissions recursively

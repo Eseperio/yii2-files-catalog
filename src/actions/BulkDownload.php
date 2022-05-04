@@ -15,6 +15,7 @@ use eseperio\filescatalog\models\Inode;
 use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\helpers\FileHelper;
 
 /**
  * Class BulkDownload
@@ -59,8 +60,9 @@ class BulkDownload extends Bulk
      */
     protected function initZipAdapter()
     {
+
         $filename = Yii::$app->security->generateRandomString(8);
-        $this->tmpFile = sys_get_temp_dir() . $filename;
+        $this->tmpFile = FileHelper::normalizePath(sys_get_temp_dir()) . DIRECTORY_SEPARATOR . $filename;
         $this->zipAdapter = \Yii::createObject([
             'class' => ZipArchiveFilesystem::class,
             'path' => $this->tmpFile
