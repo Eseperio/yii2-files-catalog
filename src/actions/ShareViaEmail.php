@@ -4,7 +4,6 @@ namespace eseperio\filescatalog\actions;
 
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\Inode;
-use eseperio\filescatalog\services\InodeHelper;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
@@ -35,6 +34,7 @@ class ShareViaEmail extends Action
     {
         if (empty($this->formModelInstance)) {
             $formModel = new DynamicModel(['recipient', 'message']);
+            $formModel->addRule(['recipient'], 'required');
             $formModel->addRule(['recipient'], 'email');
             $formModel->addRule(['message'], 'string', ['max' => 256]);
             $this->formModelInstance = $formModel;
@@ -56,9 +56,9 @@ class ShareViaEmail extends Action
         $formModel = $this->getFormModel();
         $status = null;
 
-        if($this->inode->size > $this->module->maxFileSizeForEmailShare ){
-            return $this->controller->render('share-via-email-locked',[
-                'model'=> $model
+        if ($this->inode->size > $this->module->maxFileSizeForEmailShare) {
+            return $this->controller->render('share-via-email-locked', [
+                'model' => $model
             ]);
         }
 
@@ -107,14 +107,15 @@ class ShareViaEmail extends Action
         /* @var $mailer \yii\mail\MailerInterface */
         $mailer = Yii::$app->get($this->module->mailer);
 
+        $formModel = $this->getFormModel();
+
         $view = DIRECTORY_SEPARATOR . "email/layout";
         $message = $mailer->compose($view, [
             'username' => Yii::$app->user->identity->getFullname(),
             'filename' => $this->inode->getPublicName(),
-        ])
-            ->attachContent($this->inode->getFile(), [
-                'fileName' => $this->inode->publicName . "." . $this->inode->extension
-            ]);
+        ])->attachContent($this->inode->getFile(), [
+            'fileName' => $this->inode->publicName . "." . $this->inode->extension
+        ])->setTo($formModel['recipient']);
 
         return $mailer->send($message);
 
