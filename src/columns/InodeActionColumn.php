@@ -117,7 +117,7 @@ class InodeActionColumn extends Column
             )
         );
 
-        if ($this->module->enableEmailSharing) {
+        if ($this->module->enableEmailSharing && AclHelper::canShare($model)) {
             $items[] = Html::tag(
                 'li',
                 Html::a(Yii::t('filescatalog', 'Share via email'), ['email', 'uuid' => $recentVersion->uuid],
@@ -180,7 +180,7 @@ class InodeActionColumn extends Column
             );
         }
 
-        if ($this->module->enableEmailSharing && AclHelper::canShare($model)) {
+        if ($this->module->enableUserSharing && AclHelper::canShare($model)) {
             $items[] = Html::tag(
                 'li',
                 Html::a(Yii::t('filescatalog', 'Share with a user'), ['share', 'uuid' => $model->uuid],

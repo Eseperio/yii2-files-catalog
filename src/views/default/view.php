@@ -16,6 +16,7 @@
 
 /* @var $checkFilesIntegrity boolean */
 
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\widgets\SharedWith;
 use eseperio\filescatalog\widgets\Versions;
 use yii\helpers\Html;
@@ -74,7 +75,7 @@ use yii\helpers\Html;
             <?php endif; ?>
 
             <div class="panel-body">
-                <?php if ($filexModule->enableEmailSharing): ?>
+                <?php if ($filexModule->enableEmailSharing && AclHelper::canShare($model)): ?>
                     <?= Html::a(Yii::t('filescatalog', 'Share via email'), ['email', 'uuid' => $model->uuid], ['class' => 'btn btn-default']) ?>
                     <hr>
                 <?php endif; ?>
