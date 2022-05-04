@@ -106,6 +106,11 @@ class FilesCatalogModule extends Module
      * @var bool
      */
     public $enableEmailSharing = false;
+
+    /**
+     * @var string the address
+     */
+    public $emailFromAddress = 'noreply@example.com';
     /**
      * @var int max size of allowed files to be shared via email. In bytes. Defaults to 5mb
      */

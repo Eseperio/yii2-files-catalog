@@ -115,7 +115,9 @@ class ShareViaEmail extends Action
             'filename' => $this->inode->getPublicName(),
         ])->attachContent($this->inode->getFile(), [
             'fileName' => $this->inode->publicName . "." . $this->inode->extension
-        ])->setTo($formModel['recipient']);
+        ])
+            ->setTo($formModel['recipient'])
+            ->setFrom($this->module->emailFromAddress);
 
         return $mailer->send($message);
 
