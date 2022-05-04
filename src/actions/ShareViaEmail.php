@@ -109,13 +109,19 @@ class ShareViaEmail extends Action
 
         $formModel = $this->getFormModel();
 
+        $fileName = $this->inode->getPublicName();
+        $userName = Yii::$app->user->identity->getFullname();
+        $subject = Yii::t('filescatalog', '{user} has shared the file {filename} with you', [
+            'user' => $userName,
+            'filename' => $fileName
+        ]);
         $view = DIRECTORY_SEPARATOR . "email/layout";
         $message = $mailer->compose($view, [
             'username' => Yii::$app->user->identity->getFullname(),
             'filename' => $this->inode->getPublicName(),
         ])->attachContent($this->inode->getFile(), [
             'fileName' => $this->inode->publicName . "." . $this->inode->extension
-        ])
+        ])->setSubject($subject)
             ->setTo($formModel['recipient'])
             ->setFrom($this->module->emailFromAddress);
 
