@@ -16,7 +16,6 @@ use eseperio\filescatalog\columns\InodeActionColumn;
 use eseperio\filescatalog\columns\InodeNameColumn;
 use eseperio\filescatalog\columns\InodeUuidColumn;
 use Yii;
-use yii\grid\SerialColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -26,6 +25,18 @@ use yii\helpers\Url;
  */
 class GridView extends \yii\grid\GridView
 {
+
+    public $pagerLinkOptions = [
+        'class' => 'btn btn-primary'
+    ];
+    /**
+     * @var array options for the wrapper body
+     */
+    public $pagerWrapperOptions = [
+        'options' => [
+            'class' => 'pull-right inline',
+        ]
+    ];
 
     /**
      * @var array
@@ -95,19 +106,18 @@ CSS
         $pager = parent::renderPager();
 
         $links = [];
-        foreach ([10, 30, 50] as $item) {
+        foreach ([10, 30, 50, 100] as $item) {
             if (Yii::$app->request->get($this->dataProvider->getPagination()->pageSizeParam) == $item) {
                 $links[] = Html::tag('span', $item);
 
             } else {
-                $links[] = Html::a($item, Url::current([$this->dataProvider->getPagination()->pageSizeParam => $item]));
-
+                $links[] = Html::a($item, Url::current([$this->dataProvider->getPagination()->pageSizeParam => $item]), $this->pagerLinkOptions);
             }
         }
 
         $label = Html::tag('span', Yii::t('filescatalog', 'Per page:')) . " ";
 
-        $perPageWrapper = Html::tag('div', $label . implode("  ", $links), ['class' => 'pull-right pagination']);
+        $perPageWrapper = Html::tag('div', $label . implode("  ", $links), $this->pagerWrapperOptions);
 
         return $pager . $perPageWrapper;
     }
