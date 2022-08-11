@@ -27,15 +27,13 @@ class GridView extends \yii\grid\GridView
 {
 
     public $pagerLinkOptions = [
-        'class' => 'btn btn-primary'
+        'class' => 'btn btn-default'
     ];
     /**
      * @var array options for the wrapper body
      */
     public $pagerWrapperOptions = [
-        'options' => [
-            'class' => 'pull-right inline',
-        ]
+        'class' => 'pull-right pagination',
     ];
 
     /**
