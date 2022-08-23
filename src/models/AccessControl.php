@@ -71,6 +71,7 @@ class AccessControl extends ActiveRecord
      * @param $mask
      * @param int $type
      * @return bool|int the number of rows inserted
+     * @throws \Exception
      */
     private static function setInodesAccessRules($files, $usersOrRoles, $mask = null, $type = self::TYPE_USER)
     {
