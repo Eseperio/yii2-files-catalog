@@ -346,7 +346,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                 }
             }
         } catch (\Throwable $e) {
-            Yii::error($e->getMessage());
+            Yii::error((string)new FlattenException($e));
         }
     }
 
@@ -363,7 +363,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                 $filesystem->delete($realPath);
             }
         } catch (\Throwable $e) {
-            Yii::error($e->getMessage());
+            Yii::error((string)new FlattenException($e));
         }
 
         if ($this->type == InodeTypes::TYPE_VERSION)
