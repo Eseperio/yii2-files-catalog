@@ -65,6 +65,7 @@ class IconColumn extends DataColumn
      */
     public function renderDataCellContent($model, $key, $index)
     {
+
         return IconDisplay::widget([
             'model' => $model,
             'iconSize' => $this->iconSize,

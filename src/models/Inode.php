@@ -338,10 +338,11 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
     /**
      *
      */
-    private function deleteDirInternal():void{
+    private function deleteDirInternal(): void
+    {
         try {
-            if($children = $this->getChildren()->all()){
-                foreach ($children as $k => $child){
+            if ($children = $this->getChildren()->all()) {
+                foreach ($children as $k => $child) {
                     $child->delete();
                 }
             }
@@ -369,4 +370,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         if ($this->type == InodeTypes::TYPE_VERSION)
             FileVersion::deleteAll(['version_id' => $this->id]);
     }
+
+
 }
