@@ -35,7 +35,7 @@ JS
             </div>
             <div class="panel-heading">
                 <p class="panel-title">
-                    <?= Yii::t('filescatalog', 'Sharing {filename} via email', [
+                    <?= Yii::t('filescatalog', 'Sharing {filename} with other user', [
                         'filename' => Html::tag('span', $model->publicName . "." . $model->extension, ['class' => 'text-info'])
                     ]) ?>
                 </p>

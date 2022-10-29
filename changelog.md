@@ -1,6 +1,8 @@
 # Changelog
 ## Unreleased
 
+## 1.2.1 
+- [*] Display share with a user instead share via email on share with user action
 ## 1.2.0
 - [*] No longer use `tempnam()`
 - [+] Added bit for `ACTION_SHARE`. Currently work as an alias for `ACTION_WRITE` but allows overriding access control
