@@ -15,6 +15,7 @@
 /* @var $childrenTreeNodes \eseperio\filescatalog\models\Inode[] */
 /* @var $filexModule \eseperio\filescatalog\FilesCatalogModule */
 /* @var $attributes array */
+/* @var $user boolean | \app\core\CoreUserIdentity */
 
 /* @var $accessControlFormModel InodePermissionsForm */
 
@@ -34,7 +35,8 @@ $canManageAcl = $filexModule->enableACL && $filexModule->isAdmin();
 
 <?= Breadcrumb::widget([
     'model' => $model,
-    'showPropertiesBtn' => false
+    'showPropertiesBtn' => false,
+
 ]) ?>
 <div class="row">
     <div class="col-md-6 <?= $canManageAcl ? "" : "col-md-offset-3" ?>">

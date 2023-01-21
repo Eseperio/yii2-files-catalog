@@ -61,6 +61,7 @@ class BulkDelete extends Bulk
                     case InodeTypes::TYPE_DIR:
                     case InodeTypes::TYPE_FILE:
                     case InodeTypes::TYPE_SYMLINK:
+                    case InodeTypes::TYPE_VERSION:
                         $model->delete();
                         break;
                 }

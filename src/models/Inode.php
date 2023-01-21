@@ -424,12 +424,12 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         try {
             if ($children = $this->getChildren()->all()) {
                 foreach ($children as $k => $child) {
-                    return $child->delete();
+                    $deletions = $child->delete();
+                    return $deletions;
                 }
             }
         } catch (\Throwable $e) {
             Yii::error($e->getMessage());
-
             return false;
         }
 

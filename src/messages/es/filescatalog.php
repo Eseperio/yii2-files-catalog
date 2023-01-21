@@ -119,6 +119,7 @@ return [
     'Shared with me' => 'Compartido conmigo',
     'Shared with {n,plural,=0{nobody} =1{a user} other{# users}}' => 'Compartido con {n,plural,=0{nobody} =1{un usuario} other{# usuarios}}',
     'Sharing {filename} via email' => 'Compartiendo {filename} via email',
+    'Sharing {filename} with other user' => 'Compartiendo {filename} con otro usuario',
     'Symlink' => 'Acceso directo',
     'System' => 'Sistema',
     'Target not defined' => 'Destino no definido',
@@ -153,6 +154,5 @@ return [
     'or' => 'ó',
     'tomorrow' => 'mañana',
     '{user} has shared the file {filename} with you' => '{user} ha compartido el archivo {filename} contigo',
-    'Sharing {filename} with other user' => 'Compartiendo {filename} con otro usuario',
     'Shared with {qty}' => '@@Compartido con {qty}@@',
 ];
