@@ -63,8 +63,8 @@ class InodePermissionsForm extends AccessControl
             }],
             [['custom_role'], 'required',
                 'when' => function ($model) {
-                return $model->type == self::TYPE_ROLE && $model->role == self::CUSTOM_ROLE_VALUE;
-            }
+                    return $model->type == self::TYPE_ROLE && $model->role == self::CUSTOM_ROLE_VALUE;
+                }
             ],
             ['user_id', 'default', 'value' => self::DUMMY_USER],
             ['role', 'default', 'value' => self::DUMMY_ROLE],
@@ -114,7 +114,9 @@ class InodePermissionsForm extends AccessControl
     public function init()
     {
         $this->type = self::TYPE_ROLE;
-        $this->registerAssets();
+        if (!Yii::$app instanceof \yii\console\Application) {
+            $this->registerAssets();
+        }
         parent::init();
     }
 
@@ -129,7 +131,7 @@ class InodePermissionsForm extends AccessControl
         $userIdInputFormId = Html::getInputId($this, 'user_id');
         $customRoleId = Html::getInputId($this, 'custom_role');
         $roleSelector = Html::getInputId($this, 'role');
-        $customRoleGroupId =  self::CUSTOM_ROLE_GROUP_ID;
+        $customRoleGroupId = self::CUSTOM_ROLE_GROUP_ID;
         $customRoleVal = self::CUSTOM_ROLE_VALUE;
 
         $typeRole = self::TYPE_ROLE;
