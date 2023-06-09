@@ -112,6 +112,7 @@ class Inode extends ActiveRecord
 
     /**
      * @return InodeQuery|\yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public static function find()
     {
