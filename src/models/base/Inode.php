@@ -205,13 +205,6 @@ class Inode extends ActiveRecord
             ],
             'filex' => [
                 'class' => FilexBehavior::class
-            ],
-            'tenanta' => [
-                'class' => AttributeBehavior::class,
-                'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => 'tenant_id',
-                    ActiveRecord::EVENT_BEFORE_UPDATE => 'tenant_id',
-                ],
             ]
         ]);
 
