@@ -1,6 +1,6 @@
 {
   "name": "eseperio/yii2-files-catalog",
-  "description": "A tool to display files as a collection",
+  "description": "A tool to display files as a collection",.env
   "type": "yii2-extension",
   "require": {
     "yiisoft/yii2": "^2.0@dev",
