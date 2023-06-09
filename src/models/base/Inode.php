@@ -20,6 +20,7 @@ use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListBehavior;
 use Ramsey\Uuid\Uuid;
 use Yii;
+use yii\behaviors\AttributeBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
@@ -204,6 +205,13 @@ class Inode extends ActiveRecord
             ],
             'filex' => [
                 'class' => FilexBehavior::class
+            ],
+            'tenanta' => [
+                'class' => AttributeBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'tenant_id',
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'tenant_id',
+                ],
             ]
         ]);
 
