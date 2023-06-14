@@ -34,8 +34,13 @@ use yii\web\UploadedFile;
  * @property int $created_at
  * @property int $updated_at
  * @property int $created_by
+ * @property int $tenant_id
  * @property null|Inode[] $versions
  * @property Inode|null $original
+ * @property-read mixed $fileVersions
+ * @property-read string $contentAsBase64
+ * @property-write resource $stream
+ * @property-write mixed $asVersion
  * @property string $publicName
  */
 class Inode extends \eseperio\filescatalog\models\base\Inode
