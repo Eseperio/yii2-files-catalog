@@ -22,6 +22,7 @@ use Yii;
 use yii\base\Component;
 use yii\web\NotFoundHttpException;
 
+
 class InodeHelper extends Component
 {
     use ModuleAwareTrait;
@@ -144,6 +145,9 @@ class InodeHelper extends Component
      * ATTENTION: This method will not check access control.
      * @param Inode $inode
      * @param Inode $folder
+     * @param null $permissions
+     * @return false|Inode false if error, Inode model if success. Returns inode since 1.3.3
+     * @throws \yii\base\InvalidConfigException
      */
     public static function linkToInode(Inode $inode, Inode $folder, $permissions = null)
     {
@@ -157,7 +161,7 @@ class InodeHelper extends Component
         if ($symLink->appendTo($folder)->save()) {
             AccessControl::grantAccessToUsers($symLink, Yii::$app->user, $permissions);
 
-            return true;
+            return $symLink;
         }
 
         return false;

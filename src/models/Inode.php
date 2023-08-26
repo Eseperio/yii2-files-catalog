@@ -249,7 +249,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
                 if (is_resource($this->_stream)) {
                     $this->internalSaveStreamAsFile($this->_stream);
-
                 } else if ($file instanceof UploadedFile && $this->validate(['file'])) {
                     $this->name = $this->getSafeFileName($file);
                     $this->mime = FileHelper::getMimeType($file->tempName);
@@ -264,10 +263,11 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
 
                 } else {
+                    throw new Exception('Attempt to create an empty or invalid file for: '. $this->name.".". $this->extension);
                     $this->delete();
                 }
             } catch (\Throwable $e) {
-                $this->addError('file', Yii::t('filescatalog', $e->getMessage()));
+                $this->addError('file',  Yii::t('filescatalog', "Error saving file content: ".$e->getMessage()));
                 $this->delete();
                 throw $e;
             }

@@ -1,22 +1,44 @@
 # Changelog
+
 ## Unreleased
 
-## 1.2.1 
+## 1.3.4
+
+- [+] InodeHelper::linkToInode now returns inode instead of true when link is created
+
+## 1.3.1
+
+- Improved pager appearance
+
+## 1.3.0
+
+- Improved pager customization
+
+## 1.2.1
+
 - [*] Display share with a user instead share via email on share with user action
+
 ## 1.2.0
+
 - [*] No longer use `tempnam()`
 - [+] Added bit for `ACTION_SHARE`. Currently work as an alias for `ACTION_WRITE` but allows overriding access control
+
 ## 1.1.1
+
 - [*] Fix bug when coping permissions recursively
 - [+] Use container references for inodeShare instance creation
 - [+] Add default date to share form
 - [+] Add `sharedWith($userId)` method to `InodeQuery`
+
 ## 1.1.0
+
 - [+] Added email sharing for files
 - [+] Added user file sharing
 - [-] Removed unused old dropdownActionColumn
 - [*] Fixed visibility of inodeActionColumn methods
+
 ## 18-2-2022 1.0.10
+
 - [*] Remove upper limit in name search field
 
 ## 8-6-2021 1.0.9
