@@ -150,3 +150,10 @@ When using data providers, remember use the one included within this module. Thi
 manage nesting. That requires extra queries to get parents or childrens, but is way more efficient than nested-set
 pattern on system that require a lot of nodes and writes
 
+
+
+    Important: when a inode of type file is created, model is stored and then file data is stored. If file data can not be
+    stored, model is deleted. This is done to avoid orphaned files. If you want to change this behavior, override
+    `File::afterSave()` method.
+    You can check whether a file has been deleted by checking `hasErrors()` method. If it returns true, you can check
+    `getErrors()` method to get the error message.
