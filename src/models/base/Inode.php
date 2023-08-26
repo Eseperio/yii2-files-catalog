@@ -20,7 +20,6 @@ use eseperio\filescatalog\traits\ModuleAwareTrait;
 use paulzi\adjacencyList\AdjacencyListBehavior;
 use Ramsey\Uuid\Uuid;
 use Yii;
-use yii\behaviors\AttributeBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
@@ -52,35 +51,7 @@ use yii\helpers\StringHelper;
  * @property string $humanName
  * @property \eseperio\filescatalog\models\base\InodeShare[]|null $shares
  *
- * ********************************************
- * Methods inherited from nested sets behavior:
- * ********************************************
- * @method  events()
- * @method  attach($owner)
- * @method  InodeQuery getParents($depth = null)
- * @method  getParentsOrdered($depth = null)
- * @method  InodeQuery getParent()
- * @method  InodeQuery getRoot()
- * @method  InodeQuery getDescendants($depth = null, $andSelf = false)
- * @method  getDescendantsOrdered($depth = null)
- * @method  InodeQuery getChildren()
- * @method  InodeQuery getLeaves($depth = null)
- * @method  getPrev()
- * @method  getNext()
- * @method  getParentsIds($depth = null, $cache = true)
- * @method  array getDescendantsIds($depth = null, $flat = false, $cache = true)
- * @method  populateTree($depth = null)
- * @method  isRoot()
- * @method  isChildOf($node)
- * @method  isLeaf()
- * @method  $this makeRoot()
- * @method  $this prependTo($node)
- * @method  $this appendTo($node)
- * @method  $this insertBefore($node)
- * @method  $this insertAfter($node)
- * @method  preDeleteWithChildren()
- * @method  deleteWithChildren()
- * @method  reorderChildren($middle = true)
+ * @mixin  AdjacencyListBehavior
  */
 class Inode extends ActiveRecord
 {
