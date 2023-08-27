@@ -81,7 +81,7 @@ class InodeHelper extends Component
                 ->withSharesActive()
                 ->one();
             if (empty($model)) {
-//                Root does not exists, create it
+//                Root does not exist, create it
                 $root = \Yii::createObject([
                     'class' => Inode::class
                 ]);
