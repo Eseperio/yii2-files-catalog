@@ -5,6 +5,7 @@
 ## 1.3.4
 
 - [+] InodeHelper::linkToInode now returns inode instead of true when link is created
+- [*] Improved bulk actions javascript to automatically populate selected uuids to each action button
 
 ## 1.3.1
 

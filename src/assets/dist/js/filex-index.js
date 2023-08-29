@@ -89,12 +89,13 @@ var filexIndex = /*#__PURE__*/function () {
 
         var keys = _this.getSelectedRows();
 
-        $('.filex-bulk-actions').toggleClass('collapse', !keys.length > 0);
+        var bulkActionsCont = $('.filex-bulk-actions');
+        bulkActionsCont.toggleClass('collapse', !keys.length > 0);
         var params = {};
         keys.forEach(function (e, i, a) {
           params['uuids[' + i + ']'] = e;
         });
-        $(".filex-bulk-delete,.filex-bulk-acl,.filex-bulk-download").data('params', params);
+        bulkActionsCont.find('[data-params]').data('params', params);
       });
     }
   }, {
