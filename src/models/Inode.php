@@ -34,8 +34,13 @@ use yii\web\UploadedFile;
  * @property int $created_at
  * @property int $updated_at
  * @property int $created_by
+ * @property int $tenant_id
  * @property null|Inode[] $versions
  * @property Inode|null $original
+ * @property-read mixed $fileVersions
+ * @property-read string $contentAsBase64
+ * @property-write resource $stream
+ * @property-write mixed $asVersion
  * @property string $publicName
  */
 class Inode extends \eseperio\filescatalog\models\base\Inode
@@ -244,7 +249,6 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
                 if (is_resource($this->_stream)) {
                     $this->internalSaveStreamAsFile($this->_stream);
-
                 } else if ($file instanceof UploadedFile && $this->validate(['file'])) {
                     $this->name = $this->getSafeFileName($file);
                     $this->mime = FileHelper::getMimeType($file->tempName);
@@ -259,10 +263,11 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
 
                 } else {
+                    throw new Exception('Attempt to create an empty or invalid file for: '. $this->name.".". $this->extension);
                     $this->delete();
                 }
             } catch (\Throwable $e) {
-                $this->addError('file', Yii::t('filescatalog', $e->getMessage()));
+                $this->addError('file',  Yii::t('filescatalog', "Error saving file content: ".$e->getMessage()));
                 $this->delete();
                 throw $e;
             }

@@ -72,13 +72,14 @@ class filexIndex {
             row.toggleClass(this.settings.activeRowClass, $(e.currentTarget).prop('checked'));
 
             let keys = this.getSelectedRows();
-            $('.filex-bulk-actions').toggleClass('collapse', (!keys.length > 0));
+            let bulkActionsCont = $('.filex-bulk-actions');
+            bulkActionsCont.toggleClass('collapse', (!keys.length > 0));
             let params = {};
             keys.forEach((e, i, a) => {
                 params['uuids[' + i + ']'] = e;
             });
 
-            $(".filex-bulk-delete,.filex-bulk-acl,.filex-bulk-download").data('params', params);
+            bulkActionsCont.find('[data-params]').data('params', params);
 
         })
     }

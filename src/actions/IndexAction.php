@@ -9,6 +9,7 @@
 namespace eseperio\filescatalog\actions;
 
 
+use app\dictionaries\ObjectTypes;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
@@ -24,6 +25,7 @@ use yii\web\Controller;
 class IndexAction extends Action
 {
     use ModuleAwareTrait;
+
     /**
      * @var DefaultController|Controller|\yii\rest\Controller
      */
@@ -40,7 +42,7 @@ class IndexAction extends Action
     {
         $model = $this->getModel();
 
-        if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot()){
+        if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot()) {
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
         }
 
@@ -58,8 +60,8 @@ class IndexAction extends Action
             'usePjax' => $this->module->usePjax,
             'parents' => $model->getParents()->asArray()->all(),
             'bulkActions' => $bulkActions,
-            'isDeepSearch'=> (bool)Yii::$app->request->get($this->deepSearchParamName),
-            'deepSearchParamName'=>$this->deepSearchParamName
+            'isDeepSearch' => (bool)Yii::$app->request->get($this->deepSearchParamName),
+            'deepSearchParamName' => $this->deepSearchParamName
         ]);
     }
 
@@ -85,7 +87,7 @@ class IndexAction extends Action
                 'url' => ['/filex/default/bulk-download'],
                 'linkOptions' => [
                     'id' => 'filex-bulk-download',
-                    'class'=> 'filex-bulk-delete',
+                    'class' => 'filex-bulk-delete',
                     'data' => [
                         'method' => 'post',
                         'params' => json_encode([]),
@@ -96,6 +98,7 @@ class IndexAction extends Action
             [
                 'label' => Yii::t('filescatalog', 'Delete'),
                 'url' => ['/filex/default/bulk-delete'],
+                'visible' => USER_CAN_CREATE(ObjectTypes::PROCEEDING_OBJECT),
                 'linkOptions' => [
                     'id' => 'filex-bulk-delete',
                     'class' => 'text-danger filex-bulk-delete',
@@ -114,7 +117,7 @@ class IndexAction extends Action
                 'url' => ['/filex/default/bulk-acl'],
                 'linkOptions' => [
                     'id' => 'filex-bulk-acl',
-                    'class' => 'text-danger filex-bulk-delete' ,
+                    'class' => 'text-danger filex-bulk-delete',
                     'data' => [
                         'method' => 'post',
                         'params' => json_encode([]),

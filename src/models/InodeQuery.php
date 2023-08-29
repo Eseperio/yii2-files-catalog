@@ -21,7 +21,7 @@ use yii\helpers\ArrayHelper;
 /**
  * Class InodeQuery
  * @package eseperio\filescatalog\models
- * @method $this roots() gets the roots nodes
+ * @mixin   AdjacencyListQueryTrait
  */
 class InodeQuery extends ActiveQuery
 {

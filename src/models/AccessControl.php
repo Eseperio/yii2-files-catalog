@@ -68,9 +68,9 @@ class AccessControl extends ActiveRecord
     }
 
     /**
-     * @param array|integer|integer[]|Inode|Inode[] $inodes
-     * @param \eseperio\filescatalog\models\AccessControl $permModel
      * @return void
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
      */
     public function copyPermissionToDescendants()
     {
