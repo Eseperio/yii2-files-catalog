@@ -10,7 +10,6 @@ namespace eseperio\filescatalog\actions;
 
 
 use eseperio\filescatalog\dictionaries\InodeTypes;
-use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;

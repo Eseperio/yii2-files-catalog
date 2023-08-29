@@ -48,8 +48,6 @@ class BulkAcl extends Bulk
 
         if ($this->checkSecureHash($models)) {
             if ($this->addPermissions($models, $permModel)) {
-                var_dump($permissions);
-
                 return $this->controller->goBack();
             } else {
                 $error = Yii::t('filescatalog', 'An error ocurred when trying to delete');
