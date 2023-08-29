@@ -263,7 +263,8 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
 
                 } else {
-                    throw new Exception('Attempt to create an empty or invalid file for: '. $this->name.".". $this->extension);
+
+//                    throw new Exception('Attempt to create an empty or invalid file for: '. $this->name.".". $this->extension);
                     $this->delete();
                 }
             } catch (\Throwable $e) {
