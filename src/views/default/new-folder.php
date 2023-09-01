@@ -27,7 +27,10 @@ use yii\bootstrap\Html;
                 <div class="panel-body">
                     <?php $form = ActiveForm::begin(); ?>
 
-                    <?= $form->field($model, 'name')->textInput(['maxlength' => 256]) ?>
+                    <?= $form->field($model, 'name')->textInput([
+                        'maxlength' => 256,
+                        'autofocus' => true
+                    ]) ?>
 
                     <div class="form-group">
                         <?= Html::submitButton(Yii::t('filescatalog', 'Add'), ['class' => 'btn btn-success']) ?>
