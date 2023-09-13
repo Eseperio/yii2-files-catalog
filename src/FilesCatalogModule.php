@@ -65,7 +65,7 @@ class FilesCatalogModule extends Module
      */
     public $user = 'user';
     /**
-     * Identity must implement ActiveRecord
+     * The identity class used to retrieve user for shared items
      * @var string|\yii\web\IdentityInterface the class name of the [[identity]] object.
      */
     public $identityClass;
@@ -77,7 +77,7 @@ class FilesCatalogModule extends Module
      * @var string user attribute that returns the name.
      * Can be a anything valid for [[ArrayHelper::getValue()]]. Will be used both for user component and user identity
      */
-    public $userNameAttribute = 'username';
+    public $userNameAttribute = 'identity.username';
     /**
      * @var string Name of the db component to use on data handling
      */

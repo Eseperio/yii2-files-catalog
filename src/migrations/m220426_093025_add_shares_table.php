@@ -35,23 +35,7 @@ class m220426_093025_add_shares_table extends Migration
      */
     public function safeDown()
     {
-        echo "m220426_093025_add_shares_table cannot be reverted.\n";
-
-        return false;
+        $this->dropTable('{{%fcatalog_shares}}');
     }
 
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m220426_093025_add_shares_table cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

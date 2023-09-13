@@ -25,7 +25,7 @@ class m190705_143724_add_filescatalog_table extends Migration
     public function safeUp()
     {
         $this->createTable($this->inodeTableName, [
-            'id' => 'int(11) NOT NULL AUTO_INCREMENT = 10 PRIMARY KEY',
+            'id' => $this->primaryKey()->comment('Inode id'),
             'uuid' => $this->string(36),
             'name' => $this->string(255),
             'extension' => $this->string(16),
@@ -33,15 +33,15 @@ class m190705_143724_add_filescatalog_table extends Migration
             'type' => $this->integer(1)->defaultValue(InodeTypes::TYPE_FILE)->notNull(),
             'parent_id' => $this->integer()->defaultValue(0),
             'md5hash' => $this->string(32),
-            'depth' => $this->integer()->notNull(),
-            'filesize' => $this->bigInteger(),
+            'depth' => $this->integer()->notNull()->defaultValue(0),
+            'filesize' => $this->bigInteger()->defaultValue(0),
             'created_at' => $this->integer()->null(),
             'updated_at' => $this->integer()->null(),
             'created_by' => $this->integer()->null(),
             'updated_by' => $this->integer()->null(),
             'author_name' => $this->string(128),
             'editor_name' => $this->string(128)
-        ],'AUTO_INCREMENT = 10');
+        ], 'AUTO_INCREMENT = 10');
         $this->createIndex('idx_name_ext_inode', $this->inodeTableName, [
             'uuid',
             'type'
@@ -55,7 +55,7 @@ class m190705_143724_add_filescatalog_table extends Migration
             'inode_id' => $this->integer()->comment('Inode id'),
             'user_id' => $this->integer(),
             'role' => $this->string(64),
-            'crud_mask'=>$this->smallInteger()->comment('4 bit Binary mask for access permission.CRUD = C=>8 R=>4 U=>2 D=>1')->defaultValue(4)
+            'crud_mask' => $this->smallInteger()->comment('4 bit Binary mask for access permission.CRUD = C=>8 R=>4 U=>2 D=>1')->defaultValue(4)
         ]);
         $this->addPrimaryKey('inode_perms', $this->inodePermissionTableName, [
             'inode_id',
@@ -89,6 +89,7 @@ class m190705_143724_add_filescatalog_table extends Migration
     {
         $this->dropTable($this->inodePermissionTableName);
         $this->dropTable($this->inodeTableName);
+        $this->dropTable($this->inodeVersionsTableName);
     }
 
 }

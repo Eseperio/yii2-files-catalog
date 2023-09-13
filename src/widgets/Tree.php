@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\widgets;
 
 
-use eseperio\admintheme\helpers\Html;
+use yii\helpers\Html;
 use yii\base\Widget;
 
 class Tree extends Widget

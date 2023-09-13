@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\columns;
 
 
-use eseperio\admintheme\helpers\Html;
+use yii\helpers\Html;
 use eseperio\filescatalog\models\InodeQuery;
 use eseperio\filescatalog\widgets\IconDisplay;
 use yii\grid\DataColumn;

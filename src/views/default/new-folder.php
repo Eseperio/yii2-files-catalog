@@ -25,7 +25,11 @@ use yii\bootstrap\Html;
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <?php $form = ActiveForm::begin(); ?>
+                    <?php $form = ActiveForm::begin([
+                        'options' => [
+                            'class' => 'new-folder-form'
+                        ]
+                    ]); ?>
 
                     <?= $form->field($model, 'name')->textInput([
                         'maxlength' => 256,

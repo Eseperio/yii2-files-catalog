@@ -100,6 +100,7 @@ class DefaultController extends \yii\web\Controller
      */
     public function beforeAction($action)
     {
+
         if (Yii::$app->request->isGet) {
             $previous = Yii::$app->user->getReturnUrl();
             $current = Url::to();

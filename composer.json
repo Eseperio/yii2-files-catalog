@@ -3,12 +3,22 @@
   "description": "A tool to display files as a collection",
   "type": "yii2-extension",
   "require": {
-    "yiisoft/yii2": "^2.0@dev",
+    "yiisoft/yii2": "^2.0",
     "creocoder/yii2-flysystem": "0.9.*",
     "dmhendricks/file-icon-vectors": "@dev",
     "paulzi/yii2-adjacency-list": "2.1.*",
     "2amigos/yii2-file-upload-widget": "~1.0",
-    "ramsey/uuid": "3.8.*"
+    "ramsey/uuid": "^3.8"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9",
+    "codeception/codeception": "^5.0.4",
+    "codeception/specify": "*",
+    "codeception/verify": "*",
+    "codeception/module-yii2": "dev-master",
+    "codeception/module-asserts": "dev-master",
+    "vlucas/phpdotenv": "^5.5@dev",
+    "codeception/module-phpbrowser": "dev-master"
   },
   "license": "GPL-3.0-or-later",
   "authors": [
@@ -24,6 +34,17 @@
   "autoload": {
     "psr-4": {
       "eseperio\\filescatalog\\": "./src/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ],
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
     }
   }
 }

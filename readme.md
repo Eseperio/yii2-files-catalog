@@ -157,3 +157,8 @@ pattern on system that require a lot of nodes and writes
     `File::afterSave()` method.
     You can check whether a file has been deleted by checking `hasErrors()` method. If it returns true, you can check
     `getErrors()` method to get the error message.
+
+
+## Testing
+
+See [testing docs](docs/testing.md)

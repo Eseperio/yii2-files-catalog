@@ -110,7 +110,8 @@ class InodeQuery extends ActiveQuery
      */
     private function onlyAllowed($crudMaskValues): InodeQuery
     {
-        if (!$this->module->isAdmin()) {
+        // we use false comparison to prevent null values disabling ACL
+        if (!$this->module->isAdmin() && $this->module->enableACL !== false) {
             $authManager = Yii::$app->authManager;
             $userId = $this->module->getUserId();
 

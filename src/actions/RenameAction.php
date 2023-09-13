@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\actions;
 
 
-use eseperio\admintheme\helpers\Html;
+use yii\helpers\Html;
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\helpers\AclHelper;

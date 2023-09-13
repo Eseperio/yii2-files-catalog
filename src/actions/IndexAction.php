@@ -9,7 +9,6 @@
 namespace eseperio\filescatalog\actions;
 
 
-use app\dictionaries\ObjectTypes;
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\exceptions\FilexAccessDeniedException;
@@ -40,6 +39,7 @@ class IndexAction extends Action
      */
     public function run()
     {
+
         $model = $this->getModel();
 
         if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot()) {
@@ -98,7 +98,6 @@ class IndexAction extends Action
             [
                 'label' => Yii::t('filescatalog', 'Delete'),
                 'url' => ['/filex/default/bulk-delete'],
-                'visible' => USER_CAN_CREATE(ObjectTypes::PROCEEDING_OBJECT),
                 'linkOptions' => [
                     'id' => 'filex-bulk-delete',
                     'class' => 'text-danger filex-bulk-delete',

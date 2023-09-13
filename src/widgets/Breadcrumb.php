@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\widgets;
 
 
-use eseperio\admintheme\helpers\Html;
+use yii\helpers\Html;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Inode;

@@ -1,1 +1,7 @@
 /vendor/
+codeception.yml
+.env
+/tests/_output/
+/tests/_support/_generated/
+/tests/_app/assets
+

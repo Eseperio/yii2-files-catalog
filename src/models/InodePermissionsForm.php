@@ -9,7 +9,7 @@
 namespace eseperio\filescatalog\models;
 
 
-use eseperio\admintheme\helpers\Html;
+use yii\helpers\Html;
 use Yii;
 
 /**
