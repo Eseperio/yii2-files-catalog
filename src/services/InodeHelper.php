@@ -63,7 +63,8 @@ class InodeHelper extends Component
     }
 
     /**
-     * Returns the model with the uuid specified. It uuid is null then root node is return.
+     * Returns the model with the uuid specified. It uuid is null then root node is returned.
+     * If root node does not exist, it will be created.
      * @param null $uuid
      * @param bool $checkAccess whether perform read permissions check before return
      * @return array|Inode|\eseperio\filescatalog\models\Directory|\yii\db\ActiveRecord|\yii\web\Response|null
@@ -87,7 +88,9 @@ class InodeHelper extends Component
                 ]);
                 $root->name = 'root';
                 $root->type = InodeTypes::TYPE_DIR;
+                throw new \Exception('test');
                 $root->makeRoot()->save(false);
+
 
                 $model = $root;
             }
