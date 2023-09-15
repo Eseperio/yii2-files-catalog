@@ -23,4 +23,13 @@ class FunctionalTester extends \Codeception\Actor
    /**
     * Define custom actions here
     */
+
+    public function changeToTenant($tenantId)
+    {
+        // get current route =
+        $currentRoute = \Yii::$app->controller->route;
+        $this->startFollowingRedirects();
+        $this->amOnPage(['/tenant/tenant/toggle', 'id' => $tenantId]);
+        $this->stopFollowingRedirects();
+    }
 }
