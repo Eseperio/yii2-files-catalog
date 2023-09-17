@@ -79,7 +79,6 @@ class InodeHelper extends Component
         } else {
             $model = Inode::find()
                 ->onlyRoot()
-                ->withSharesActive()
                 ->one();
             if (empty($model)) {
 //                Root does not exist, create it
@@ -88,7 +87,6 @@ class InodeHelper extends Component
                 ]);
                 $root->name = 'root';
                 $root->type = InodeTypes::TYPE_DIR;
-                throw new \Exception('test');
                 $root->makeRoot()->save(false);
 
 

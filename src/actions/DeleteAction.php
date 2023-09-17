@@ -17,7 +17,6 @@ use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
-use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
@@ -26,6 +25,7 @@ use yii\web\NotFoundHttpException;
 class DeleteAction extends Action
 {
     use ModuleAwareTrait;
+
     /**
      * @var DefaultController|Controller|\yii\rest\Controller
      */
@@ -36,8 +36,9 @@ class DeleteAction extends Action
         $uuid = Yii::$app->request->get('uuid');
         $model = $this->controller->findModel($uuid);
 
-        if ($model->isRoot())
+        if ($model->isRoot()) {
             throw new ForbiddenHttpException(Yii::t('filescatalog', 'Root node can not be deleted'));
+        }
 
         $parentUuid = $model->getParent()->select('uuid')->scalar();
 
