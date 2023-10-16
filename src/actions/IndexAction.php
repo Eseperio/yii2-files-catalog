@@ -98,7 +98,6 @@ class IndexAction extends Action
             [
                 'label' => Yii::t('filescatalog', 'Delete'),
                 'url' => ['/filex/default/bulk-delete'],
-                'visible' => USER_CAN_CREATE(ObjectTypes::PROCEEDING_OBJECT),
                 'linkOptions' => [
                     'id' => 'filex-bulk-delete',
                     'class' => 'text-danger filex-bulk-delete',
