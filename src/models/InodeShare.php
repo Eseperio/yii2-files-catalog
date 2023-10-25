@@ -47,6 +47,9 @@ class InodeShare extends BaseInodeShare
      * @param $insert
      * @param $changedAttributes
      * @return void
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     * @throws \yii\web\ServerErrorHttpException
      */
     public function afterSave($insert, $changedAttributes)
     {
@@ -71,6 +74,8 @@ class InodeShare extends BaseInodeShare
     /**
      * Delete granted permissions to children
      * @return void
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function afterDelete()
     {

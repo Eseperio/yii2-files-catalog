@@ -60,6 +60,11 @@ class AccessControl extends ActiveRecord
     const SCENARIO_DELETE = 'delscen';
 
     /**
+     * @var array buffer for descendant ids
+     */
+    private $_descentantIds = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -78,35 +83,49 @@ class AccessControl extends ActiveRecord
             throw new InvalidConfigException('Permissions can only be copied from a stored record');
         }
         $inode = $this->inode;
-        $children = $inode->getDescendantsIds(null, true);
-        $data = [];
-        $delPk = ['OR'];
-        foreach ($children as $child) {
-            $delPk[] = [
-                'user_id' => $this->user_id,
-                'role' => $this->role,
-                'inode_id' => $child
-            ];
-            $data[] = [
-                $this->user_id,
-                $this->role,
-                $child,
-                $this->crud_mask
-            ];
-        }
+        $inode->childrenJoinLevels = 5;
+        $children = $this->getDescendantsIds($inode);
 
-        if (count($delPk) > 1) {
-            self::deleteAll($delPk);
+        $this->removeSiblingsRecursive();
+        if (count($children) > 200) {
+            Yii::$app->db->enableLogging = false;
+            Yii::$app->db->enableProfiling = false;
+            Yii::debug('Disabled db logging for bulk insert of inode descendants permissions due to large amount of records', 'filescatalog');
         }
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $batchSize = 1000;
+            $batchLoop = 0;// iterate children in batches
+            while (!empty($children)) {
+                $data = [];
+                $batch = array_splice($children, 0, $batchSize);
+                foreach ($batch as $child) {
+                    $data[] = [
+                        $this->user_id,
+                        $this->role,
+                        $child,
+                        $this->crud_mask
+                    ];
+                }
 
-        /** @var Connection $db */
-        $db = Yii::$app->get($this->module->db);
-        $db->createCommand()->batchInsert($this->module->inodeAccessControlTableName, [
-            'user_id',
-            'role',
-            'inode_id',
-            'crud_mask'
-        ], $data)->execute();
+                /** @var Connection $db */
+                $db = Yii::$app->get($this->module->db);
+                $db->createCommand()->batchInsert($this->module->inodeAccessControlTableName, [
+                    'user_id',
+                    'role',
+                    'inode_id',
+                    'crud_mask'
+                ], $data)->execute();
+                $batchLoop++;
+            }
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        } finally {
+            Yii::$app->db->enableLogging = true;
+            Yii::$app->db->enableProfiling = true;
+        }
     }
 
     /**
@@ -115,20 +134,41 @@ class AccessControl extends ActiveRecord
      */
     public function removeSiblingsRecursive()
     {
-        $inode = $this->inode;
-        $children = $inode->getDescendantsIds(null, true);
-        $delPk = ['OR'];
-        foreach ($children as $child) {
-            $delPk[] = [
-                'user_id' => $this->user_id,
-                'role' => $this->role,
-                'inode_id' => $child
-            ];
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $inode = $this->inode;
+            $children = $this->getDescendantsIds($inode);// disable logging if children is greater than 200
+            $totalRows = count($children);
+            if ($totalRows > 200) {
+                Yii::debug('Disabled db logging for bulk delete of inode descendants permissions', 'filescatalog');
+                Yii::$app->db->enableLogging = false;
+                Yii::$app->db->enableProfiling = false;
+            }
+            $batchSize = 1000;
+            $batchLoop = 0;
+            while (!empty($children)) {
+                $batch = array_splice($children, 0, $batchSize);
+                $delPk = [
+                    'AND',
+                    ['user_id' => $this->user_id],
+                    ['role' => $this->role],
+                    ['inode_id' => $batch]
+                ];
+                self::deleteAll($delPk);
+
+                $batchLoop++;
+            }
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        } finally {
+            Yii::$app->db->enableLogging = true;
+            Yii::$app->db->enableProfiling = true;
         }
 
-        if(count($delPk)> 1){
-            self::deleteAll($delPk);
-        }
+
     }
 
     /**
@@ -137,6 +177,7 @@ class AccessControl extends ActiveRecord
      * @param $users
      * @param null $mask
      * @return bool|int
+     * @throws \Exception
      */
     public static function grantAccessToUsers($files, $users, $mask = null)
     {
@@ -149,6 +190,7 @@ class AccessControl extends ActiveRecord
      * @param $mask
      * @param int $type
      * @return bool|int the number of rows inserted
+     * @throws \Exception
      */
     private static function setInodesAccessRules($files, $usersOrRoles, $mask = null, $type = self::TYPE_USER)
     {
@@ -379,5 +421,17 @@ class AccessControl extends ActiveRecord
                 $this->crud_mask |= (int)$value;
             }
         }
+    }
+
+    /**
+     * @param \eseperio\filescatalog\models\Inode|null $inode
+     * @return array
+     */
+    private function getDescendantsIds(?Inode $inode): array
+    {
+        if (empty($this->_descentantIds)) {
+            $this->_descentantIds = $inode->getDescendantsIds(null, true);
+        }
+        return $this->_descentantIds;
     }
 }

@@ -87,6 +87,7 @@ class InodeSearch extends \eseperio\filescatalog\models\Inode
                 ->withSymlinksReferences();
         }
 
+        /* @var $query \app\modules\repository\models\InodeQuery  */
 
         $query->excludeVersions()
             ->onlyReadable();
