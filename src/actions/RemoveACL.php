@@ -23,6 +23,7 @@ class RemoveACL extends Action
         $permModel = Yii::createObject(InodePermissionsForm::class);
         $permModel->scenario = AccessControl::SCENARIO_DELETE;
         $permModel->setAttributes(Yii::$app->request->post(), false);
+        $all = Yii::$app->request->post('all', false);
         if ($permModel->validate()) {
             try {
                 $realModel = AccessControl::find()->where([
@@ -30,8 +31,13 @@ class RemoveACL extends Action
                     'role' => $permModel->role,
                     'inode_id' => $permModel->inode_id
                 ])->one();
-                if (!empty($realModel))
+
+                if (!empty($realModel)) {
+                    if($all){
+                        $realModel->removeSiblingsRecursive();
+                    }
                     $realModel->delete();
+                }
             } catch (\Throwable $e) {
                 throw $e;
             }

@@ -123,42 +123,57 @@ $fileRoles[InodePermissionsForm::CUSTOM_ROLE_VALUE] = Yii::t('filescatalog', 'Cu
                             }
                             ?>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <?= CrudStatus::widget(['model' => $item]) ?>
                         </div>
-                        <div class="col-sm-3">
-                            <?= Html::a(Yii::t('filescatalog', 'Apply to children'), ['inherit-acl'],
-                                [
-                                    'class' => 'pull-right',
-                                    'data' => [
-                                        'method' => 'post',
-                                        'confirm' => Yii::t('filescatalog', 'Apply to all children? This cannot be undone'),
-                                        'params' => [
-                                            'inode_id' => $item->inode_id,
-                                            'role' => $item->role,
-                                            'user_id' => $item->user_id
-                                        ]
-                                    ],
-                                ]) ?>
+
+                        <div class="col-sm-6">
+                            <ul>
+                                <li>
+                                    <?= Html::a(Yii::t('filescatalog', 'Apply to children'), ['inherit-acl'],
+                                        [
+                                            'data' => [
+                                                'method' => 'post',
+                                                'confirm' => Yii::t('filescatalog', 'Apply to all children? This cannot be undone'),
+                                                'params' => [
+                                                    'inode_id' => $item->inode_id,
+                                                    'role' => $item->role,
+                                                    'user_id' => $item->user_id
+                                                ]
+                                            ],
+                                        ]) ?>
+                                </li>
+                                <li> <?= Html::a(Yii::t('filescatalog', 'Remove'), [
+                                        'remove-acl',
+                                    ], [
+                                        'data' => [
+                                            'method' => 'post',
+                                            'confirm' => Yii::t('filescatalog', 'Confirm deletion'),
+                                            'params' => [
+                                                'inode_id' => $item->inode_id,
+                                                'role' => $item->role,
+                                                'user_id' => $item->user_id
+                                            ]
+                                        ],
+                                    ]) ?></li>
+                                <li>
+                                    <?= Html::a(Yii::t('filescatalog', 'Remove here and in all descendants'), [
+                                        'remove-acl',
+                                    ], [
+                                        'data' => [
+                                            'method' => 'post',
+                                            'confirm' => Yii::t('filescatalog', 'Confirm deletion'),
+                                            'params' => [
+                                                'inode_id' => $item->inode_id,
+                                                'role' => $item->role,
+                                                'user_id' => $item->user_id,
+                                                'all' => true
+                                            ]
+                                        ],
+                                    ]) ?>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="col-sm-3">
-                            <?= Html::a(Yii::t('filescatalog', 'Delete'), [
-                                'remove-acl',
-                            ], [
-                                'class' => 'pull-right',
-                                'data' => [
-                                    'method' => 'post',
-                                    'confirm' => Yii::t('filescatalog', 'Confirm deletion'),
-                                    'params' => [
-                                        'inode_id' => $item->inode_id,
-                                        'role' => $item->role,
-                                        'user_id' => $item->user_id
-                                    ]
-                                ],
-                            ]) ?>
-                        </div>
-                    </
-                    >
                 </li>
             <?php endforeach; ?>
         </ul>
