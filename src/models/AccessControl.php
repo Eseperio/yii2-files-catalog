@@ -86,15 +86,16 @@ class AccessControl extends ActiveRecord
         // iterate children in batches
         while(!empty($children)){
             $data = [];
-            $delPk = ['OR'];
             // extract first batch
-            $batch = array_slice($children,$batchLoop,$batchSize);
+            $batch = array_splice($children,$batchLoop,$batchSize);
+            $deleteCond = [
+                'user_id' => $this->user_id,
+                'role' => $this->role,
+                'inode_id' => $batch
+            ];
+            self::deleteAll($deleteCond);
+
             foreach ($batch as $child) {
-                $delPk[] = [
-                    'user_id' => $this->user_id,
-                    'role' => $this->role,
-                    'inode_id' => $child
-                ];
                 $data[] = [
                     $this->user_id,
                     $this->role,
@@ -103,9 +104,6 @@ class AccessControl extends ActiveRecord
                 ];
             }
 
-            if (count($delPk) > 1) {
-                self::deleteAll($delPk);
-            }
 
             /** @var Connection $db */
             $db = Yii::$app->get($this->module->db);
