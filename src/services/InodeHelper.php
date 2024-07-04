@@ -133,8 +133,9 @@ class InodeHelper extends Component
 
         if ($module->enableACL) {
             $aclModel = ($model->type === InodeTypes::TYPE_VERSION) ? $model->original : $model;
-            if (!AclHelper::canRead($aclModel))
+            if (!AclHelper::canRead($aclModel)){
                 throw new FilexAccessDeniedException();
+            }
         }
 
         return $model;
