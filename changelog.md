@@ -2,9 +2,14 @@
 
 ## Unreleased
 
-## 1.3.5
+## 1.4.1
 
 - [*] Fixed an issue where deleting a folder does not delete its children, instead, they were moved to parent directory
+
+## 1.4.0
+
+- Added remove permission to current and all descendants
+- Fixed an issue with a wrong call to custom access control method.
 
 ## 1.3.4
 
