@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.3.5
+
+- [*] Fixed an issue where deleting a folder does not delete its children, instead, they were moved to parent directory
+
 ## 1.3.4
 
 - [+] InodeHelper::linkToInode now returns inode instead of true when link is created

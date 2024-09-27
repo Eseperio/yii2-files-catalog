@@ -210,6 +210,9 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         return $this->module->getStorageComponent()->read($this->getInodeRealPath());
     }
 
+    /**
+     * @return void
+     */
     public function afterDelete()
     {
         if ($this->module->enableACL) {
@@ -217,6 +220,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
             $ids[] = $this->id;
             AccessControl::deleteAll(['inode_id' => $ids]);
         }
+
         Inode::deleteAll([
             'uuid' => $this->uuid,
             'type' => InodeTypes::TYPE_SYMLINK
@@ -268,7 +272,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
                     $this->delete();
                 }
             } catch (\Throwable $e) {
-                $this->addError('file',  Yii::t('filescatalog', "Error saving file content: ".$e->getMessage()));
+                $this->addError('file', Yii::t('filescatalog', "Error saving file content: " . $e->getMessage()));
                 $this->delete();
                 throw $e;
             }
@@ -430,12 +434,14 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
         try {
             if ($children = $this->getChildren()->all()) {
                 foreach ($children as $k => $child) {
-                    $deletions = $child->delete();
-                    return $deletions;
+                    $child->delete();
                 }
             }
         } catch (\Throwable $e) {
             Yii::error($e->getMessage());
+            if(YII_DEBUG){
+                throw $e;
+            }
             return false;
         }
 
