@@ -24,11 +24,16 @@ class DownloadAction extends Action
      */
     public $controller;
 
-    public function run()
+    public function run($uuid,$inline= false)
     {
-        $model = $this->controller->findModel(Yii::$app->request->get('uuid'), Inode::class);
+        $model = $this->controller->findModel($uuid, Inode::class);
         $stream = $model->getFile();
         $attachmentName = $model->publicName . "." . $model->extension;
-        Yii::$app->response->sendContentAsFile($stream, $attachmentName);
+        $options =[];
+        if($inline){
+            $options['inline'] = true;
+            $options['mime'] = $model->mime;
+        }
+        Yii::$app->response->sendContentAsFile($stream, $attachmentName,$options);
     }
 }
