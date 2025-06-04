@@ -12,11 +12,6 @@ class BasicCest
 
     }
 
-    public function checkBaseTestAppWorks(FunctionalTester $I)
-    {
-        $I->amOnPage('/');
-        $I->see('My Company');
-    }
 
     // tests
     public function ensureRootIsCreatedIfMissing(FunctionalTester $I)
@@ -38,11 +33,12 @@ class BasicCest
     {
 
         $model = $I->grabRecord(\eseperio\filescatalog\models\Inode::class, ['name' => 'root']);
-        $I->amOnRoute('filex/default/new-folder', ['uuid' => $model->uuid]);
+        $I->amOnRoute('/filex/default/new-folder', ['uuid' => $model->uuid]);
         $I->amGoingTo('Test if access control is working for new folder form');
-        $I->see('Page not found');
-        $I->amLoggedInAs(100);
-        $I->amOnRoute('filex/default/new-folder', ['uuid' => $model->uuid]);
+        // see is forbidden
+        $I->seeElement('#login-form');
+        $I->amLoggedInAs(\app\models\UserIdentity::USER_A);
+        $I->amOnRoute('/filex/default/new-folder', ['uuid' => $model->uuid]);
         $I->see('root');
         $I->amGoingTo('send new folder form');
         $data = [

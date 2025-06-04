@@ -18,7 +18,8 @@
     "codeception/module-asserts": "*",
     "codeception/module-db": "*",
     "codeception/module-webdriver": "*",
-    "codeception/module-rest": "^3.4"
+    "codeception/module-rest": "^3.4",
+    "codeception/module-phpbrowser": "dev-master"
   },
   "license": "GPL-3.0-or-later",
   "authors": [

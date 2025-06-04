@@ -1,11 +1,20 @@
 <?php
 
 return [
-    100 => [
+    1 => [
         'admin',
     ],
-    101 => [
+    2 => [
         'user',
         'adminPermission'
+    ],
+    3 => [
+        'user',
+    ],
+    4 => [
+        'user',
+    ],
+    5 => [
+        'user',
     ],
 ];

@@ -6,6 +6,7 @@ use eseperio\filescatalog\models\AccessControl;
 use FunctionalTester;
 use tests\_fixtures\InodeFixture;
 use Yii;
+use app\models\UserIdentity;
 
 class AclCest
 {
@@ -27,7 +28,7 @@ class AclCest
         $I->wantTo('Check if user with admin role can access all files');
         $this->filexModule->administratorPermissionName = 'adminPermission';
 
-        $I->amLoggedInAs(101);
+        $I->amLoggedInAs(UserIdentity::USER_B);
         $I->amOnRoute('filex/default/index');
         $I->see('root');
     }
@@ -37,7 +38,7 @@ class AclCest
         $I->wantTo('Check if access is denied to user when it has not assigned any of the admin permissions');
         $this->filexModule->administratorPermissionName = 'adminPermission';
         // Different user
-        $I->amLoggedInAs(100);
+        $I->amLoggedInAs(UserIdentity::USER_A);
         $I->amOnRoute('filex/default/index');
         $I->see('Forbidden');
     }
@@ -45,17 +46,17 @@ class AclCest
     public function checkIndividualPermissions(FunctionalTester $I)
     {
         $I->wantTo('Check user can access a file when it has been granted access to it');
-        $I->amLoggedInAs(100);
+        $I->amLoggedInAs(UserIdentity::USER_A);
         $I->haveFixtures([
             'inodes' => InodeFixture::class
         ]);
         $fixture = $I->grabFixture('inodes', 'file');
 
-        AccessControl::grantAccessToUsers($fixture->id, 100, AccessControl::ACTION_READ);
+        AccessControl::grantAccessToUsers($fixture->id, UserIdentity::USER_A, AccessControl::ACTION_READ);
 
         $I->seeRecord(AccessControl::class, [
             'inode_id' => $fixture->id,
-            'user_id' => 100,
+            'user_id' => UserIdentity::USER_A,
             'crud_mask' => AccessControl::ACTION_READ
         ]);
 
@@ -86,7 +87,7 @@ class AclCest
             'inodes' => InodeFixture::class
         ]);
         $fixture = $I->grabFixture('inodes', 'file');
-        $I->amLoggedInAs(100);
+        $I->amLoggedInAs(UserIdentity::USER_A);
 
         AccessControl::grantAccessToUsers($fixture->id, AccessControl::LOGGED_IN_USERS, AccessControl::ACTION_READ);
 
@@ -94,9 +95,4 @@ class AclCest
 
         $I->see('Sample file');
     }
-
-
-
-
-
 }
