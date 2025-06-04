@@ -17,7 +17,7 @@ use Yii;
 trait ModuleAwareTrait
 {
     /**
-     * @return FilesCatalogModule
+     * @return \eseperio\filescatalog\FilesCatalogModule|\yii\base\Module
      */
     public static function getModule()
     {

@@ -10,6 +10,7 @@ return [
     ],
     'components' => [
         'db' => require __DIR__ . '/db.php',
+        'storage' => require __DIR__ . '/storage.php',
     ],
     'controllerMap' => [
         'migrate' => [
@@ -19,5 +20,12 @@ return [
                 '@yii/rbac/migrations'
             ],
         ],
-    ]
+        'fixture' => [
+            'class' => \yii\console\controllers\FixtureController::class,
+            'namespace' => 'tests\\_fixtures',
+        ],
+    ],
+    'modules' => [
+        'filex' => require __DIR__ . '/filex.php',
+    ],
 ];

@@ -13,11 +13,7 @@ return [
     ],
     'bootstrap' => [],
     'modules' => [
-        'filex' => [
-            'class' => \eseperio\filescatalog\FilesCatalogModule::class,
-            'identityClass' => 'app\models\UserIdentity',
-            'salt' => 'test'
-        ],
+        'filex' => require __DIR__ . '/filex.php',
     ],
     'components' => [
         'authManager'=>[
@@ -27,13 +23,7 @@ return [
             'class' => 'yii\web\User',
             'identityClass' => 'app\models\UserIdentity',
         ],
-        'storage'=>[
-            'class' => 'creocoder\flysystem\LocalFilesystem',
-            'path' => __DIR__.'/../uploads'
-        ],
-        'assetManager' => [
-            'basePath' => __DIR__ . '/../assets',
-        ],
+        'storage'=> require __DIR__ . '/storage.php',
         'db' => require __DIR__ . '/db.php',
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',

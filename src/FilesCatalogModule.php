@@ -53,11 +53,12 @@ class FilesCatalogModule extends Module
      */
     public $directory = 'filex';
     /**
-     * @var int number of maximun versions of a files that can be kept.
+     * @var int number of maximum versions of a file that can be kept.
      */
     public $maxVersions = 4;
     /**
-     * @var string name of the component responsible of handling files. Requires flysystem.
+     * @var string name of the component responsible for handling files. Requires flysystem. Must be one
+     * extenind \creocoder\flysystem\Filesystem
      */
     public $storage = 'storage';
     /**
@@ -298,7 +299,7 @@ class FilesCatalogModule extends Module
         }
 
         if (empty($this->getStorageComponent())) {
-            throw new InvalidConfigException(__CLASS__ . "::storage must be a flySystemComponent");
+            throw new InvalidConfigException(__CLASS__ . "::storage must be defined and must extend from \creocoder\flysystem\Filesystem");
         }
 
 

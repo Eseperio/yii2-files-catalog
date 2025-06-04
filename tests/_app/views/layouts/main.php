@@ -12,44 +12,49 @@ use yii\helpers\Html;
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <?php $this->head() ?>
 </head>
 <body>
 <?php $this->beginBody() ?>
 
 <div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <nav class="navbar navbar-default mb-3">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Test App</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbarNav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Test App</a>
+            </div>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/">Home</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav">
+                <ul class="nav navbar-nav navbar-right">
                     <?php if (Yii::$app->user->isGuest): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= \yii\helpers\Url::to(['/site/login']) ?>">Login</a>
+                        <li>
+                            <a href="<?= \yii\helpers\Url::to(['/site/login']) ?>">Login</a>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= \yii\helpers\Url::to(['/filex/default/index']) ?>">Filex</a>
+                        <li>
+                            <a href="<?= \yii\helpers\Url::to(['/filex/default/index']) ?>">Filex</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <?= Html::encode(Yii::$app->user->identity->username) ?>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                <?= Html::encode(Yii::$app->user->identity->username) ?> <span class="caret"></span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu">
                                 <li>
-                                    <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'dropdown-item-form']) ?>
+                                    <?= Html::beginForm(['/site/logout'], 'post') ?>
                                     <?= Html::submitButton(
                                         'Logout',
-                                        ['class' => 'dropdown-item']
+                                        ['class' => 'btn btn-link logout']
                                     ) ?>
                                     <?= Html::endForm() ?>
                                 </li>
@@ -63,23 +68,31 @@ use yii\helpers\Html;
 
 
     <?php if (Yii::$app->session->hasFlash('success')): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <?= Yii::$app->session->getFlash('success') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php endif; ?>
 
     <?php if (Yii::$app->session->hasFlash('error')): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <?= Yii::$app->session->getFlash('error') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php endif; ?>
 
     <?= $content ?>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--init tooltips-->
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 <?php $this->endBody() ?>
 </body>
 </html>
