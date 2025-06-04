@@ -15,9 +15,9 @@ extensions:
 modules:
     config:
         Db:
-            dsn: 'mysql:host=127.0.0.1;dbname=yii2_files_catalog'
-            user: 'root'
-            password: ''
+            dsn: 'mysql:host=%DB_HOST%;port=%DB_PORT%;dbname=%DB_NAME%'
+            user: '%DB_USER%'
+            password: '%DB_PASS%'
             dump: tests/_data/schema.sql
         Yii2:
             configFile: 'tests/_app/config/test.php'

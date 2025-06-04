@@ -24,6 +24,7 @@ return [
           'class'=> 'yii\rbac\PhpManager'
         ],
         'user' => [
+            'class' => 'yii\web\User',
             'identityClass' => 'app\models\UserIdentity',
         ],
         'storage'=>[
@@ -35,6 +36,7 @@ return [
         ],
         'db' => require __DIR__ . '/db.php',
         'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => true,
         ],
         'urlManager' => [

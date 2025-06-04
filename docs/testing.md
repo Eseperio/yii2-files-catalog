@@ -1,5 +1,14 @@
 # Testing
 
+## Running test app
+
+Copy .env.dist to .env and set params. 
+Install composer dependencies, then run composer run serve. This starts a local server. If not done, run composer
+init-db.
+
+
+## Running tests
+
 Install needed libraries using composer:
 
 ```bash
@@ -15,7 +24,6 @@ named `.env` in the root directory of the project.
 ```bash
 cp codeception.dist.yml codeception.yml
 ```
-
 
 ## Connect to database
 

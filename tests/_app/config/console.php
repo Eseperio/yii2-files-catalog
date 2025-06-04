@@ -1,20 +1,15 @@
 <?php
 
 return [
-    'id' => 'yii2-test-console',
+    'id' => 'yii2-user-tests-console',
     'basePath' => dirname(__DIR__),
     'aliases' => [
+        '@Da/User' => dirname(dirname(dirname(__DIR__))) . '/src/User',
         '@tests' => dirname(dirname(__DIR__)),
-        '@bower' => '@vendor/bower-asset',
-        '@npm' => '@vendor/npm-asset',
+        '@vendor' => VENDOR_DIR,
     ],
     'components' => [
-        'log' => null,
-        'cache' => null,
         'db' => require __DIR__ . '/db.php',
-        'authManager'=>[
-            'class'=> 'yii\rbac\PhpManager',
-        ]
     ],
     'controllerMap' => [
         'migrate' => [
@@ -24,5 +19,5 @@ return [
                 '@yii/rbac/migrations'
             ],
         ],
-    ],
+    ]
 ];
