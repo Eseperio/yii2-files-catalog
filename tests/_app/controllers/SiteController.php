@@ -62,6 +62,22 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
+    /**
+     * Test action for DirectoryTreeWidget
+     */
+    public function actionDirectoryTree()
+    {
+        $model = new \yii\base\DynamicModel(['selection']);
+        $model->addRule(['selection'], 'string');
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            Yii::$app->session->setFlash('success', 'Selected: ' . Html::encode($model->selection));
+            return $this->refresh();
+        }
+
+        return $this->render('directory-tree', [
+            'model' => $model,
+        ]);
+    }
+
 }
-
-

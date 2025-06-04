@@ -13,6 +13,7 @@ use eseperio\filescatalog\actions\BulkAcl;
 use eseperio\filescatalog\actions\BulkDelete;
 use eseperio\filescatalog\actions\BulkDownload;
 use eseperio\filescatalog\actions\DeleteAction;
+use eseperio\filescatalog\actions\DirectoryTreeLoadAction;
 use eseperio\filescatalog\actions\DownloadAction;
 use eseperio\filescatalog\actions\FakeAction;
 use eseperio\filescatalog\actions\IndexAction;
@@ -54,7 +55,7 @@ class DefaultController extends \yii\web\Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'properties', 'download', 'bulk-download', 'shared'],
+                        'actions' => ['index', 'view', 'properties', 'download', 'bulk-download', 'shared', 'directory-tree-load'],
                         'roles' => ['?', '@'],
                     ],
                     [
@@ -136,6 +137,7 @@ class DefaultController extends \yii\web\Controller
             'bulk-download' => ['class' => BulkDownload::class],
             'shared' => ['class' => SharedWithMe::class],
             'unshare' => ['class' => SharedWithMe::class],
+            'directory-tree-load' => ['class' => DirectoryTreeLoadAction::class],
         ];
         if ($this->getModule()->enableEmailSharing) {
             $actions['email'] = ['class' => ShareViaEmail::class];
