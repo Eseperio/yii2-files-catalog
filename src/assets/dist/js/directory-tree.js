@@ -13,10 +13,15 @@
             multiple: false,
             mode: 2, // MODE_ALL
             extensions: [],
-            rootNodeUuid: null
+            rootNodeUuid: null,
+            i18n: {
+                loading: 'Loading...',
+                emptyDirectory: 'Empty directory',
+                errorLoading: 'Error loading directory'
+            }
         };
 
-        var settings = $.extend({}, defaults, options);
+        var settings = $.extend(true, {}, defaults, options);
 
         return this.each(function () {
             var $container = $(this);
@@ -51,7 +56,7 @@
                         $li.addClass('loading-children');
                         $icon.text('...');
                         var uuid = $li.data('uuid');
-                        $li.append('<ul><li class="loading">Loading...</li></ul>');
+                        $li.append('<ul><li class="loading">' + getMessage('loading') + '</li></ul>');
                         loadDirectory(uuid, $li.find('> ul'));
                     }
                 });
@@ -154,7 +159,6 @@
                         if ($parentLi.length) {
                             $parentLi.removeClass('loading-children');
                             $parentLi.find('> .node-content > .toggle-icon').text('▼');
-
                         }
 
                         // if not successful, show error
@@ -164,7 +168,7 @@
                         }
 
                         if (response.items.length === 0) {
-                            $container.append('<li class="empty">Empty directory</li>');
+                            $container.append('<li class="empty">' + getMessage('emptyDirectory') + '</li>');
                             return;
                         }
 
@@ -212,7 +216,7 @@
                         });
                     },
                     error: function () {
-                        $container.empty().append('<li class="error">Error loading directory</li>');
+                        $container.empty().append('<li class="error">' + getMessage('errorLoading') + '</li>');
 
                         // En caso de error, restaurar el icono de toggle al estado original
                         var $parentLi = $container.closest('li');
@@ -236,6 +240,16 @@
                 }
 
                 return settings.extensions.indexOf(extension.toLowerCase()) !== -1;
+            }
+            
+            /**
+             * Get translated message or default message if translation is not available
+             * 
+             * @param {string} key The message key
+             * @return {string} The translated message
+             */
+            function getMessage(key) {
+                return settings.i18n[key] || defaults.i18n[key];
             }
         });
     };

@@ -114,6 +114,13 @@ class DirectoryTreeWidget extends InputWidget
         $view = $this->getView();
         DirectoryTreeWidgetAsset::register($view);
 
+        // Traducciones para que puedan ser detectadas por la herramienta de extracción de mensajes
+        $i18n = [
+            'loading' => Yii::t('filescatalog', 'Loading...'),
+            'emptyDirectory' => Yii::t('filescatalog', 'Empty directory'),
+            'errorLoading' => Yii::t('filescatalog', 'Error loading directory'),
+        ];
+
         $options = Json::encode([
             'id' => $this->options['id'],
             'ajaxUrl' => $this->ajaxUrl,
@@ -121,6 +128,7 @@ class DirectoryTreeWidget extends InputWidget
             'mode' => $this->mode,
             'extensions' => $this->extensions,
             'rootNodeUuid' => $this->rootNodeUuid,
+            'i18n' => $i18n,
         ]);
 
         $view->registerJs("$('#{$this->options['id']}-container').directoryTree($options);");
