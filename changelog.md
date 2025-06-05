@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 1.5.0
+
+- [+] Added Cut and Paste actions
+- [+] Added Move action
+- [+] Added DirectoryTree widget
+- [+] Improved tests
+- [+] Added test application for running the module without need of a full Yii2 application. See composer.json for
+  details.
+
 ## 1.4.1
 
 - [*] Fixed an issue where deleting a folder does not delete its children, instead, they were moved to parent directory
