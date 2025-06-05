@@ -10,9 +10,13 @@ class InodeFixture extends ActiveFixture
     const ROOT_ID = 1;
     const DIR_ID = 2;
     const FILE_ID = 3;
-    
+
     public $modelClass = 'eseperio\filescatalog\models\Inode';
     public $dataFile = "@tests/_fixtures/data/inode.php";
+
+    public $depends = [
+        AccessControlFixture::class
+    ];
 
 
 }

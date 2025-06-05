@@ -142,6 +142,7 @@ class AclHelper extends Component
     /**
      * @param $inode
      * @return bool
+     * @throws \yii\base\InvalidConfigException
      */
     public static function canWrite($inode)
     {

@@ -15,7 +15,5 @@ $config['components']['cache'] = [
     'class' => 'yii\caching\DummyCache',
 ];
 
-// Configure test-specific settings for the module
-$config['modules']['filex']['enableACL'] = false;
 
 return $config;

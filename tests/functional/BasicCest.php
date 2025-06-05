@@ -8,7 +8,7 @@ class BasicCest
     {
         /* @var $module \eseperio\filescatalog\FilesCatalogModule */
         $module = Yii::$app->getModule('filex');
-        $module->enableACL = false;
+        $module->enableACL = true;
 
     }
 

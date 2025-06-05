@@ -14,6 +14,7 @@
 use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\widgets\IconDisplay;
+use yii\db\Query;
 use yii\helpers\Html;
 
 ?>

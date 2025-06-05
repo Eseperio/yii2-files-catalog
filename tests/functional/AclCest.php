@@ -17,7 +17,6 @@ class AclCest
 
     public function _before(FunctionalTester $I)
     {
-        /* @var $module \eseperio\filescatalog\FilesCatalogModule */
         $this->filexModule = Yii::$app->getModule('filex');
         $this->filexModule->enableACL = true;
 

@@ -66,7 +66,7 @@ class CutPasteCest
     // Test pasting a cut file
     public function testPasteCutFile(FunctionalTester $I)
     {
-        $I->wantTo('Test pasting a cut file to a different directory');
+        $I->amGoingTo('Test pasting a cut file to a different directory');
 
         // Login as a user
         $I->amLoggedInAs(UserIdentity::FILES_ADMINISTRATOR);
@@ -80,8 +80,8 @@ class CutPasteCest
         $dir = $I->grabFixture('inodes', 'dir');
 
         // Grant write permissions to the user for both file and directory
-        AccessControl::grantAccessToUsers($file->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE);
-        AccessControl::grantAccessToUsers($dir->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE);
+        AccessControl::grantAccessToUsers($file->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE | AccessControl::ACTION_READ);
+        AccessControl::grantAccessToUsers($dir->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE | AccessControl::ACTION_READ);
 
         $I->amLoggedInAs(UserIdentity::USER_A);
         // Cut the file
@@ -96,6 +96,7 @@ class CutPasteCest
         $I->see('Sample file');
 
         $I->sendAjaxPostRequest(Url::to(['/filex/default/cut-files', 'destination' => $dir->uuid, 'confirm' => 1]));
+        $I->seeResponseCodeIsRedirection();
 
         // We can't check flash messages directly in functional tests
         // Instead, we'll verify the record has been updated in the database
@@ -155,18 +156,20 @@ class CutPasteCest
     // Test pasting bulk cut files
     public function testPasteBulkCutFiles(FunctionalTester $I)
     {
-        $I->wantTo('Test pasting bulk cut files to a different directory');
+        $I->amGoingTo('Test pasting bulk cut files to a different directory');
 
         // Login as a user
         $I->amLoggedInAs(UserIdentity::USER_A);
-
+        $I->haveFixtures([
+            'inodes' => InodeFixture::class,
+        ]);
         // Get the directory fixture
         $dir = $I->grabFixture('inodes', 'dir');
 
         // Create additional test files in the root directory
         $root = $I->grabFixture('inodes', 'root');
 
-    // Crear dos archivos nuevos usando haveInDatabase
+        // Crear dos archivos nuevos usando haveInDatabase
         $file1Uuid = Yii::$app->security->generateRandomString(32);
         $file2Uuid = Yii::$app->security->generateRandomString(32);
 
@@ -192,9 +195,10 @@ class CutPasteCest
         $file2 = Inode::findOne(['uuid' => $file2Uuid]);
 
         // Grant write permissions to the user for both files and the directory
-        AccessControl::grantAccessToUsers($file1->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE);
-        AccessControl::grantAccessToUsers($file2->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE);
-        AccessControl::grantAccessToUsers($dir->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE);
+        $mask = AccessControl::ACTION_WRITE | AccessControl::ACTION_READ;
+        AccessControl::grantAccessToUsers($file1->id, UserIdentity::USER_A, $mask);
+        AccessControl::grantAccessToUsers($file2->id, UserIdentity::USER_A, $mask);
+        AccessControl::grantAccessToUsers($dir->id, UserIdentity::USER_A, $mask);
 
         // Perform bulk cut operation
         $I->sendAjaxPostRequest(Url::to(['/filex/default/bulk-cut']), [
@@ -205,6 +209,7 @@ class CutPasteCest
 
         // Confirm the paste operation
         $I->sendAjaxPostRequest(Url::to(['/filex/default/cut-files', 'destination' => $dir->uuid, 'confirm' => 1]));
+        $I->seeResponseCodeIsRedirection();
 
         // We can't check flash messages directly in functional tests
         // Instead, we'll verify the records have been updated in the database
@@ -242,25 +247,30 @@ class CutPasteCest
         $I->see('No items have been cut');
     }
 
-    // Test pasting to a directory without write permissions
     public function testPasteWithoutWritePermissions(FunctionalTester $I)
     {
-        $I->wantTo('Test pasting to a directory without write permissions');
-
+        $I->amGoingTo('Test pasting to a directory without write permissions');
         // Login as a user
-        $I->amLoggedInAs(UserIdentity::USER_A);
+        $I->haveFixtures([
+            'inodes' => InodeFixture::class,
+        ]);
+        $I->amLoggedInAs(UserIdentity::FILES_ADMINISTRATOR);
 
         // Get the file and directory fixtures
         $file = $I->grabFixture('inodes', 'file');
         $dir = $I->grabFixture('inodes', 'dir');
 
         // Grant write permissions to the user for the file but only read for the directory
-        AccessControl::grantAccessToUsers($file->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE);
+        AccessControl::grantAccessToUsers($file->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE | AccessControl::ACTION_READ);
+
+        AccessControl::removeAccessToUser($dir->id, UserIdentity::USER_A);
         AccessControl::grantAccessToUsers($dir->id, UserIdentity::USER_A, AccessControl::ACTION_READ);
 
+        $I->amLoggedInAs(UserIdentity::USER_A);
         // Cut the file
         $I->sendAjaxPostRequest(Url::to(['/filex/default/cut', 'uuid' => $file->uuid]));
 
+        $I->seeResponseCodeIsRedirection();
         // Go to the cut-files page with destination parameter
         $I->amOnRoute('/filex/default/cut-files', ['destination' => $dir->uuid]);
 
@@ -318,8 +328,9 @@ class CutPasteCest
         $dir = $I->grabFixture('inodes', 'dir');
 
         // Grant write permissions to the user for both file and directory
-        AccessControl::grantAccessToUsers($file->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE);
-        AccessControl::grantAccessToUsers($dir->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE);
+        $mask = AccessControl::ACTION_WRITE | AccessControl::ACTION_READ;
+        AccessControl::grantAccessToUsers($file->id, UserIdentity::USER_A, $mask);
+        AccessControl::grantAccessToUsers($dir->id, UserIdentity::USER_A, $mask);
 
         // Cut the file
         $I->sendAjaxPostRequest(Url::to(['/filex/default/cut', 'uuid' => $file->uuid]));
@@ -334,7 +345,7 @@ class CutPasteCest
     // Test disabled paste button when no write permissions
     public function testDisabledPasteButtonWithoutWritePermissions(FunctionalTester $I)
     {
-        $I->wantTo('Test that paste button is disabled when user has no write permissions');
+        $I->amGoingTo('Test that paste button is disabled when user has no write permissions');
 
         // Login as a user
         $I->amLoggedInAs(UserIdentity::USER_A);
@@ -344,7 +355,7 @@ class CutPasteCest
         $dir = $I->grabFixture('inodes', 'dir');
 
         // Grant write permissions to the user for the file but only read for the directory
-        AccessControl::grantAccessToUsers($file->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE);
+        AccessControl::grantAccessToUsers($file->id, UserIdentity::USER_A, AccessControl::ACTION_WRITE | AccessControl::ACTION_READ);
         AccessControl::grantAccessToUsers($dir->id, UserIdentity::USER_A, AccessControl::ACTION_READ);
 
         // Cut the file
