@@ -17,7 +17,7 @@ class SiteControllerCest
 
     public function testActionDirectoryTree(FunctionalTester $I)
     {
-        $I->amOnPage('/index-test.php?r=site/directory-tree');
+        $I->amOnRoute('site/directory-tree');
         $I->expectTo('see the directory tree widget test page');
 
         // First, check that the page loads and the navigation is visible

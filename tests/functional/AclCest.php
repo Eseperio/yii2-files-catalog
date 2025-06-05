@@ -88,7 +88,7 @@ class AclCest
         $fixture = $I->grabFixture('inodes', 'file');
         $I->amLoggedInAs(UserIdentity::USER_A);
 
-        AccessControl::grantAccessToUsers($fixture->id, AccessControl::LOGGED_IN_USERS, AccessControl::ACTION_READ);
+        AccessControl::grantAccessToRoles($fixture->id, AccessControl::LOGGED_IN_USERS, AccessControl::ACTION_READ);
 
         $I->amOnRoute('filex/default/view', ['uuid' => $fixture->uuid]);
 

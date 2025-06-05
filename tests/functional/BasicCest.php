@@ -18,7 +18,7 @@ class BasicCest
     {
 
         $I->amGoingTo('Clean all tables to test autogeneration of root folder');
-
+        $I->amLoggedInAs(\app\models\UserIdentity::FILES_ADMINISTRATOR);
         //cleanup db
         Yii::$app->db->createCommand()->truncateTable('fcatalog_shares')->execute();
         Yii::$app->db->createCommand()->truncateTable('fcatalog_inodes_version')->execute();
@@ -37,7 +37,7 @@ class BasicCest
         $I->amGoingTo('Test if access control is working for new folder form');
         // see is forbidden
         $I->seeElement('#login-form');
-        $I->amLoggedInAs(\app\models\UserIdentity::USER_A);
+        $I->amLoggedInAs(\app\models\UserIdentity::FILES_ADMINISTRATOR);
         $I->amOnRoute('/filex/default/new-folder', ['uuid' => $model->uuid]);
         $I->see('root');
         $I->amGoingTo('send new folder form');
@@ -55,10 +55,6 @@ class BasicCest
         $fixture = $I->grabFixture('inodes', 'dir');
         $I->amOnRoute('filex/default/index', ['uuid' => $fixture->uuid]);
     }
-
-
-
-
 
 
 }
