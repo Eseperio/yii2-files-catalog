@@ -74,6 +74,7 @@ class InodeActionColumn extends Column
      * @param mixed $key
      * @param int $index
      * @return string
+     * @throws \Throwable
      */
     public function renderDataCellContent($model, $key, $index)
     {
@@ -99,6 +100,7 @@ class InodeActionColumn extends Column
      * @param $items
      * @param $model
      * @return void
+     * @throws \yii\base\InvalidConfigException
      */
     public function addFileActions(&$items, $model)
     {
@@ -178,6 +180,22 @@ class InodeActionColumn extends Column
                     ]
                 )
             );
+        }
+
+        if ($this->module->allowMoving && AclHelper::canWrite($model)) {
+            $moveUrl = ['move', 'uuid' => $model->uuid];
+            // Symlinks cannot be moved
+            if ($model->type !== InodeTypes::TYPE_SYMLINK) {
+                $items[] = Html::tag(
+                    'li',
+                    Html::a(Yii::t('filescatalog', 'Move'), $moveUrl,
+                        [
+                            'class' => 'dropdown-item',
+                            'data-pjax' => 0
+                        ]
+                    )
+                );
+            }
         }
 
         if ($this->module->enableUserSharing && AclHelper::canShare($model)) {

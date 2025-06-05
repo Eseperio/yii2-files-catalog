@@ -14,6 +14,7 @@
             mode: 2, // MODE_ALL
             extensions: [],
             rootNodeUuid: null,
+            excludedUuids: [],
             i18n: {
                 loading: 'Loading...',
                 emptyDirectory: 'Empty directory',
@@ -142,6 +143,7 @@
              * @param {jQuery} $container The container to append the contents to
              */
             function loadDirectory(uuid, $container) {
+                console.log(settings);
                 $.ajax({
                     url: settings.ajaxUrl,
                     type: 'GET',
@@ -149,7 +151,9 @@
                     data: {
                         uuid: uuid,
                         mode: settings.mode,
-                        extensions: settings.extensions
+                        extensions: settings.extensions,
+                        rootNodeUuid: settings.rootNodeUuid,
+                        excludedUuids: settings.excludedUuids
                     },
                     success: function (response) {
                         $container.empty();

@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -39,11 +40,14 @@ use yii\helpers\Html;
                 <ul class="nav navbar-nav navbar-right">
                     <?php if (Yii::$app->user->isGuest): ?>
                         <li>
-                            <a href="<?= \yii\helpers\Url::to(['/site/login']) ?>">Login</a>
+                            <a href="<?= Url::to(['/site/login']) ?>">Login</a>
                         </li>
                     <?php else: ?>
                         <li>
-                            <a href="<?= \yii\helpers\Url::to(['/filex/default/index']) ?>">Filex</a>
+                            <a href="<?= Url::to(['/filex/default/index']) ?>">Files catalog index</a>
+                        </li>
+                        <li>
+                            <a href="<?= Url::to(['/site/directory-tree']) ?>">Directory tree widget</a>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
@@ -91,6 +95,10 @@ use yii\helpers\Html;
 <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
+    });
+//     init dropdown menus
+    $(document).ready(function () {
+        $('.dropdown-toggle').dropdown();
     });
 </script>
 <?php $this->endBody() ?>

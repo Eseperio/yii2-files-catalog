@@ -104,6 +104,11 @@ class FilesCatalogModule extends Module
      */
     public $allowRenaming = true;
     /**
+     * @var bool whether allow users move files and folders.
+     * If acl is enabled this will require write permissions on inode to be moved and on destination folder.
+     */
+    public $allowMoving = true;
+    /**
      * @var bool
      */
     public $enableEmailSharing = false;

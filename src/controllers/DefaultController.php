@@ -20,6 +20,7 @@ use eseperio\filescatalog\actions\IndexAction;
 use eseperio\filescatalog\actions\InheritAcl;
 use eseperio\filescatalog\actions\NewFolderAction;
 use eseperio\filescatalog\actions\NewLinkAction;
+use eseperio\filescatalog\actions\MoveAction;
 use eseperio\filescatalog\actions\PropertiesAction;
 use eseperio\filescatalog\actions\RemoveACL;
 use eseperio\filescatalog\actions\RemoveShare;
@@ -60,7 +61,7 @@ class DefaultController extends \yii\web\Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['upload', 'new-folder', 'delete', 'bulk-delete', 'new-link', 'rename', 'email', 'share', 'unshare'],
+                        'actions' => ['upload', 'new-folder', 'delete', 'bulk-delete', 'new-link', 'rename', 'move', 'email', 'share', 'unshare'],
                         'roles' => ['@'],
                     ],
                     [
@@ -89,6 +90,7 @@ class DefaultController extends \yii\web\Controller
                     'inherit-acl' => ['post'],
                     'bulk-download' => ['post'],
                     'unshare' => ['post'],
+                    'move' => ['post', 'get'],
                 ],
             ],
         ];
@@ -123,6 +125,7 @@ class DefaultController extends \yii\web\Controller
             'index' => ['class' => IndexAction::class],
             'upload' => ['class' => UploadAction::class],
             'rename' => ['class' => RenameAction::class],
+            'move' => ['class' => MoveAction::class],
             'new-folder' => ['class' => NewFolderAction::class],
             'new-link' => ['class' => NewLinkAction::class],
             'properties' => ['class' => PropertiesAction::class],

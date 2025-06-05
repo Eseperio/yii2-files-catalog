@@ -11,7 +11,6 @@ namespace eseperio\filescatalog\widgets;
 
 use yii\helpers\Html;
 use eseperio\filescatalog\models\Directory;
-use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Symlink;
 use eseperio\filescatalog\traits\ModuleAwareTrait;

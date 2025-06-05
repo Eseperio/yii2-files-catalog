@@ -61,6 +61,11 @@ class DirectoryTreeWidget extends InputWidget
     public $ajaxUrl;
 
     /**
+     * @var array list of UUIDs to exclude from the tree
+     */
+    public $excludedUuids = [];
+
+    /**
      * {@inheritdoc}
      */
     public function init()
@@ -128,6 +133,7 @@ class DirectoryTreeWidget extends InputWidget
             'mode' => $this->mode,
             'extensions' => $this->extensions,
             'rootNodeUuid' => $this->rootNodeUuid,
+            'excludedUuids' => $this->excludedUuids,
             'i18n' => $i18n,
         ]);
 

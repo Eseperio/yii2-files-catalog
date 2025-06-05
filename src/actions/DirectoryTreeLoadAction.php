@@ -43,6 +43,8 @@ class DirectoryTreeLoadAction extends Action
         $uuid = Yii::$app->request->get('uuid', null);
         $mode = (int)Yii::$app->request->get('mode', 2); // Default to MODE_ALL
         $extensions = Yii::$app->request->get('extensions', []);
+        $rootNodeUuid = Yii::$app->request->get('rootNodeUuid', null); // Obtener el UUID del nodo raíz
+        $excludedUuids = Yii::$app->request->get('excludedUuids', []); // Obtener los UUIDs excluidos
         
         try {
             // Get the current directory inode
@@ -77,6 +79,19 @@ class DirectoryTreeLoadAction extends Action
                         [InodeQuery::prefix('extension') => $extensions]
                     ]
                 ]);
+            }
+            
+            // Exclude the root node if provided
+            if (!empty($rootNodeUuid)) {
+                $rootNode = InodeHelper::getModel($rootNodeUuid);
+                if ($rootNode) {
+                    $query->andWhere(['!=', InodeQuery::prefix('id'), $rootNode->id]);
+                }
+            }
+            
+            // Excluir los UUIDs especificados
+            if (!empty($excludedUuids)) {
+                $query->andWhere(['NOT IN', InodeQuery::prefix('uuid'), $excludedUuids]);
             }
             
             // Order the results

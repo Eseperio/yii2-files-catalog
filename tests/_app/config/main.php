@@ -18,6 +18,9 @@ return [
         'filex' => require __DIR__ . '/filex.php',
     ],
     'components' => [
+        'errorHandler' => [
+            'errorAction' => 'site/error',
+        ],
         'assetManager' => [
             'linkAssets' => true,
         ],
