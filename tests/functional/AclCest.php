@@ -25,27 +25,27 @@ class AclCest
 
     public function checkAdminPermission(FunctionalTester $I)
     {
-        $I->wantTo('Check if user with admin role can access all files');
+        $I->amGoingTo('Check if user with admin role can access all files');
         $this->filexModule->administratorPermissionName = 'adminPermission';
 
-        $I->amLoggedInAs(UserIdentity::USER_B);
+        $I->amLoggedInAs(UserIdentity::FILES_ADMINISTRATOR);
         $I->amOnRoute('filex/default/index');
         $I->see('root');
     }
 
     public function checkForbiddenWithoutPermission(FunctionalTester $I)
     {
-        $I->wantTo('Check if access is denied to user when it has not assigned any of the admin permissions');
+        $I->amGoingTo('Check if access is denied to user when it has not assigned any of the admin permissions');
         $this->filexModule->administratorPermissionName = 'adminPermission';
         // Different user
-        $I->amLoggedInAs(UserIdentity::USER_A);
+        $I->amLoggedInAs(UserIdentity::USER_C);
         $I->amOnRoute('filex/default/index');
         $I->see('Forbidden');
     }
 
     public function checkIndividualPermissions(FunctionalTester $I)
     {
-        $I->wantTo('Check user can access a file when it has been granted access to it');
+        $I->amGoingTo('Check user can access a file when it has been granted access to it');
         $I->amLoggedInAs(UserIdentity::USER_A);
         $I->haveFixtures([
             'inodes' => InodeFixture::class

@@ -38,7 +38,8 @@ return [
             'useFileTransport' => true,
         ],
         'urlManager' => [
-            'showScriptName' => true,
+            'showScriptName' => false,
+            'enablePrettyUrl' => true
         ],
         'request' => [
             'cookieValidationKey' => 'test',

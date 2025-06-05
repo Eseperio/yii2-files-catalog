@@ -7,7 +7,7 @@ use yii\web\IdentityInterface;
 class UserIdentity implements IdentityInterface
 {
     const USER_A = 1;
-    const USER_B = 2;
+    const FILES_ADMINISTRATOR = 2;
     const USER_C = 3;
     const USER_D = 4;
     const USER_E = 5;
@@ -23,8 +23,8 @@ class UserIdentity implements IdentityInterface
             'auth_key' => 'test100key',
             'access_token' => 'token-1'
         ],
-        self::USER_B => [
-            'id' => self::USER_B,
+        self::FILES_ADMINISTRATOR => [
+            'id' => self::FILES_ADMINISTRATOR,
             'username' => 'user2',
             'auth_key' => 'test200key',
             'access_token' => 'token-2'

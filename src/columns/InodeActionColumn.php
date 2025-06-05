@@ -198,6 +198,24 @@ class InodeActionColumn extends Column
             }
         }
 
+        // Add cut action if allowed
+        if ($this->module->allowCutPaste && AclHelper::canWrite($model)) {
+            $cutUrl = ['cut', 'uuid' => $model->uuid];
+            if ($model->type == InodeTypes::TYPE_SYMLINK) {
+                $cutUrl['created_at'] = $model->created_at;
+            }
+            $items[] = Html::tag(
+                'li',
+                Html::a(Yii::t('filescatalog', 'Cut'), $cutUrl,
+                    [
+                        'class' => 'dropdown-item',
+                        'data-pjax' => 0,
+                        'data-method' => 'post'
+                    ]
+                )
+            );
+        }
+
         if ($this->module->enableUserSharing && AclHelper::canShare($model)) {
             $items[] = Html::tag(
                 'li',

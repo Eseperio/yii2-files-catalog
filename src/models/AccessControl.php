@@ -185,7 +185,7 @@ class AccessControl extends ActiveRecord
     }
 
     /**
-     * @param $files
+     * @param $files Inode[]|integer[] the files to set the access rules
      * @param $usersOrRoles
      * @param $mask
      * @param int $type

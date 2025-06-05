@@ -109,6 +109,11 @@ class FilesCatalogModule extends Module
      */
     public $allowMoving = true;
     /**
+     * @var bool whether allow users cut and paste files and folders.
+     * If acl is enabled this will require write permissions on inode to be cut and on destination folder.
+     */
+    public $allowCutPaste = true;
+    /**
      * @var bool
      */
     public $enableEmailSharing = false;
@@ -258,6 +263,10 @@ class FilesCatalogModule extends Module
      * @var string css classname for the properties icon
      */
     public $linkIconClass = 'glyphicon glyphicon-link';
+    /**
+     * @var string css classname for the paste icon
+     */
+    public $pasteIconClass = 'glyphicon glyphicon-paste';
     /**
      * @var string css classname for the add files icon
      */

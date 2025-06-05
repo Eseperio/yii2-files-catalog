@@ -100,6 +100,18 @@ class IndexAction extends Action
                 ]
             ],
             [
+                'label' => Yii::t('filescatalog', 'Cut'),
+                'url' => ['/filex/default/bulk-cut'],
+                'linkOptions' => [
+                    'id' => 'filex-bulk-cut',
+                    'class' => 'filex-bulk-cut',
+                    'data' => [
+                        'method' => 'post',
+                        'params' => json_encode([]),
+                    ]
+                ]
+            ],
+            [
                 'label' => Yii::t('filescatalog', 'Delete'),
                 'url' => ['/filex/default/bulk-delete'],
                 'linkOptions' => [

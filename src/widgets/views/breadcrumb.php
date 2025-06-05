@@ -20,6 +20,10 @@
 /* @var $linkIcon string */
 
 /* @var string $propertiesIcon */
+/* @var string $pasteIcon */
+/* @var bool $hasCutInodes */
+/* @var bool $canPaste */
+/* @var string $pasteLabel */
 
 use eseperio\filescatalog\assets\FileTypeIconsAsset;
 use eseperio\filescatalog\dictionaries\InodeTypes;
@@ -112,11 +116,35 @@ FileTypeIconsAsset::register($this);
                                 'pjax' => 0,
                                 'container' => 'body'
                             ],
+                        ]);
 
+                    // Add paste button if there are cut inodes
+                    if ($hasCutInodes && $filexModule->allowCutPaste) {
+                        // Create paste icon with red or grey dot
+                        $dotColor = $canPaste ? 'red' : 'grey';
+                        $pasteIconWithDot = $pasteIcon . ' <span style="color: ' . $dotColor . '; font-size: 8px; vertical-align: super;">●</span>';
 
-                        ])
-                    ?>
-                    <?php if (AclHelper::canWrite($model)): ?>
+                        // Set tooltip text based on permissions
+                        $tooltipText = $canPaste 
+                            ? $pasteLabel 
+                            : Yii::t('filescatalog', 'You do not have write permissions for this directory');
+
+                        // Create button with appropriate attributes
+                        echo Html::a(
+                            $pasteIconWithDot . " " . ($showLabels ? $pasteLabel : ""), 
+                            $canPaste ? ['cut-files', 'destination' => $model->uuid] : '#', 
+                            [
+                                'class' => 'btn btn-default' . ($canPaste ? '' : ' disabled'),
+                                'title' => $tooltipText,
+                                'data' => [
+                                    'toggle' => 'tooltip',
+                                    'pjax' => 0,
+                                    'container' => 'body'
+                                ],
+                            ]
+                        );
+                    }
+                    if (AclHelper::canWrite($model)): ?>
                         <?= Uploader::widget([
                             'targetUuid' => $model->uuid,
                             'pjaxId' => $pjaxId,
