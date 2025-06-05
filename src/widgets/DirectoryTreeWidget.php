@@ -3,8 +3,6 @@
 namespace eseperio\filescatalog\widgets;
 
 use eseperio\filescatalog\assets\DirectoryTreeWidgetAsset;
-use eseperio\filescatalog\dictionaries\InodeTypes;
-use eseperio\filescatalog\services\InodeHelper;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -13,7 +11,7 @@ use yii\widgets\InputWidget;
 
 /**
  * DirectoryTreeWidget displays a directory tree and allows selection of directories and/or files.
- * 
+ *
  * Works with a virtual filesystem based on inodes instead of actual filesystem directories.
  * It can be configured to show only directories, only files, or both.
  * It supports single or multiple selection modes.
@@ -100,7 +98,7 @@ class DirectoryTreeWidget extends InputWidget
 
     /**
      * Renders the widget content
-     * 
+     *
      * @return string the rendered content
      */
     protected function renderWidget()

@@ -2,31 +2,61 @@
 
 ## Running test app
 
-Copy .env.dist to .env and set params. 
-Install composer dependencies, then run composer run serve. This starts a local server. If not done, run composer
-init-db.
+Copy `.env.dist` to `.env` and set the required parameters.  
+Install composer dependencies, then run `composer run serve` to start a local server.  
+If not done, run `composer run init-db`.
 
+## Composer scripts for testing
+
+The `composer.json` file includes several scripts to facilitate testing and development tasks.  
+Some useful scripts are:
+
+- `composer run test` — Runs all Codeception tests.
+- `composer run test:unit` — Runs unit tests.
+- `composer run test:functional` — Runs functional tests.
+- `composer run test:acceptance` — Runs acceptance tests.
+- `composer run test:coverage` — Runs tests with code coverage report.
+- `composer run serve` — Starts the test application server.
+- `composer run migrate` — Runs database migrations for the test environment.
+- `composer run load-fixtures` — Loads test fixtures.
+
+You can see all available scripts by running:
+
+```bash
+composer run
+```
 
 ## Running tests
 
-Install needed libraries using composer:
+Install the required libraries using composer:
 
 ```bash
 composer install --dev
 ```
 
-## Configure codeception:
+## Configure Codeception
 
-Copy files codeception.dist.yml to `codeception.yml`.
-This file has been configured to use environment variables. You can set them in your system or create a file
-named `.env` in the root directory of the project.
+Copy the configuration file:
 
 ```bash
 cp codeception.dist.yml codeception.yml
 ```
 
-## Connect to database
+This file is configured to use environment variables. You can set them in your system or create a `.env` file in the root directory of the project.
 
-Create a database named yii2_files_catalog and import file coopify_tests.sql. You can found it in test data directory
+## Connect to the database and run migrations
 
+Create a database for tests and run Yii2 migrations before running the tests:
+
+```bash
+composer run migrate
+```
+
+You may also need to load fixtures:
+
+```bash
+composer run load-fixtures
+```
+
+Now you can run the tests using the composer scripts described above.
 

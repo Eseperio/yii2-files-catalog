@@ -110,6 +110,9 @@ There is a default controller with the following actions.
 | `usePjax`                   | bool whether use pjax on main view                                                                                                                                                                                                                                                                                                                                                                                                                      | true                                                                                         |
 | `inodeRealPathCallback`     | **  null                                                                                                                                                                                                                                                                                                                                                                                                                                                | array                                                                                        |\Closure Callable used to bypass current inodeRealPath calculation|null|
 | `allowOverwrite`            | bool whether overwrite existing files. Remember this setting can be overrided in calls tu save                                                                                                                                                                                                                                                                                                                                                          | false                                                                                        | 
+| `allowMoving`               | bool whether to allow users to move files and folders. If ACL is enabled, this requires write permissions on both the item to move and the destination folder.                                                                                                                             | true                                                                                         |
+| `allowCutPaste`             | bool whether to allow users to cut and paste files and folders. If ACL is enabled, this requires write permissions on both the item to cut and the destination folder.                                                                              | true                                                                                         |
+| `allowRenaming`             | bool whether to allow users to rename items. If ACL is enabled, this requires write permissions on the item.                                                                                                                                                                              | true                                                                                         |
 | `prefix`                    | string the prefix to be used on urlGroup                                                                                                                                                                                                                                                                                                                                                                                                                | 'filex'                                                                                      |
 | `urlRules`                  | array the url rules (routes)                                                                                                                                                                                                                                                                                                                                                                                                                            | '<controller:[\w\-]+>                                                                        |<action:[\w\-]+>' => '<controller>|<action>'|
 | `maxTreeDepthDisplay`       | int the max amount of elements to display when using a tree view. Set to false to disable                                                                                                                                                                                                                                                                                                                                                               | 4                                                                                            |
@@ -162,3 +165,39 @@ pattern on system that require a lot of nodes and writes
 ## Testing
 
 See [testing docs](docs/testing.md)
+
+## Directory Selection Widget
+
+The module includes a directory selection widget called `DirectoryTreeWidget`. This widget displays a virtual directory tree and allows users to select one or more directories (and optionally files), making it easy to integrate into forms where a location within the virtual filesystem must be chosen.
+
+### Main features
+
+- Can display only directories, only files, or both.
+- Supports single or multiple selection.
+- Can filter by file extensions.
+- Allows excluding specific nodes from the tree.
+- Loads data asynchronously for better performance with large structures.
+
+### Basic usage example
+
+```php
+use eseperio\filescatalog\widgets\DirectoryTreeWidget;
+
+echo DirectoryTreeWidget::widget([
+    'name' => 'destination_uuid',
+    'mode' => DirectoryTreeWidget::MODE_DIRECTORIES_ONLY, // Only directories
+    'multiple' => false,
+    'rootNodeUuid' => null, // Root of the virtual filesystem
+]);
+```
+
+### Main options
+
+- `mode`: Display mode (`MODE_DIRECTORIES_ONLY` for directories only, `MODE_ALL` for directories and files).
+- `multiple`: Allow multiple selection (`true` or `false`).
+- `rootNodeUuid`: UUID of the root node to start displaying the tree (default is the root of the system).
+- `extensions`: Array of allowed file extensions (only if files are shown).
+- `excludedUuids`: Array of UUIDs to exclude from the tree.
+- `ajaxUrl`: URL for asynchronous loading (defaults to the module's standard route).
+
+This widget is useful for forms where a destination folder must be selected for moving, copying, or pasting files, or for any functionality that requires navigation and selection within the virtual directory tree.
