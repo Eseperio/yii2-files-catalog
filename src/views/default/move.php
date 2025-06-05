@@ -35,7 +35,7 @@ $this->title = Yii::t('filescatalog', 'Move {0}', [$model->name]);
                     'attribute' => 'destination_folder',
                     'mode' => DirectoryTreeWidget::MODE_DIRECTORIES_ONLY,
                     'rootNodeUuid' => $rootNodeUuid ?? null,
-                    'excludedUuids' => $excludedUuids,
+                    'excludedUuids' => $excludedUuids ?? [],
                 ]) ?>
             </div>
             <div class="card-footer">
