@@ -1,49 +1,19 @@
 <?php
 
-return [
-    'id' => 'yii2-user-tests',
-    'basePath' => dirname(__DIR__),
-    'language' => 'en-US',
-    'aliases' => [
-        '@Da/User' => dirname(dirname(dirname(__DIR__))) . '/src/User',
-        '@tests' => dirname(dirname(__DIR__)),
-        '@vendor' => VENDOR_DIR,
-        '@bower' => '@vendor/bower-asset',
-        '@npm' => '@vendor/npm-asset',
-    ],
-    'bootstrap' => [],
-    'modules' => [
-        'filex' => [
-            'class' => \eseperio\filescatalog\FilesCatalogModule::class,
-            'identityClass' => 'app\models\UserIdentity',
-            'salt' => 'test'
-        ],
-    ],
-    'components' => [
-        'authManager'=>[
-          'class'=> 'yii\rbac\PhpManager'
-        ],
-        'user' => [
-            'identityClass' => 'app\models\UserIdentity',
-        ],
-        'storage'=>[
-            'class' => 'creocoder\flysystem\LocalFilesystem',
-            'path' => __DIR__.'/../uploads'
-        ],
-        'assetManager' => [
-            'basePath' => __DIR__ . '/../assets',
-        ],
-        'db' => require __DIR__ . '/db.php',
-        'mailer' => [
-            'useFileTransport' => true,
-        ],
-        'urlManager' => [
-            'showScriptName' => true,
-        ],
-        'request' => [
-            'cookieValidationKey' => 'test',
-            'enableCsrfValidation' => false,
-        ],
-    ],
-    'params' => [],
+$config = require __DIR__ . '/main.php';
+
+// Test-specific configuration
+$config['id'] = 'yii2-files-catalog-tests';
+$config['components']['assetManager']['basePath'] = __DIR__ . '/../web/assets';
+$config['components']['urlManager']['showScriptName'] = true;
+$config['components']['request']['cookieValidationKey'] = 'test';
+$config['components']['request']['enableCsrfValidation'] = false;
+
+
+// Disable cache for testing
+$config['components']['cache'] = [
+    'class' => 'yii\caching\DummyCache',
 ];
+
+
+return $config;

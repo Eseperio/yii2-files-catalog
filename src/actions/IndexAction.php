@@ -36,11 +36,15 @@ class IndexAction extends Action
 
     /**
      * @return string|\yii\web\Response
+     * @throws \eseperio\filescatalog\exceptions\FilexAccessDeniedException
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\NotFoundHttpException
      */
     public function run()
     {
-
         $model = $this->getModel();
+
 
         if ($model->type !== InodeTypes::TYPE_DIR && !$model->isRoot()) {
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
@@ -92,6 +96,18 @@ class IndexAction extends Action
                         'method' => 'post',
                         'params' => json_encode([]),
 
+                    ]
+                ]
+            ],
+            [
+                'label' => Yii::t('filescatalog', 'Cut'),
+                'url' => ['/filex/default/bulk-cut'],
+                'linkOptions' => [
+                    'id' => 'filex-bulk-cut',
+                    'class' => 'filex-bulk-cut',
+                    'data' => [
+                        'method' => 'post',
+                        'params' => json_encode([]),
                     ]
                 ]
             ],

@@ -53,11 +53,12 @@ class FilesCatalogModule extends Module
      */
     public $directory = 'filex';
     /**
-     * @var int number of maximun versions of a files that can be kept.
+     * @var int number of maximum versions of a file that can be kept.
      */
     public $maxVersions = 4;
     /**
-     * @var string name of the component responsible of handling files. Requires flysystem.
+     * @var string name of the component responsible for handling files. Requires flysystem. Must be one
+     * extenind \creocoder\flysystem\Filesystem
      */
     public $storage = 'storage';
     /**
@@ -102,6 +103,16 @@ class FilesCatalogModule extends Module
      * @var bool whether allow users rename the items. If acl is enabled this will require write permissions.
      */
     public $allowRenaming = true;
+    /**
+     * @var bool whether allow users move files and folders.
+     * If acl is enabled this will require write permissions on inode to be moved and on destination folder.
+     */
+    public $allowMoving = true;
+    /**
+     * @var bool whether allow users cut and paste files and folders.
+     * If acl is enabled this will require write permissions on inode to be cut and on destination folder.
+     */
+    public $allowCutPaste = true;
     /**
      * @var bool
      */
@@ -253,6 +264,10 @@ class FilesCatalogModule extends Module
      */
     public $linkIconClass = 'glyphicon glyphicon-link';
     /**
+     * @var string css classname for the paste icon
+     */
+    public $pasteIconClass = 'glyphicon glyphicon-paste';
+    /**
      * @var string css classname for the add files icon
      */
     public $addFilesIconClass = 'glyphicon glyphicon-cloud-upload';
@@ -298,7 +313,7 @@ class FilesCatalogModule extends Module
         }
 
         if (empty($this->getStorageComponent())) {
-            throw new InvalidConfigException(__CLASS__ . "::storage must be a flySystemComponent");
+            throw new InvalidConfigException(__CLASS__ . "::storage must be defined and must extend from \creocoder\flysystem\Filesystem");
         }
 
 

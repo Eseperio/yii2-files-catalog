@@ -175,6 +175,7 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
 
     /**
      * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public function getVersions()
     {

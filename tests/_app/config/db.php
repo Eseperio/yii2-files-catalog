@@ -1,14 +1,14 @@
 <?php
 
-$dbDsn = $_ENV['DB_DSN'];
-$dbUser = $_ENV['DB_USER'];
-$dbPassword = $_ENV['DB_PASS'];
-$db = [
+return [
     'class' => 'yii\db\Connection',
-    'dsn' => $dbDsn,
-    'username' => $dbUser,
-    'password' => $dbPassword,
-    'charset' => 'utf8',
+    'dsn' => sprintf(
+        'mysql:host=%s;port=%s;dbname=%s',
+        $_ENV['DB_HOST'],
+        $_ENV['DB_PORT'],
+        $_ENV['DB_NAME']
+    ),
+    'username' => $_ENV['DB_USER'],
+    'password' => $_ENV['DB_PASS'],
+    'charset' => $_ENV['DB_CHARSET'],
 ];
-
-return $db;

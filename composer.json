@@ -11,13 +11,14 @@
     "ramsey/uuid": "^4"
   },
   "require-dev": {
+    "vlucas/phpdotenv": "^5.6",
     "phpunit/phpunit": "^9",
-    "codeception/codeception": "^5.0.4",
-    "codeception/specify": "*",
-    "codeception/verify": "*",
-    "codeception/module-yii2": "dev-master",
-    "codeception/module-asserts": "dev-master",
-    "vlucas/phpdotenv": "^5.5@dev",
+    "codeception/codeception": "*",
+    "codeception/module-yii2": "*",
+    "codeception/module-asserts": "*",
+    "codeception/module-db": "*",
+    "codeception/module-webdriver": "*",
+    "codeception/module-rest": "^3.4",
     "codeception/module-phpbrowser": "dev-master"
   },
   "license": "GPL-3.0-or-later",
@@ -36,6 +37,12 @@
       "eseperio\\filescatalog\\": "./src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "app\\": "tests/_app/",
+      "tests\\": "tests/"
+    }
+  },
   "repositories": [
     {
       "type": "composer",
@@ -46,5 +53,16 @@
     "allow-plugins": {
       "yiisoft/yii2-composer": true
     }
+  },
+  "scripts": {
+    "test": "codecept run",
+    "test:unit": "codecept run unit",
+    "test:functional": "codecept run functional",
+    "test:acceptance": "codecept run acceptance",
+    "test:coverage": "codecept run --coverage --coverage-html",
+    "serve": "php tests/_app/yii serve --docroot='tests/_app/web'",
+    "extract-translations": "php tests/_app/yii message @app/../../src/messages/config.php",
+    "load-fixtures": "php tests/_app/yii fixture/load '*' --interactive=0",
+    "migrate": "php tests/_app/yii migrate --interactive=0"
   }
 }

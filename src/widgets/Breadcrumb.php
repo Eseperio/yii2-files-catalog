@@ -11,9 +11,9 @@ namespace eseperio\filescatalog\widgets;
 
 use yii\helpers\Html;
 use eseperio\filescatalog\models\Directory;
-use eseperio\filescatalog\models\File;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\Symlink;
+use eseperio\filescatalog\services\CutPasteService;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Widget;
@@ -46,7 +46,17 @@ class Breadcrumb extends Widget
         $propertiesLabel = Yii::t('filescatalog', 'Properties');
         $addFilesLabel = Yii::t('filescatalog', 'Add files');
         $linkLabel = Yii::t('filescatalog', 'Add link');
+        $pasteLabel = Yii::t('filescatalog', 'Paste');
 
+        // Get the cut paste service
+        $service = Yii::createObject(CutPasteService::class);
+
+        // Check if there are cut inodes
+        $hasCutInodes = $service->hasCutInodes();
+
+        // Check if user has write permissions for the current directory
+        $canPaste = $hasCutInodes && $this->model->type === \eseperio\filescatalog\dictionaries\InodeTypes::TYPE_DIR && 
+                    \eseperio\filescatalog\helpers\AclHelper::canWrite($this->model);
 
         return $this->render('breadcrumb', [
             'model' => $this->model,
@@ -59,11 +69,13 @@ class Breadcrumb extends Widget
             'propertiesLabel' => $propertiesLabel,
             'linkLabel' => $linkLabel,
             'addFilesLabel' => $addFilesLabel,
+            'pasteLabel' => $pasteLabel,
+            'hasCutInodes' => $hasCutInodes,
+            'canPaste' => $canPaste,
             'newFolderIcon' => Html::tag('i', '', ['class' => $this->module->newFolderIconclass]),
             'propertiesIcon' => Html::tag('i', '', ['class' => $this->module->propertiesIconClass]),
             'linkIcon' => Html::tag('i', '', ['class' => $this->module->linkIconClass]),
-
-
+            'pasteIcon' => Html::tag('i', '', ['class' => $this->module->pasteIconClass]),
         ]);
     }
 }

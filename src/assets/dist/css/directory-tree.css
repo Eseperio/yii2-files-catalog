@@ -1,0 +1,92 @@
+:root {
+    --directory-tree-icon-size: 20px;
+}
+
+.directory-tree-widget {
+    margin: 15px 0;
+    font-family: Arial, sans-serif;
+}
+
+.directory-tree-widget ul {
+    list-style-type: none;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.directory-tree-widget ul.root {
+    padding-left: 0;
+}
+
+.directory-tree-widget li {
+    padding: 3px 0;
+    position: relative;
+}
+
+/* Nuevo contenedor flex para los elementos del nodo */
+.directory-tree-widget .node-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.directory-tree-widget .toggle-icon {
+    cursor: pointer;
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    color: lightgray;
+}
+
+/* Estilo para el estado de carga */
+.directory-tree-widget li.loading-children > .node-content > .toggle-icon {
+    color: #777;
+    font-style: italic;
+}
+
+.directory-tree-widget .file-icon-container {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.directory-tree-widget .file-icon-container .fiv-sqo {
+    width: var(--directory-tree-icon-size);
+    height: var(--directory-tree-icon-size);
+    display: inline-block;
+}
+
+.directory-tree-widget .node-label {
+    cursor: pointer;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.directory-tree-widget li.selected {
+    background-color: #e9f2f8;
+}
+
+.directory-tree-widget li.selected > .node-label {
+    font-weight: bold;
+}
+
+.directory-tree-widget li.loading {
+    font-style: italic;
+    color: #777;
+}
+
+.directory-tree-widget li.empty {
+    font-style: italic;
+    color: #999;
+}
+
+.directory-tree-widget li.error {
+    color: #c00;
+    font-style: italic;
+}
+
+.directory-tree-widget input[type="checkbox"],
+.directory-tree-widget input[type="radio"] {
+    margin-right: 5px;
+    vertical-align: middle;
+}

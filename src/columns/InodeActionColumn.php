@@ -74,6 +74,7 @@ class InodeActionColumn extends Column
      * @param mixed $key
      * @param int $index
      * @return string
+     * @throws \Throwable
      */
     public function renderDataCellContent($model, $key, $index)
     {
@@ -99,6 +100,7 @@ class InodeActionColumn extends Column
      * @param $items
      * @param $model
      * @return void
+     * @throws \yii\base\InvalidConfigException
      */
     public function addFileActions(&$items, $model)
     {
@@ -175,6 +177,40 @@ class InodeActionColumn extends Column
                     [
                         'class' => 'dropdown-item',
                         'data-pjax' => 0
+                    ]
+                )
+            );
+        }
+
+        if ($this->module->allowMoving && AclHelper::canWrite($model)) {
+            $moveUrl = ['move', 'uuid' => $model->uuid];
+            // Symlinks cannot be moved
+            if ($model->type !== InodeTypes::TYPE_SYMLINK) {
+                $items[] = Html::tag(
+                    'li',
+                    Html::a(Yii::t('filescatalog', 'Move'), $moveUrl,
+                        [
+                            'class' => 'dropdown-item',
+                            'data-pjax' => 0
+                        ]
+                    )
+                );
+            }
+        }
+
+        // Add cut action if allowed
+        if ($this->module->allowCutPaste && AclHelper::canWrite($model)) {
+            $cutUrl = ['cut', 'uuid' => $model->uuid];
+            if ($model->type == InodeTypes::TYPE_SYMLINK) {
+                $cutUrl['created_at'] = $model->created_at;
+            }
+            $items[] = Html::tag(
+                'li',
+                Html::a(Yii::t('filescatalog', 'Cut'), $cutUrl,
+                    [
+                        'class' => 'dropdown-item',
+                        'data-pjax' => 0,
+                        'data-method' => 'post'
                     ]
                 )
             );

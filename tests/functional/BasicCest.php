@@ -8,22 +8,17 @@ class BasicCest
     {
         /* @var $module \eseperio\filescatalog\FilesCatalogModule */
         $module = Yii::$app->getModule('filex');
-        $module->enableACL = false;
+        $module->enableACL = true;
 
     }
 
-    public function checkBaseTestAppWorks(FunctionalTester $I)
-    {
-        $I->amOnPage('/');
-        $I->see('My Company');
-    }
 
     // tests
     public function ensureRootIsCreatedIfMissing(FunctionalTester $I)
     {
 
         $I->amGoingTo('Clean all tables to test autogeneration of root folder');
-
+        $I->amLoggedInAs(\app\models\UserIdentity::FILES_ADMINISTRATOR);
         //cleanup db
         Yii::$app->db->createCommand()->truncateTable('fcatalog_shares')->execute();
         Yii::$app->db->createCommand()->truncateTable('fcatalog_inodes_version')->execute();
@@ -38,11 +33,12 @@ class BasicCest
     {
 
         $model = $I->grabRecord(\eseperio\filescatalog\models\Inode::class, ['name' => 'root']);
-        $I->amOnRoute('filex/default/new-folder', ['uuid' => $model->uuid]);
+        $I->amOnRoute('/filex/default/new-folder', ['uuid' => $model->uuid]);
         $I->amGoingTo('Test if access control is working for new folder form');
-        $I->see('Page not found');
-        $I->amLoggedInAs(100);
-        $I->amOnRoute('filex/default/new-folder', ['uuid' => $model->uuid]);
+        // see is forbidden
+        $I->seeElement('#login-form');
+        $I->amLoggedInAs(\app\models\UserIdentity::FILES_ADMINISTRATOR);
+        $I->amOnRoute('/filex/default/new-folder', ['uuid' => $model->uuid]);
         $I->see('root');
         $I->amGoingTo('send new folder form');
         $data = [
@@ -59,10 +55,6 @@ class BasicCest
         $fixture = $I->grabFixture('inodes', 'dir');
         $I->amOnRoute('filex/default/index', ['uuid' => $fixture->uuid]);
     }
-
-
-
-
 
 
 }
