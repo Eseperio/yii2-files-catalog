@@ -116,7 +116,6 @@ class DefaultController extends \yii\web\Controller
             if ($previous !== $current) {
                 Yii::$app->user->setReturnUrl($previous);
             }
-
         }
 
         return parent::beforeAction($action);
