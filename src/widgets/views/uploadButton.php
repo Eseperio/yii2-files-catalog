@@ -16,12 +16,12 @@ $label = $isVersion ? Yii::t('filescatalog', 'Add version') : Yii::t('filescatal
 
 <span class="btn btn-default fileinput-button" data-toggle="tooltip" data-container="body" title="<?= $label ?>">
     <i class="<?= $addFilesIconClass ?>"></i>
-   <form><span>
+   <span>
        <?php /** @var boolean $showLabels */
        if ($showLabels || $isVersion): ?>
            <?= $label ?>
        <?php endif; ?>
-   </span></form>
+   </span>
     <!-- The file input field used as target for the file upload widget -->
     <?= $input ?>
 </span>
