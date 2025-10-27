@@ -188,7 +188,8 @@ class ViewAction extends Action
     protected function getNearItemLink($direction = SORT_ASC)
     {
         $parentId = $this->model->parent_id;
-        $offset = Yii::$app->request->get($this->module->offsetParam);
+        // Initialize offset to 0 if null to avoid PHP 8.1+ deprecation warning on increment/decrement
+        $offset = Yii::$app->request->get($this->module->offsetParam) ?? 0;
         $nearModel = $this->getInodeByOffset($parentId, $direction == SORT_DESC ? $offset - 1 : $offset + 1);
 
         if ($direction === SORT_ASC) {
