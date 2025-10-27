@@ -14,6 +14,7 @@ use eseperio\filescatalog\models\AccessControl;
 use eseperio\filescatalog\models\Directory;
 use eseperio\filescatalog\models\FileVersion;
 use eseperio\filescatalog\models\Inode;
+use eseperio\filescatalog\models\InodeShare;
 use eseperio\filescatalog\traits\ContainerStaticHelper;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
@@ -117,6 +118,17 @@ class AclHelper extends Component
                         break;
                     case AccessControl::DUMMY_ROLE:
                         $grantAccess = $acl['user_id'] == $userId;
+                        // If this is a user-specific access (likely from a share), check if the share is expired
+                        if ($grantAccess) {
+                            $share = InodeShare::findOne([
+                                'inode_id' => $inode['id'],
+                                'user_id' => $userId
+                            ]);
+                            // If a share exists and has expired, deny access
+                            if ($share && $share->expires_at !== null && $share->expires_at <= time()) {
+                                $grantAccess = false;
+                            }
+                        }
                         break;
                     default:
                         if (!empty(trim($acl['role']))) {
