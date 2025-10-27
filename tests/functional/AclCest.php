@@ -3,6 +3,7 @@
 namespace functional;
 
 use eseperio\filescatalog\models\AccessControl;
+use eseperio\filescatalog\models\InodeShare;
 use FunctionalTester;
 use tests\_fixtures\InodeFixture;
 use Yii;
@@ -92,6 +93,78 @@ class AclCest
 
         $I->amOnRoute('filex/default/view', ['uuid' => $fixture->uuid]);
 
+        $I->see('Sample file');
+    }
+
+    public function checkExpiredShareDeniesAccess(FunctionalTester $I)
+    {
+        $I->wantTo('Check that access is denied when a share has expired');
+        $I->haveFixtures([
+            'inodes' => InodeFixture::class
+        ]);
+        $fixture = $I->grabFixture('inodes', 'file');
+        $I->amLoggedInAs(UserIdentity::USER_A);
+
+        // Grant access to user A via AccessControl (simulating a share)
+        AccessControl::grantAccessToUsers($fixture->id, UserIdentity::USER_A, AccessControl::ACTION_READ);
+
+        // Create an expired share
+        $share = new InodeShare();
+        $share->inode_id = $fixture->id;
+        $share->user_id = UserIdentity::USER_A;
+        $share->expires_at = time() - 3600; // Expired 1 hour ago
+        $share->save(false); // Skip validation to force expired date
+
+        // Try to access the file - should be forbidden
+        $I->amOnRoute('filex/default/view', ['uuid' => $fixture->uuid]);
+        $I->see('Forbidden');
+    }
+
+    public function checkNonExpiredShareAllowsAccess(FunctionalTester $I)
+    {
+        $I->wantTo('Check that access is granted when a share has not expired');
+        $I->haveFixtures([
+            'inodes' => InodeFixture::class
+        ]);
+        $fixture = $I->grabFixture('inodes', 'file');
+        $I->amLoggedInAs(UserIdentity::USER_A);
+
+        // Grant access to user A via AccessControl (simulating a share)
+        AccessControl::grantAccessToUsers($fixture->id, UserIdentity::USER_A, AccessControl::ACTION_READ);
+
+        // Create a non-expired share
+        $share = new InodeShare();
+        $share->inode_id = $fixture->id;
+        $share->user_id = UserIdentity::USER_A;
+        $share->expires_at = time() + 3600; // Expires in 1 hour
+        $share->save(false); // Skip validation
+
+        // Try to access the file - should be allowed
+        $I->amOnRoute('filex/default/view', ['uuid' => $fixture->uuid]);
+        $I->see('Sample file');
+    }
+
+    public function checkPermanentShareAllowsAccess(FunctionalTester $I)
+    {
+        $I->wantTo('Check that access is granted when a share has no expiration date');
+        $I->haveFixtures([
+            'inodes' => InodeFixture::class
+        ]);
+        $fixture = $I->grabFixture('inodes', 'file');
+        $I->amLoggedInAs(UserIdentity::USER_A);
+
+        // Grant access to user A via AccessControl (simulating a share)
+        AccessControl::grantAccessToUsers($fixture->id, UserIdentity::USER_A, AccessControl::ACTION_READ);
+
+        // Create a permanent share (no expiration)
+        $share = new InodeShare();
+        $share->inode_id = $fixture->id;
+        $share->user_id = UserIdentity::USER_A;
+        $share->expires_at = null; // No expiration
+        $share->save(false); // Skip validation
+
+        // Try to access the file - should be allowed
+        $I->amOnRoute('filex/default/view', ['uuid' => $fixture->uuid]);
         $I->see('Sample file');
     }
 }
