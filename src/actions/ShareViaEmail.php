@@ -89,7 +89,7 @@ class ShareViaEmail extends Action
 
         $this->inode = $this->controller->findModel(Yii::$app->request->get('uuid'));
 
-        if ($this->inode->type !== InodeTypes::TYPE_FILE) {
+        if (!in_array($this->inode->type, [InodeTypes::TYPE_FILE, InodeTypes::TYPE_VERSION])) {
             throw new UserException(Yii::t('filescatalog', 'Cannot share directories or symlinks via email'));
         }
         if (empty($this->inode)) {
