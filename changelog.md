@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 1.5.1
+
+- [*] Fixed not being able to share a file via email if it has versions
+- [*] Fixed files shared with expiration date and expired could be accessed using direct link
+
 ## 1.5.0
 
 - [+] Added Cut and Paste actions
