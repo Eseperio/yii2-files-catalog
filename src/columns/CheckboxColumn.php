@@ -44,10 +44,6 @@ class CheckboxColumn extends \yii\grid\CheckboxColumn
             if ($model->type == InodeTypes::TYPE_SYMLINK)
                 $options['value'] .= "|" . $model->created_at;
 
-            if (!AclHelper::canDelete($model)) {
-                $options['disabled'] = 1;
-                $options['class'] = 'collapse';
-            }
 
             return $options;
         };

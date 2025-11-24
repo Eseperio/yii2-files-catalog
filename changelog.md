@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 1.5.2
+
+- [*] Removed condition that prevented users to see the checkbox in checkbox column if they did not have delete
+  permission for file.
+
 ## 1.5.1
 
 - [*] Fixed not being able to share a file via email if it has versions
