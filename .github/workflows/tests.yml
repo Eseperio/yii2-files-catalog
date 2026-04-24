@@ -1,0 +1,106 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2']
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: yii2_files_catalog
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, intl, pdo_mysql, zip
+          coverage: none
+          tools: composer:v2
+          cache: composer
+
+      - name: Configure test env
+        run: |
+          cp tests/.env.dist tests/.env
+          sed -i 's/DB_PASS=.*/DB_PASS=root/' tests/.env
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Prepare database
+        run: php tests/_app/yii migrate --interactive=0
+
+      - name: Run unit tests
+        run: vendor/bin/codecept run unit
+
+      - name: Run functional tests
+        run: vendor/bin/codecept run functional
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name != 'pull_request' || github.ref == 'refs/heads/main'
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: yii2_files_catalog
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP with coverage
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, intl, pdo_mysql, zip, xdebug
+          coverage: xdebug
+          tools: composer:v2
+          cache: composer
+
+      - name: Configure test env
+        run: |
+          cp tests/.env.dist tests/.env
+          sed -i 's/DB_PASS=.*/DB_PASS=root/' tests/.env
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Prepare database
+        run: php tests/_app/yii migrate --interactive=0
+
+      - name: Run unit tests with coverage
+        run: vendor/bin/codecept run unit --coverage-text --coverage-xml build/coverage/unit
+
+      - name: Run functional tests with coverage
+        run: vendor/bin/codecept run functional --coverage-text --coverage-xml build/coverage/functional
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: build/coverage

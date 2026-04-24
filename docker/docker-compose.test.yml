@@ -1,0 +1,24 @@
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: yii2_files_catalog
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  tests:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.test
+    environment:
+      TESTS_ENV_FILENAME: .env.docker
+      COMPOSER_ALLOW_SUPERUSER: "1"
+      XDEBUG_MODE: coverage
+    depends_on:
+      mysql:
+        condition: service_healthy

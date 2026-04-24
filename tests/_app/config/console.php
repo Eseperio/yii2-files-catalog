@@ -11,6 +11,9 @@ return [
     'components' => [
         'db' => require __DIR__ . '/db.php',
         'storage' => require __DIR__ . '/storage.php',
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
     ],
     'controllerMap' => [
         'migrate' => [

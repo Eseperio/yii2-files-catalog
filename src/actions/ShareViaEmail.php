@@ -3,6 +3,7 @@
 namespace eseperio\filescatalog\actions;
 
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
@@ -52,6 +53,9 @@ class ShareViaEmail extends Action
     public function run()
     {
         $model = $this->getModel();
+        if (!AclHelper::canShare($model)) {
+            throw new \yii\web\ForbiddenHttpException();
+        }
 
         $formModel = $this->getFormModel();
         $status = null;

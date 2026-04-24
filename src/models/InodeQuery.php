@@ -128,11 +128,11 @@ class InodeQuery extends ActiveQuery
             ];
 
             if (!$this->module->getUser()->getIsGuest())
-                $condition[] = ['acl.role' => AccessControl::LOGGED_IN_USERS];
+            $condition[] = ['acl.role' => AccessControl::LOGGED_IN_USERS];
 
             $this->andWhere($condition);
             $this->andWhere(['acl.crud_mask' => $crudMaskValues]);
-            $this->groupBy(self::prefix('id'));
+            $this->distinct();
 
         }
 
@@ -324,10 +324,20 @@ class InodeQuery extends ActiveQuery
             return $this;
         }
         $sharesTable = InodeShare::tableName();
-        $relation = $onlyActive ? "sharesActive" : "shares";
-        $this->joinWith($relation, false);
-        $this->groupBy(self::prefix('id'));
-        $this->addSelect([self::prefix('*'), new Expression("count({$sharesTable}.user_id) as shared")]);
+        $shareConditions = ["{$sharesTable}.inode_id = " . self::prefix('id')];
+        if ($onlyActive) {
+            $shareConditions[] = '(' . implode(' OR ', [
+                "{$sharesTable}.expires_at > " . time(),
+                "{$sharesTable}.expires_at IS NULL",
+            ]) . ')';
+        }
+
+        $this->addSelect([
+            self::prefix('*'),
+            new Expression(
+                '(SELECT COUNT(*) FROM ' . $sharesTable . ' WHERE ' . implode(' AND ', $shareConditions) . ') AS shared'
+            ),
+        ]);
         return $this;
     }
 }

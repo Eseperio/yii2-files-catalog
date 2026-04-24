@@ -22,7 +22,8 @@ define('VENDOR_DIR', $vendor);
 require_once $vendor . '/autoload.php';
 require $vendor . '/yiisoft/yii2/Yii.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenvFile = $_ENV['TESTS_ENV_FILENAME'] ?? '.env';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__, $dotenvFile);
 $dotenv->load();
 $dotenv->required([
     'DB_HOST',

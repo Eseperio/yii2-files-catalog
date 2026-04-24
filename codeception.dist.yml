@@ -12,6 +12,14 @@ settings:
 extensions:
   enabled:
     - Codeception\Extension\RunFailed
+coverage:
+  enabled: true
+  whitelist:
+    include:
+      - src/*
+    exclude:
+      - tests/*
+      - vendor/*
 modules:
   enabled:
     - Asserts

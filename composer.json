@@ -55,11 +55,12 @@
     }
   },
   "scripts": {
-    "test": "codecept run",
+    "test": "codecept run unit && codecept run functional",
     "test:unit": "codecept run unit",
     "test:functional": "codecept run functional",
     "test:acceptance": "codecept run acceptance",
-    "test:coverage": "codecept run --coverage --coverage-html",
+    "test:coverage": "codecept run unit --coverage-text --coverage-xml build/coverage/unit --coverage-html build/coverage/unit-html && codecept run functional --coverage-text --coverage-xml build/coverage/functional --coverage-html build/coverage/functional-html",
+    "test-docker": "docker compose -f docker/docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from tests tests",
     "serve": "php tests/_app/yii serve --docroot='tests/_app/web'",
     "extract-translations": "php tests/_app/yii message @app/../../src/messages/config.php",
     "load-fixtures": "php tests/_app/yii fixture/load '*' --interactive=0",
