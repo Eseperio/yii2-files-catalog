@@ -2,11 +2,13 @@
 
 namespace eseperio\filescatalog\actions;
 
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\InodeShare;
 use eseperio\filescatalog\traits\ModuleAwareTrait;
 use Yii;
 use yii\base\Action;
 use yii\base\DynamicModel;
+use yii\web\ForbiddenHttpException;
 
 /**
  * @property \eseperio\filescatalog\controllers\DefaultController $controller
@@ -26,6 +28,9 @@ class ShareWithUser extends Action
     {
         $shareModel = Yii::createObject(InodeShare::class);
         $model = $this->controller->findModel(\Yii::$app->request->get('uuid'));
+        if (!AclHelper::canShare($model)) {
+            throw new ForbiddenHttpException();
+        }
         $shareModel->inode_id = $model->id;
         if ($shareModel->load(Yii::$app->request->post()) && $shareModel->save()) {
             return $this->controller->redirect(['view', 'uuid' => $model->uuid]);

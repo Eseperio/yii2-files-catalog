@@ -1,0 +1,9 @@
+build
+vendor
+tests/_output
+tests/_support/_generated
+.git
+.github
+docker-compose.override.yml
+docker-compose.yml
+docker/docker-compose.test.yml

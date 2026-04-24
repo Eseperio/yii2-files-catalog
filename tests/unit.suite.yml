@@ -3,7 +3,16 @@
 # Suite for unit or integration tests.
 
 actor: UnitTester
+bootstrap: _bootstrap.php
 modules:
     enabled:
         - Asserts
+        - Yii2
+        - Db
         - \Helper\Unit
+    config:
+        Yii2:
+            configFile: 'tests/_app/config/test.php'
+            cleanup: false
+        Db:
+            cleanup: false
