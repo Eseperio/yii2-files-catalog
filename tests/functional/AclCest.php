@@ -2,11 +2,15 @@
 
 namespace functional;
 
+use eseperio\filescatalog\dictionaries\InodeTypes;
 use eseperio\filescatalog\models\AccessControl;
+use eseperio\filescatalog\models\Inode;
 use eseperio\filescatalog\models\InodeShare;
 use FunctionalTester;
+use Ramsey\Uuid\Uuid;
 use tests\_fixtures\InodeFixture;
 use Yii;
+use yii\helpers\Url;
 use app\models\UserIdentity;
 
 class AclCest
@@ -166,5 +170,194 @@ class AclCest
         // Try to access the file - should be allowed
         $I->amOnRoute('filex/default/view', ['uuid' => $fixture->uuid]);
         $I->see('Sample file');
+    }
+
+    // -----------------------------------------------------------------------
+    // Tests for remove-acl-from-descendants
+    // -----------------------------------------------------------------------
+
+    /**
+     * Verify that removeExactPermissionFromDescendants() only removes ACL records
+     * whose crud_mask matches exactly, leaving records with a different mask intact.
+     */
+    public function testRemoveExactPermissionFromDescendantsOnlyDeletesMatchingMask(FunctionalTester $I)
+    {
+        $I->wantTo('Verify removeExactPermissionFromDescendants removes only descendants with the exact crud_mask');
+
+        $I->haveFixtures(['inodes' => InodeFixture::class]);
+        $dir = $I->grabFixture('inodes', 'dir'); // id=2, depth=1, parent=root
+
+        // Create two child files under dir
+        $childAId = $I->haveInDatabase(Inode::tableName(), [
+            'name'        => 'child_read_only',
+            'type'        => InodeTypes::TYPE_FILE,
+            'parent_id'   => $dir->id,
+            'uuid'        => Uuid::uuid4()->toString(),
+            'depth'       => 2,
+            'filesize'    => 0,
+            'created_at'  => time(),
+            'author_name' => 'System',
+        ]);
+        $childBId = $I->haveInDatabase(Inode::tableName(), [
+            'name'        => 'child_read_write',
+            'type'        => InodeTypes::TYPE_FILE,
+            'parent_id'   => $dir->id,
+            'uuid'        => Uuid::uuid4()->toString(),
+            'depth'       => 2,
+            'filesize'    => 0,
+            'created_at'  => time(),
+            'author_name' => 'System',
+        ]);
+
+        // Parent dir: READ grant for user_A (this is the grant we propagate from)
+        $I->haveInDatabase(AccessControl::tableName(), [
+            'inode_id'  => $dir->id,
+            'user_id'   => UserIdentity::USER_A,
+            'role'      => AccessControl::DUMMY_ROLE,
+            'crud_mask' => AccessControl::ACTION_READ,
+        ]);
+        // child_A: READ-only grant – should be deleted by the call
+        $I->haveInDatabase(AccessControl::tableName(), [
+            'inode_id'  => $childAId,
+            'user_id'   => UserIdentity::USER_A,
+            'role'      => AccessControl::DUMMY_ROLE,
+            'crud_mask' => AccessControl::ACTION_READ,
+        ]);
+        // child_B: READ|WRITE grant – must be preserved (different mask)
+        $I->haveInDatabase(AccessControl::tableName(), [
+            'inode_id'  => $childBId,
+            'user_id'   => UserIdentity::USER_A,
+            'role'      => AccessControl::DUMMY_ROLE,
+            'crud_mask' => AccessControl::ACTION_READ | AccessControl::ACTION_WRITE,
+        ]);
+
+        // Invoke the model method directly on the parent dir's READ grant
+        $aclRecord = AccessControl::findOne([
+            'inode_id' => $dir->id,
+            'user_id'  => UserIdentity::USER_A,
+            'role'     => AccessControl::DUMMY_ROLE,
+        ]);
+        $aclRecord->removeExactPermissionFromDescendants();
+
+        // child_A's READ grant must be gone
+        $I->dontSeeRecord(AccessControl::class, [
+            'inode_id'  => $childAId,
+            'user_id'   => UserIdentity::USER_A,
+            'crud_mask' => AccessControl::ACTION_READ,
+        ]);
+        // child_B's READ|WRITE grant must still be there
+        $I->seeRecord(AccessControl::class, [
+            'inode_id'  => $childBId,
+            'user_id'   => UserIdentity::USER_A,
+            'crud_mask' => AccessControl::ACTION_READ | AccessControl::ACTION_WRITE,
+        ]);
+        // Parent dir's own READ grant must be untouched
+        $I->seeRecord(AccessControl::class, [
+            'inode_id'  => $dir->id,
+            'user_id'   => UserIdentity::USER_A,
+            'crud_mask' => AccessControl::ACTION_READ,
+        ]);
+    }
+
+    /**
+     * Verify the remove-acl-from-descendants HTTP action removes the exact-mask
+     * grant from descendants and redirects, while leaving other masks intact.
+     */
+    public function testRemoveAclFromDescendantsActionDeletesExactMatch(FunctionalTester $I)
+    {
+        $I->wantTo('Remove exact ACL permission from descendants via the remove-acl-from-descendants action');
+
+        $this->filexModule->administratorPermissionName = 'adminPermission';
+        $I->amLoggedInAs(UserIdentity::FILES_ADMINISTRATOR);
+        $I->haveFixtures(['inodes' => InodeFixture::class]);
+        $dir = $I->grabFixture('inodes', 'dir');
+
+        // Create two child files under dir
+        $childAId = $I->haveInDatabase(Inode::tableName(), [
+            'name'        => 'action_child_read',
+            'type'        => InodeTypes::TYPE_FILE,
+            'parent_id'   => $dir->id,
+            'uuid'        => Uuid::uuid4()->toString(),
+            'depth'       => 2,
+            'filesize'    => 0,
+            'created_at'  => time(),
+            'author_name' => 'System',
+        ]);
+        $childBId = $I->haveInDatabase(Inode::tableName(), [
+            'name'        => 'action_child_rw',
+            'type'        => InodeTypes::TYPE_FILE,
+            'parent_id'   => $dir->id,
+            'uuid'        => Uuid::uuid4()->toString(),
+            'depth'       => 2,
+            'filesize'    => 0,
+            'created_at'  => time(),
+            'author_name' => 'System',
+        ]);
+
+        // Parent dir: READ grant (the action will look this up via inode_id+user_id+role+crud_mask)
+        $I->haveInDatabase(AccessControl::tableName(), [
+            'inode_id'  => $dir->id,
+            'user_id'   => UserIdentity::USER_A,
+            'role'      => AccessControl::DUMMY_ROLE,
+            'crud_mask' => AccessControl::ACTION_READ,
+        ]);
+        // child_A: READ grant – should be deleted
+        $I->haveInDatabase(AccessControl::tableName(), [
+            'inode_id'  => $childAId,
+            'user_id'   => UserIdentity::USER_A,
+            'role'      => AccessControl::DUMMY_ROLE,
+            'crud_mask' => AccessControl::ACTION_READ,
+        ]);
+        // child_B: READ|WRITE grant – must be preserved
+        $I->haveInDatabase(AccessControl::tableName(), [
+            'inode_id'  => $childBId,
+            'user_id'   => UserIdentity::USER_A,
+            'role'      => AccessControl::DUMMY_ROLE,
+            'crud_mask' => AccessControl::ACTION_READ | AccessControl::ACTION_WRITE,
+        ]);
+
+        $I->sendAjaxPostRequest(Url::to(['/filex/default/remove-acl-from-descendants']), [
+            'inode_id'  => $dir->id,
+            'user_id'   => UserIdentity::USER_A,
+            'role'      => AccessControl::DUMMY_ROLE,
+            'crud_mask' => AccessControl::ACTION_READ,
+        ]);
+
+        $I->seeResponseCodeIsRedirection();
+
+        // child_A's READ grant must be deleted
+        $I->dontSeeRecord(AccessControl::class, [
+            'inode_id'  => $childAId,
+            'user_id'   => UserIdentity::USER_A,
+            'crud_mask' => AccessControl::ACTION_READ,
+        ]);
+        // child_B's READ|WRITE grant must be preserved
+        $I->seeRecord(AccessControl::class, [
+            'inode_id'  => $childBId,
+            'user_id'   => UserIdentity::USER_A,
+            'crud_mask' => AccessControl::ACTION_READ | AccessControl::ACTION_WRITE,
+        ]);
+    }
+
+    /**
+     * Verify that non-admin users cannot call remove-acl-from-descendants.
+     */
+    public function testRemoveAclFromDescendantsActionRequiresAdmin(FunctionalTester $I)
+    {
+        $I->wantTo('Verify that remove-acl-from-descendants action is forbidden for non-admin users');
+
+        $this->filexModule->administratorPermissionName = 'adminPermission';
+        $I->amLoggedInAs(UserIdentity::USER_C); // has no adminPermission
+        $I->haveFixtures(['inodes' => InodeFixture::class]);
+        $dir = $I->grabFixture('inodes', 'dir');
+
+        $I->sendAjaxPostRequest(Url::to(['/filex/default/remove-acl-from-descendants']), [
+            'inode_id'  => $dir->id,
+            'user_id'   => UserIdentity::USER_A,
+            'role'      => AccessControl::DUMMY_ROLE,
+            'crud_mask' => AccessControl::ACTION_READ,
+        ]);
+
+        $I->seeResponseCodeIs(403);
     }
 }
