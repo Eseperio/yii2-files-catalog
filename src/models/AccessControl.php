@@ -129,6 +129,46 @@ class AccessControl extends ActiveRecord
     }
 
     /**
+     * Removes from all descendants only the records that exactly match the current
+     * user_id, role and crud_mask. Records with a different crud_mask for the same
+     * user/role are left untouched.
+     * @return void
+     * @throws \Throwable
+     */
+    public function removeExactPermissionFromDescendants()
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $inode = $this->inode;
+            $children = $this->getDescendantsIds($inode);
+            $totalRows = count($children);
+            if ($totalRows > 200) {
+                Yii::debug('Disabled db logging for bulk delete of inode descendants exact permissions', 'filescatalog');
+                Yii::$app->db->enableLogging = false;
+                Yii::$app->db->enableProfiling = false;
+            }
+            $batchSize = 1000;
+            while (!empty($children)) {
+                $batch = array_splice($children, 0, $batchSize);
+                self::deleteAll([
+                    'AND',
+                    ['user_id' => $this->user_id],
+                    ['role' => $this->role],
+                    ['crud_mask' => $this->crud_mask],
+                    ['inode_id' => $batch]
+                ]);
+            }
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        } finally {
+            Yii::$app->db->enableLogging = true;
+            Yii::$app->db->enableProfiling = true;
+        }
+    }
+
+    /**
      * Removes all sibling permissions in all the inode descendants
      * @return void
      */

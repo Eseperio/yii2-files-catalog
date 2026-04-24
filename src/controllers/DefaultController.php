@@ -26,6 +26,7 @@ use eseperio\filescatalog\actions\NewLinkAction;
 use eseperio\filescatalog\actions\MoveAction;
 use eseperio\filescatalog\actions\PropertiesAction;
 use eseperio\filescatalog\actions\RemoveACL;
+use eseperio\filescatalog\actions\RemoveAclFromDescendants;
 use eseperio\filescatalog\actions\RemoveShare;
 use eseperio\filescatalog\actions\RenameAction;
 use eseperio\filescatalog\actions\SharedWithMe;
@@ -69,7 +70,7 @@ class DefaultController extends \yii\web\Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['remove-acl', 'bulk-acl', 'inherit-acl'],
+                        'actions' => ['remove-acl', 'bulk-acl', 'inherit-acl', 'remove-acl-from-descendants'],
                         'matchCallback' => function ($rule, $action) {
                             $filexModule = $this->module;
                             return $filexModule->enableACL && $filexModule->isAdmin();
@@ -93,6 +94,7 @@ class DefaultController extends \yii\web\Controller
                     'cut' => ['post'],
                     'bulk-acl' => ['post'],
                     'inherit-acl' => ['post'],
+                    'remove-acl-from-descendants' => ['post'],
                     'bulk-download' => ['post'],
                     'cut-files' => ['post', 'get'],
                     'unshare' => ['post'],
@@ -143,6 +145,7 @@ class DefaultController extends \yii\web\Controller
             'bulk-acl' => ['class' => BulkAcl::class],
             'remove-acl' => ['class' => RemoveACL::class],
             'inherit-acl' => ['class' => InheritAcl::class],
+            'remove-acl-from-descendants' => ['class' => RemoveAclFromDescendants::class],
             'fake' => ['class' => FakeAction::class],
             'bulk-download' => ['class' => BulkDownload::class],
             'cut-files' => ['class' => CutFilesAction::class],

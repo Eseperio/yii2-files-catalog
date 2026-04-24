@@ -157,6 +157,22 @@ $fileRoles[InodePermissionsForm::CUSTOM_ROLE_VALUE] = Yii::t('filescatalog', 'Cu
                                         ],
                                     ]) ?></li>
                                 <li>
+                                    <?= Html::a(Yii::t('filescatalog', 'Remove from all descendants'), [
+                                        'remove-acl-from-descendants',
+                                    ], [
+                                        'data' => [
+                                            'method' => 'post',
+                                            'confirm' => Yii::t('filescatalog', 'Remove this exact permission from all descendants? This cannot be undone'),
+                                            'params' => [
+                                                'inode_id' => $item->inode_id,
+                                                'role' => $item->role,
+                                                'user_id' => $item->user_id,
+                                                'crud_mask' => $item->crud_mask
+                                            ]
+                                        ],
+                                    ]) ?>
+                                </li>
+                                <li>
                                     <?= Html::a(Yii::t('filescatalog', 'Remove here and in all descendants'), [
                                         'remove-acl',
                                     ], [
