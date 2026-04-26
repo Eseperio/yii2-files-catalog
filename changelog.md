@@ -1,6 +1,11 @@
 # Changelog
 
 ## Unreleased
+
+- [*] Hardened ACL security checks on view, download, rename, move, delete, bulk delete, and sharing routes.
+- [*] Added cascading ACL deletion for exact descendant matches, with unit and functional coverage for ACL inheritance and cross-user access isolation.
+- [*] Added Docker-based test execution with coverage reporting for local and CI use.
+
 ## 1.5.3
 
 - [*] Removed condition that prevented users to see the checkbox in checkbox column if they did not have delete
