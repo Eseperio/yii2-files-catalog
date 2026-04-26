@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.6.0
 
 - [*] Hardened ACL security checks on view, download, rename, move, delete, bulk delete, and sharing routes.
 - [*] Added cascading ACL deletion for exact descendant matches, with unit and functional coverage for ACL inheritance and cross-user access isolation.
