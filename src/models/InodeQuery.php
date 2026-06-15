@@ -80,8 +80,7 @@ class InodeQuery extends ActiveQuery
         $this->select($selectColumns);
 
         $this->join('LEFT OUTER JOIN', ['symlink' => Inode::tableName()], Inode::tableName()
-            . '.uuid=symlink.uuid AND ' . self::prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK
-            . ' AND ' . self::prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK);
+            . '.uuid=symlink.uuid AND ' . self::prefix('type', 'symlink.') . '!=' . InodeTypes::TYPE_SYMLINK);
 
         return $this;
     }
