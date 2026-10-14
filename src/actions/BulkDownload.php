@@ -11,11 +11,14 @@ namespace eseperio\filescatalog\actions;
 
 use creocoder\flysystem\ZipArchiveFilesystem;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
 use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
+use yii\web\ForbiddenHttpException;
+use yii\web\TooManyRequestsHttpException;
 
 /**
  * Class BulkDownload
@@ -31,8 +34,11 @@ class BulkDownload extends Bulk
     private $tmpFile;
     private $errors = [];
 
-    private $maxIterations = 500;
-    private $curIter = 0;
+    public $maxEntries = 5000;
+    public $maxUncompressedBytes = 536870912;
+    private $curEntries = 0;
+    private $uncompressedBytes = 0;
+    private $lockHandle;
 
     /**
      * @var array with all directories uuids to prevent infinite recursion
@@ -61,8 +67,13 @@ class BulkDownload extends Bulk
     protected function initZipAdapter()
     {
 
+        $this->lockHandle = fopen(Yii::$app->getRuntimePath() . DIRECTORY_SEPARATOR . 'filescatalog-bulk-download.lock', 'c');
+        if ($this->lockHandle === false || !flock($this->lockHandle, LOCK_EX | LOCK_NB)) {
+            throw new TooManyRequestsHttpException(Yii::t('filescatalog', 'A bulk download is already being prepared'));
+        }
+
         $filename = Yii::$app->security->generateRandomString(8);
-        $this->tmpFile = FileHelper::normalizePath(sys_get_temp_dir()) . DIRECTORY_SEPARATOR . $filename;
+        $this->tmpFile = FileHelper::normalizePath(sys_get_temp_dir()) . DIRECTORY_SEPARATOR . $filename . '.zip';
         $this->zipAdapter = \Yii::createObject([
             'class' => ZipArchiveFilesystem::class,
             'path' => $this->tmpFile
@@ -78,14 +89,19 @@ class BulkDownload extends Bulk
      */
     protected function pack($models, $path = '.')
     {
-        if (++$this->curIter > $this->maxIterations) {
-            $this->errors = [Yii::t('filescatalog', 'Max amount of files reached')];
-
+        if ($this->errors) {
             return;
         }
         try {
             foreach ($models as $model) {
+                if (++$this->curEntries > $this->maxEntries) {
+                    $this->errors[] = Yii::t('filescatalog', 'Max amount of files reached');
+                    return;
+                }
                 /* @var $model Inode */
+                if (!AclHelper::canRead($model)) {
+                    throw new ForbiddenHttpException(Yii::t('filescatalog', 'You can not read this item'));
+                }
                 switch ($model->type) {
                     case InodeTypes::TYPE_DIR:
                         $currentPath = $path . DIRECTORY_SEPARATOR . $model->name;
@@ -95,7 +111,7 @@ class BulkDownload extends Bulk
                             $this->dirsIncluded[] = $model->uuid;
                         }
                         $this->zipAdapter->createDir($currentPath);
-                        $children = $model->getChildren();
+                        $children = $model->getChildren()->onlyReadable();
                         foreach ($children->batch(50) as $filesGroup) {
                             if (!is_iterable($filesGroup))
                                 throw new Exception('filesgroup');
@@ -108,14 +124,27 @@ class BulkDownload extends Bulk
                             $versions = $model->versions;
                             $model = end($versions);
                         }
+                        if (!AclHelper::canRead($model)) {
+                            throw new ForbiddenHttpException(Yii::t('filescatalog', 'You can not read this file version'));
+                        }
+
+                        $fileSize = (int)$model->filesize;
+                        if ($fileSize < 0 || $this->uncompressedBytes + $fileSize > $this->maxUncompressedBytes) {
+                            $this->errors[] = Yii::t('filescatalog', 'Bulk download exceeds the maximum uncompressed size');
+                            return;
+                        }
+                        $this->uncompressedBytes += $fileSize;
 
                         $this->zipAdapter->writeStream($path . DIRECTORY_SEPARATOR . $fileName . "." . $model->extension, $model->getStream());
                         break;
                     case InodeTypes::TYPE_SYMLINK:
                         $realModel = Inode::find()
                             ->where(['!=', 'type', InodeTypes::TYPE_SYMLINK])
-                            ->uuid($model->uuid)
+                            ->uuid($model->uuid)->onlyReadable()
                             ->one();
+                        if (empty($realModel)) {
+                            throw new ForbiddenHttpException(Yii::t('filescatalog', 'You can not read the linked item'));
+                        }
                         $this->pack([$realModel], $path);
                         break;
                 }
@@ -128,7 +157,13 @@ class BulkDownload extends Bulk
 
     public function __destruct()
     {
-        @unlink($this->tmpFile);
+        if ($this->tmpFile) {
+            @unlink($this->tmpFile);
+        }
+        if (is_resource($this->lockHandle)) {
+            flock($this->lockHandle, LOCK_UN);
+            fclose($this->lockHandle);
+        }
     }
 
     /**

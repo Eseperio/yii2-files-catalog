@@ -60,7 +60,14 @@ class ViewAction extends Action
                 $order = SORT_DESC;
                 $sortAttribute = substr($sortAttribute, 1);
             }
-            $query->orderBy([$sortAttribute => $order]);
+            // Only accept real column names. Yii treats SQL-like array keys as
+            // expressions, so passing the request value through is unsafe.
+            $columns = Inode::getTableSchema()->columnNames;
+            if (in_array($sortAttribute, $columns, true)) {
+                $query->orderBy([Inode::tableName() . '.' . $sortAttribute => $order]);
+            } else {
+                $query->orderBy(['name' => SORT_ASC]);
+            }
         } else {
             $query->orderBy(['name' => SORT_ASC]);
         }

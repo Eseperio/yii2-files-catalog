@@ -222,10 +222,14 @@ class Inode extends \eseperio\filescatalog\models\base\Inode
             AccessControl::deleteAll(['inode_id' => $ids]);
         }
 
-        Inode::deleteAll([
-            'uuid' => $this->uuid,
-            'type' => InodeTypes::TYPE_SYMLINK
-        ]);
+        // Removing one alias must not remove other aliases to the same target.
+        // Target deletion may still clean up its dangling links.
+        if ($this->type !== InodeTypes::TYPE_SYMLINK) {
+            Inode::deleteAll([
+                'uuid' => $this->uuid,
+                'type' => InodeTypes::TYPE_SYMLINK
+            ]);
+        }
         parent::afterDelete();
     }
 

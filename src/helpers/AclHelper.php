@@ -105,6 +105,10 @@ class AclHelper extends Component
             $grantAccess = false;
             foreach ($inode['accessControlList'] as $acl) {
 
+                if ($acl->expires_at !== null && (int)$acl->expires_at <= time()) {
+                    continue;
+                }
+
                 if (($acl->crud_mask & $permission) !== $permission) {
                     continue;
                 }
@@ -179,6 +183,39 @@ class AclHelper extends Component
     public static function canDelete($inode)
     {
         return self::can($inode, AccessControl::ACTION_DELETE);
+    }
+
+    /**
+     * A directory delete is recursive, so every descendant must be deletable.
+     * @param Inode $inode
+     * @return bool
+     */
+    public static function canDeleteTree(Inode $inode)
+    {
+        if (!self::canDelete($inode)) {
+            return false;
+        }
+        if ($inode->type !== InodeTypes::TYPE_DIR) {
+            return true;
+        }
+        $ids = $inode->getDescendantsIds(null, true);
+        $ids = array_values(array_unique($ids));
+        return !$ids || (int)Inode::find()->where(['id' => $ids])->onlyDeletable()->count() === count($ids);
+    }
+
+    /**
+     * Sharing a directory exposes every descendant through inherited ACL rows.
+     * @param Inode $inode
+     * @return bool
+     */
+    public static function canReadDescendants(Inode $inode)
+    {
+        if ($inode->type !== InodeTypes::TYPE_DIR) {
+            return true;
+        }
+        $ids = $inode->getDescendantsIds(null, true);
+        $ids = array_values(array_unique($ids));
+        return !$ids || (int)Inode::find()->where(['id' => $ids])->onlyReadable()->count() === count($ids);
     }
 
 }

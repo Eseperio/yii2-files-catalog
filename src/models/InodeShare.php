@@ -66,6 +66,11 @@ class InodeShare extends BaseInodeShare
             throw new ServerErrorHttpException('Permission model was not found');
         }
 
+        $permModel->expires_at = $this->expires_at;
+        if (!$permModel->save(false, ['expires_at'])) {
+            throw new ServerErrorHttpException('Share expiration could not be applied to its permissions');
+        }
+
         $permModel->copyPermissionToDescendants();
 
         parent::afterSave($insert, $changedAttributes);

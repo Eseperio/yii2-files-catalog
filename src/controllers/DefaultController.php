@@ -96,6 +96,7 @@ class DefaultController extends \yii\web\Controller
                     'inherit-acl' => ['post'],
                     'remove-acl-from-descendants' => ['post'],
                     'bulk-download' => ['post'],
+                    'fake' => ['post'],
                     'cut-files' => ['post', 'get'],
                     'unshare' => ['post'],
                     'move' => ['post', 'get'],
@@ -146,13 +147,15 @@ class DefaultController extends \yii\web\Controller
             'remove-acl' => ['class' => RemoveACL::class],
             'inherit-acl' => ['class' => InheritAcl::class],
             'remove-acl-from-descendants' => ['class' => RemoveAclFromDescendants::class],
-            'fake' => ['class' => FakeAction::class],
             'bulk-download' => ['class' => BulkDownload::class],
             'cut-files' => ['class' => CutFilesAction::class],
             'shared' => ['class' => SharedWithMe::class],
             'unshare' => ['class' => SharedWithMe::class],
             'directory-tree-load' => ['class' => DirectoryTreeLoadAction::class],
         ];
+        if (YII_ENV_DEV) {
+            $actions['fake'] = ['class' => FakeAction::class];
+        }
         if ($this->getModule()->enableEmailSharing) {
             $actions['email'] = ['class' => ShareViaEmail::class];
         }

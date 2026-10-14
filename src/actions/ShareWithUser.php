@@ -28,12 +28,18 @@ class ShareWithUser extends Action
     {
         $shareModel = Yii::createObject(InodeShare::class);
         $model = $this->controller->findModel(\Yii::$app->request->get('uuid'));
-        if (!AclHelper::canShare($model)) {
+        if (!AclHelper::canShare($model) || !AclHelper::canRead($model)
+            || !AclHelper::canReadDescendants($model)) {
             throw new ForbiddenHttpException();
         }
         $shareModel->inode_id = $model->id;
-        if ($shareModel->load(Yii::$app->request->post()) && $shareModel->save()) {
-            return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
+        if ($shareModel->load(Yii::$app->request->post())) {
+            // inode_id is marked safe by the base model; always bind it back to
+            // the inode from the authorized URL after mass assignment.
+            $shareModel->inode_id = $model->id;
+            if ($shareModel->save()) {
+                return $this->controller->redirect(['view', 'uuid' => $model->uuid]);
+            }
         }
 
         // Prevent publishing real inode id

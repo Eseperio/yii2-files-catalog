@@ -56,7 +56,7 @@ class DeleteAction extends Action
                 throw new NotFoundHttpException();
         }
 
-        if (!empty($rcvdHash) && $rcvdHash === $model->deleteHash && AclHelper::canDelete($model)) {
+        if (!empty($rcvdHash) && $rcvdHash === $model->deleteHash && AclHelper::canDeleteTree($model)) {
             if ($model->type === InodeTypes::TYPE_DIR) {
                 if (Yii::$app->request->post('confirm_text') === $model->getDeletionConfirmText()) {
                     $model->delete();

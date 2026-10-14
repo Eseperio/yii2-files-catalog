@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.1
+
+- [*] Security and performance improvements.
+
 ## 1.6.0
 
 - [*] Hardened ACL security checks on view, download, rename, move, delete, bulk delete, and sharing routes.

@@ -132,6 +132,7 @@ class InodeQuery extends ActiveQuery
 
             $this->andWhere($condition);
             $this->andWhere(['acl.crud_mask' => $crudMaskValues]);
+            $this->andWhere(['or', ['acl.expires_at' => null], ['>', 'acl.expires_at', time()]]);
             $this->distinct();
 
         }

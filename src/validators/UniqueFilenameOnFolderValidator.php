@@ -37,6 +37,7 @@ class UniqueFilenameOnFolderValidator extends Validator
         $parent = $this->inode->getParent()->one();
         $siblingsNames = $parent->getChildren()
             ->onlyFiles()
+            ->onlyReadable()
             ->andWhere(['not', ['id' => $this->inode->id]])
             ->asArray()
             ->select('name')

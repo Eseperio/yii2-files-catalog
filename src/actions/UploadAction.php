@@ -18,6 +18,7 @@ use yii\base\Action;
 use yii\base\InvalidArgumentException;
 use yii\base\UserException;
 use yii\web\Response;
+use yii\web\ForbiddenHttpException;
 use yii\web\UploadedFile;
 
 class UploadAction extends Action
@@ -52,7 +53,9 @@ class UploadAction extends Action
 
         $targetNode = $this->controller->findModel($targetUuid, Inode::class);
 
-        AclHelper::canWrite($targetNode);
+        if (!AclHelper::canWrite($targetNode)) {
+            throw new ForbiddenHttpException(Yii::t('filescatalog', 'You can not upload to this location'));
+        }
 
         if ($targetNode->type == InodeTypes::TYPE_FILE) {
             $realParent = $targetNode->getParent()->one();

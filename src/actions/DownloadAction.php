@@ -40,7 +40,16 @@ class DownloadAction extends Action
         $stream = $model->getFile();
         $attachmentName = $model->publicName . "." . $model->extension;
         $options =[];
-        if($inline){
+        Yii::$app->response->headers->set('X-Content-Type-Options', 'nosniff');
+        $activeMimeTypes = [
+            'text/html', 'application/xhtml+xml', 'image/svg+xml',
+            'application/xml', 'text/xml', 'application/javascript', 'text/javascript'
+        ];
+        $mimeType = strtolower(trim(explode(';', (string)$model->mime, 2)[0]));
+        if ($inline && in_array($mimeType, $activeMimeTypes, true)) {
+            // Never serve user supplied active content in the application origin.
+            $options['mimeType'] = 'application/octet-stream';
+        } elseif($inline){
             $options['inline'] = true;
             $options['mimeType'] = $model->mime;
         }

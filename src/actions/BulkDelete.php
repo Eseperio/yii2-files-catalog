@@ -11,6 +11,7 @@ namespace eseperio\filescatalog\actions;
 
 use eseperio\filescatalog\controllers\DefaultController;
 use eseperio\filescatalog\dictionaries\InodeTypes;
+use eseperio\filescatalog\helpers\AclHelper;
 use eseperio\filescatalog\models\Inode;
 use Yii;
 use yii\web\Controller;
@@ -55,6 +56,12 @@ class BulkDelete extends Bulk
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
+
+            foreach ($models as $model) {
+                if (!AclHelper::canDeleteTree($model)) {
+                    throw new \yii\web\ForbiddenHttpException();
+                }
+            }
 
             foreach ($models as $model) {
                 switch ($model->type) {

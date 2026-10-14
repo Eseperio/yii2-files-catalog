@@ -123,11 +123,12 @@ class Uploader extends FileUpload
         $pjaxSnippet = '';
         if (!empty($this->pjaxId) && $this->module->usePjax) {
             $url = \Yii::$app->request->url;
+            $urlJs = Json::htmlEncode($url);
             $pjaxSnippet = "
             if(FILEX_ERRORS.length<=0){
                 $.pjax.reload({
                     container: '#{$this->pjaxId}',
-                    url: '$url',
+                    url: {$urlJs},
                     push: false,
                     replace: false
                 });

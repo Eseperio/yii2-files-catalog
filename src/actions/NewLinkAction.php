@@ -38,7 +38,8 @@ class NewLinkAction extends Action
         $uuid = Yii::$app->request->getQueryParam('uuid', false);
         $parent = Directory::find()->uuid($uuid)->one();
         $remoteUuid = Yii::$app->request->post('ruuid', false);
-        $remote = Inode::find()->byType([InodeTypes::TYPE_FILE, InodeTypes::TYPE_DIR])->uuid($remoteUuid)->one();
+        $remote = Inode::find()->byType([InodeTypes::TYPE_FILE, InodeTypes::TYPE_DIR])
+            ->onlyReadable()->uuid($remoteUuid)->one();
 
         if (empty($parent))
             throw new NotFoundHttpException('Page not found');

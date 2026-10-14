@@ -17,6 +17,7 @@ use yii\base\Action;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\MethodNotAllowedHttpException;
 
 class CutFilesAction extends Action
 {
@@ -41,6 +42,10 @@ class CutFilesAction extends Action
     {
         if (!$this->module->allowCutPaste) {
             throw new NotFoundHttpException();
+        }
+
+        if (($cancel || $confirm) && !Yii::$app->request->isPost) {
+            throw new MethodNotAllowedHttpException('Cut operations must be submitted with POST.');
         }
 
         // Get the cut paste service

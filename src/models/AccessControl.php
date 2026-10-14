@@ -104,7 +104,8 @@ class AccessControl extends ActiveRecord
                         $this->user_id,
                         $this->role,
                         $child,
-                        $this->crud_mask
+                        $this->crud_mask,
+                        $this->expires_at
                     ];
                 }
 
@@ -114,7 +115,8 @@ class AccessControl extends ActiveRecord
                     'user_id',
                     'role',
                     'inode_id',
-                    'crud_mask'
+                    'crud_mask',
+                    'expires_at'
                 ], $data)->execute();
                 $batchLoop++;
             }
